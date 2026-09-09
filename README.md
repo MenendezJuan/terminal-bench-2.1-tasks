@@ -1,5 +1,10 @@
 # Terminal-Bench 2.1 — task authoring
 
+> **Audit status (2026-09-09): research scaffold only.** The supplied private
+> format conflicts with the current public Terminal-Bench/Harbor contract, and
+> the referenced 24-gate packager was not supplied. Read
+> [`AUDIT_2026-09-09.md`](AUDIT_2026-09-09.md) before creating a task.
+
 Repositorio de autoría de tasks para Terminal-Bench 2.1 (harness Terminus-2, upstream público en [harbor-framework/terminal-bench](https://github.com/harbor-framework/terminal-bench)). Distinto de `quick-hits-aa-briefcase`: ahí se evalúa knowledge-work (Excel/PPTX); acá se evalúan agentes de código sobre bugs reales minados de PRs mergeados, con reward binario por tests.
 
 ## Documentación fuente
@@ -17,4 +22,7 @@ Cada task debe hacer fallar a un agente fuerte 5 de 5 veces (`pass@5 ≤ 1`) —
 
 Scaffold inicial. Todavía no hay ninguna task minada/escrita — `tasks/` está vacío a propósito. El próximo paso real es Step 1 de la guía: minar un repo candidato (PR mergeado, issue con ≥800 caracteres de repro, fix de 2-6 archivos, tests en el mismo PR, post-cutoff, sin dependency churn).
 
-Pendiente de conseguir: `terminal-bench/tools/package-delivery.sh` (el script que corre los 24 gates) — la guía lo referencia pero no está en el árbol público de `harbor-framework/terminal-bench`; probablemente es tooling interno del cliente. Hasta tenerlo, los gates de `LAYOUT.md` se verifican a mano (el hook de commit ya cubre dos: canary string y "cero em dashes" en `instruction.md`).
+Pendiente de conseguir: `terminal-bench/tools/package-delivery.sh` y la versión
+exacta de Harbor que valida el formato privado. Hasta tener ambos, no declarar el
+template “exacto” ni armar una entrega manual; el hook local sólo cubre canary y
+em dash.

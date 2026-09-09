@@ -2,6 +2,13 @@
 
 Contexto para agentes trabajando en este repo. La fuente de verdad completa es [`guidelines/guidelines-extracted-text.md`](guidelines/guidelines-extracted-text.md) — esto es un resumen operativo, no un sustituto. Ante cualquier duda de gate/formato, leé el original antes de asumir.
 
+## Gate de contrato
+
+Antes de crear una task, leer `AUDIT_2026-09-09.md`. La guía privada y el
+contrato público actual discrepan. No mezclar ambos esquemas ni resolver la
+diferencia por intuición. Para una entrega privada manda el validador/versionado
+del cliente; para un PR upstream manda la documentación pública actual.
+
 ## Qué es este repo
 
 Autoría de tasks para **Terminal-Bench 2.1**: bugs reales minados de PRs mergeados de repos activos, empaquetados como task Docker + verifier binario, medidos con `pass@k` (k=1,3,5) contra `claude-opus-5` y `GPT 5.6` bajo el harness **Terminus-2**. El objetivo es que una task haga fallar al agente 5 de 5 veces con un core difícil real, no por ambigüedad del prompt.
@@ -41,4 +48,6 @@ No hay suite de pytest global (cada task tiene su propio `tests/test.sh`). El ho
 
 - `tasks/<task-name>/` contendrá la estructura de `templates/delivery-template/harbor-task/` una vez que exista una task real.
 - Documentación operativa en español; contenido de la task (`instruction.md`, `README.md` dentro de `harbor-task/`, código) en inglés — así queda igual al corpus publicado de Terminal-Bench.
-- Recursos y timeouts: no adivinar — usar los típicos de la guía (`[agent] timeout_sec` 2400, `[verifier] timeout_sec` 900, `[environment] build_timeout_sec` 3600, 1-2 CPU / 2GB, `allow_internet = false` siempre).
+- Recursos, red y timeouts: medirlos por task y mantener TOML, instruction y run
+  config alineados. `allow_internet = false` pertenece al brief privado; el
+  contrato upstream actual es open-internet.
