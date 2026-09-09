@@ -1,0 +1,40 @@
+<task>-<YYYYMMDD>.zip
+|
++-- harbor-task/                        the runnable task
+|   |
+|   +-- task.toml                       schema_version, [agent] timeout_sec = 28800
+|   +-- instruction.md                  canary comment, task text, 28800 trailer last
+|   +-- README.md                       Difficulty, Solution, Verification,
+|   |                                   Relevant experience (all four required)
+|   +-- environment/
+|   |   `-- Dockerfile                  the image, and NOTHING else in this directory
+|   +-- solution/
+|   |   +-- solve.sh                    the oracle
+|   |   `-- patch.diff                  what the oracle applies
+|   `-- tests/
+|       +-- test.sh                     the verifier, writes /logs/verifier/reward.txt
+|       `-- test_patch.diff             the hidden tests, absent from the agent image
+|
++-- evidence/
+|   |
+|   +-- oracle/                         full trial directory, reward 1
+|   |   `-- verifier/
+|   |       +-- reward.txt              must contain 1: proves the task is SOLVABLE
+|   |       `-- summary.txt             read the TEST COUNT, not just the reward
+|   |
+|   +-- nop/                            full trial directory, reward 0
+|   |   `-- verifier/
+|   |       +-- reward.txt              must contain 0
+|   |       `-- error.txt               must name a TEST FAILURE COUNT, not an
+|   |                                   infrastructure error: that is what proves
+|   |                                   the verifier measures the bug
+|   |
+|   `-- attempts/                       one directory per model, or NO-ATTEMPTS.md
+|       `-- <model>/
+|           +-- attempt-1/
+|           |   +-- agent/              trajectory and the agent's own log
+|           |   +-- verifier/           reward, summary, junit, model.patch
+|           |   `-- result.json
+|           `-- attempt-N/
+|
+`-- README.md                           copy of harbor-task/README.md
