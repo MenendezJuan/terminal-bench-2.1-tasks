@@ -1,0 +1,15 @@
+{
+  "measured_at": "2026-09-10",
+  "collected_base": 2,
+  "collected_gold": 2,
+  "failed_base": 2,
+  "failed_gold": 0,
+  "fail_to_pass": [
+    "durabilityAndOrderGate",
+    "lifecycleAndTopologyGate"
+  ],
+  "derivation": "Empirical, not guessed. Built the sealed image at base_commit, installed tests/KinesisConcurrencyBehaviorTest.java (authored for this task, not the PR's own test file -- see PROVENANCE.json for why), ran mvn test: 2 gates collected, both failed at base -- durabilityAndOrderGate on a real silent-loss count (1200 written, 1179 retrievable) and lifecycleAndTopologyGate on a real resurrection (a stream deleted mid-flight was still describable afterward, trial 0). Applied solution/patch.diff (verbatim gold patch, 6 production files, no test files) on the same image and re-ran: both gates pass, 0 failures. Repeated the gold run once more to rule out flakes: stable, 0 failures both times.",
+  "mutation_testing": {
+    "note": "Structural design gate, run before any paid model attempt. The task's 4 real underlying invariants were first graded as 4 separate F2P test methods; a hand-written plausible partial repair (apply the real gold patch, then revert ONLY deleteStream's synchronized block back to an unlocked store.delete, leaving every other lock/CopyOnWriteArrayList/child-id fix in place) broke exactly 1 of those 4 methods (25% F2P remaining), which stays UNDER this project's 50% failure threshold and would have scored the mutation as a pass -- a real methodological gap, not a hypothetical one. Restructured to 2 semantic gates (durabilityAndOrderGate, lifecycleAndTopologyGate), each a single @Test method internally running multiple sub-checks and failing if any sub-check fails, so a single broken invariant now fails 1 of 2 gates (50%), which correctly crosses the threshold. Re-ran the same mutation against the 2-gate structure: lifecycleAndTopologyGate fails (1 of 2 = 50%), durabilityAndOrderGate still passes, and the overall verifier now correctly scores this plausible incomplete repair as FAIL. This restructuring happened before any model was run against the task -- it is a test-design correction, not a post-hoc reweighting after observing a model result."
+  }
+}
