@@ -57,6 +57,18 @@ Traducción de `docs/MULTI_AGENT_ROUTING.md` (pensado para Codex/Luna-Terra-Sol-
 
 Invocar con `Agent({ subagent_type: "luna-scout", ... })` o `astra-reviewer` según el rol. No usar `astra-reviewer` para tareas de implementación — es de solo lectura por diseño (`disallowedTools: Edit, Write`).
 
+## Trabajo en paralelo (Claude Code + Codex sobre el mismo repo)
+
+Este repo lo trabajan dos agentes distintos a la vez (Codex por su lado, Claude Code por el otro), leyendo y a veces escribiendo los mismos archivos: la planilla compartida, `research/`, `tasks/`. Regla dura, no opcional:
+
+1. **Antes de minar un candidato**, chequear `git log --oneline -15`, `research/` y `tasks/` — no solo la planilla — por si el otro agente ya lo tiene en curso. Ya pasó una vez: se propuso un repo que el otro agente ya había evaluado y descartado con mejor criterio (riesgo de contenido generado por IA en el historial del PR/issue — agregado como chequeo explícito en `luna-scout`).
+2. **No escribir en la planilla compartida ni en `research/`/`tasks/` de otro agente** sin confirmación del usuario — son zonas de escritura del otro agente mientras está activo. Documentar candidatos propios en un archivo separado, nunca sobreescribir lo ajeno.
+3. Si un candidato propio termina solapando con uno ya tomado, descartarlo — no hay empate a resolver, gana el que ya está en curso.
+
+## Memoria persistente (Engram)
+
+Instalado globalmente (plugin de usuario, aplica a todos los proyectos, no solo este) — ver [Engram en el vault] para instalación/protocolo completo. Contrato operativo mientras esté disponible como MCP en la sesión: orientarse con `mem_current_project`/`mem_context` al empezar, buscar antes de repetir trabajo con `mem_search`, guardar decisiones/candidatos/bloqueos con `mem_save` (no volcar tool output crudo), y dejar `mem_session_summary` antes de cerrar sesión. Si las tools `mem_*` no aparecen en esta sesión, es el mismo problema recurrente de plugins/hooks nuevos: necesita reinicio de sesión — usar `engram` por CLI mientras tanto (`engram search`, `engram save`, `engram context`) en vez de asumir que no está disponible.
+
 ## Testing / hooks
 
 No hay suite de pytest global (cada task tiene su propio `tests/test.sh`). El hook de `.claude/settings.json` corre antes de cada `git commit` y bloquea si algún `instruction.md` staged: (a) no tiene la canary string, o (b) contiene un em dash. Es un chequeo parcial de los 24 gates reales — no reemplaza correr `package-delivery.sh` cuando lo consigamos (ver README).
