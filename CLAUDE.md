@@ -61,9 +61,11 @@ Invocar con `Agent({ subagent_type: "luna-scout", ... })` o `astra-reviewer` seg
 
 Este repo lo trabajan dos agentes distintos a la vez (Codex por su lado, Claude Code por el otro), leyendo y a veces escribiendo los mismos archivos: la planilla compartida, `research/`, `tasks/`. Regla dura, no opcional:
 
-1. **Antes de minar un candidato**, chequear `git log --oneline -15`, `research/` y `tasks/` — no solo la planilla — por si el otro agente ya lo tiene en curso. Ya pasó una vez: se propuso un repo que el otro agente ya había evaluado y descartado con mejor criterio (riesgo de contenido generado por IA en el historial del PR/issue — agregado como chequeo explícito en `luna-scout`).
-2. **No escribir en la planilla compartida ni en `research/`/`tasks/` de otro agente** sin confirmación del usuario — son zonas de escritura del otro agente mientras está activo. Documentar candidatos propios en un archivo separado, nunca sobreescribir lo ajeno.
-3. Si un candidato propio termina solapando con uno ya tomado, descartarlo — no hay empate a resolver, gana el que ya está en curso.
+1. **Antes de minar un candidato**, chequear `research/CLAIMS.md`, `git log --oneline -15` y `tasks/` — no solo la planilla — por si el otro agente ya lo tiene en curso. Ya pasó una vez: se propuso un repo que el otro agente ya había evaluado y descartado con mejor criterio (riesgo de contenido generado por IA en el historial del PR/issue — agregado como chequeo explícito en `luna-scout`).
+2. **Reclamar en `research/CLAIMS.md` apenas empieza la investigación real de un candidato** — una línea, antes de invertir tiempo, no después de terminar. Primero en reclamar, gana.
+3. **No escribir en la planilla compartida ni en `tasks/` de una task que otro agente está construyendo** sin confirmación del usuario. Auditar (leer, verificar) sí está permitido y es deseable — escribir/modificar no.
+4. Si un candidato propio termina solapando con uno ya reclamado, descartarlo — no hay empate a resolver, gana el que ya está en curso.
+5. **No confiar a ciegas en lo que dejó el otro agente.** Verificar independientemente (idealmente con `astra-reviewer`) antes de dar por buena cualquier afirmación de "oracle=1", "no-op=0", o "credencial rotada" — releer el código/config real, no el resumen que dejó.
 
 ## Memoria persistente (Engram)
 
