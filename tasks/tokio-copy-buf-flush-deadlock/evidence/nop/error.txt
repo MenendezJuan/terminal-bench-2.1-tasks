@@ -1,0 +1,1 @@
+collected 3 test result lines, below the floor of 4 (a hung or crashed test never prints its own line)

@@ -1,0 +1,15 @@
+   Compiling tokio v1.53.1 (/app/tokio)
+   Compiling tokio-stream v0.1.19 (/app/tokio-stream)
+   Compiling tokio-util v0.7.19 (/app/tokio-util)
+   Compiling tokio-test v0.4.5 (/app/tokio-test)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.40s
+     Running tests/io_copy.rs (/app/target/debug/deps/io_copy-54c876393fa174c0)
+
+running 4 tests
+test copy ... ok
+test proxy ... ok
+test proxy_buf ... ok
+test copy_is_cooperative ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

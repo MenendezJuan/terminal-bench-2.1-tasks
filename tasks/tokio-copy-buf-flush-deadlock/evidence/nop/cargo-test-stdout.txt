@@ -1,0 +1,9 @@
+   Compiling tokio v1.53.1 (/app/tokio)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.58s
+     Running tests/io_copy.rs (/app/target/debug/deps/io_copy-54c876393fa174c0)
+
+running 4 tests
+test copy ... ok
+test proxy ... ok
+test copy_is_cooperative ... ok
+test proxy_buf has been running for over 60 seconds

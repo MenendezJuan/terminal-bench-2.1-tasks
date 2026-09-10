@@ -1,0 +1,45 @@
+schema_version = "1.1"
+artifacts = []
+
+[task]
+name = "bugfix/tokio-copy-buf-flush-deadlock"
+description = "Evaluates repair of a deadlock in copy_buf where a reader that stalls while the writer holds buffered, unflushed data hangs forever, because copy_buf never received the stalled-reader flush guard its sibling function copy already carries from a prior fix."
+keywords = ["rust", "async", "concurrency", "deadlock", "regression-test"]
+
+[[task.authors]]
+name = "Juan Cruz"
+email = "jumenendez01@gmail.com"
+
+[metadata]
+author_name = "Juan Cruz"
+author_email = "jumenendez01@gmail.com"
+# Estimated until five valid comparable model attempts are complete.
+difficulty = "hard"
+category = "software-engineering"
+tags = ["rust", "async", "concurrency", "deadlock", "regression-test"]
+expert_time_estimate_min = 75.0
+junior_time_estimate_min = 240.0
+
+[verifier]
+timeout_sec = 900.0
+
+[agent]
+timeout_sec = 5400.0
+[agent.kwargs]
+max_turns = 60
+
+[environment]
+build_timeout_sec = 3600.0
+docker_image = "rust:1.90-bookworm"
+cpus = 2
+memory_mb = 4096
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[environment.env]
+
+[solution.env]

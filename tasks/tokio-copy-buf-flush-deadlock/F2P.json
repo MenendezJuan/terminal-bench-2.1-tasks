@@ -1,0 +1,19 @@
+{
+  "measured_at": "2026-09-10",
+  "collected_base": 3,
+  "collected_gold": 4,
+  "failed_base": 1,
+  "failed_gold": 0,
+  "fail_to_pass": [
+    "proxy_buf"
+  ],
+  "pass_to_pass": [
+    "copy",
+    "proxy",
+    "copy_is_cooperative"
+  ],
+  "derivation": "Empirical, not guessed. Built the sealed image at base_commit, installed the PR's own post-fix tokio/tests/io_copy.rs, ran cargo test wrapped in an external 30s timeout: proxy_buf never prints a result line at all (it hangs; the other 3 pre-existing tests complete normally, so only 3 of 4 test-result lines appear -- collected_base is 3, not 4, precisely because the hung test is silent rather than failing loudly). Applied solution/patch.diff (verbatim gold patch, the single source file) on the same image and re-ran: all 4 tests print 'ok', including proxy_buf, in under a second. Repeated the base and gold runs once more each to rule out flakes: fully stable both times -- this is a genuine deterministic deadlock (missing a guard that must always fire on a stalled reader), not a probabilistic race, so the timing bound in the verifier exists only to convert an infinite hang into a bounded failure, not to catch a rare interleaving.",
+  "mutation_testing": {
+    "note": "A hand-written plausible incomplete repair was tested before any model run: applied the real gold patch, then removed only the `if me.need_flush { ... }` check inside the Poll::Pending branch, leaving the need_flush field itself declared and set (a model might add the tracking field, matching the sibling function's shape, but forget to actually consult it before returning Pending -- an easy step to drop since the field's mere existence looks like progress). proxy_buf correctly hangs again under this mutation (no result line ever prints, identical signature to the base failure), confirming the F2P test genuinely requires wiring the flush check into the Pending branch, not just adding the tracking state. With F2P_TOTAL=1, any single failure (or hang) already crosses the 50% threshold by construction; no coarse-bucket grading risk."
+  }
+}
