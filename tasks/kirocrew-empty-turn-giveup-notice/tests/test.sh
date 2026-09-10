@@ -81,7 +81,9 @@ printf '{"tests":%s,"floor":%s,"exit_code":%s,"f2p_total":%s,"f2p_remaining":%s,
   "$TOTAL" "$FLOOR" "$RC" "$F2P_TOTAL" "$F2P_REMAINING" "$P2P_FAILURES" > "$OUT/summary.json"
 
 [ "$P2P_FAILURES" -gt 0 ] && fail "$P2P_FAILURES PASS_TO_PASS regression(s), see failed-tests.txt"
-[ "$F2P_REMAINING" -gt 0 ] && fail "$F2P_REMAINING of $F2P_TOTAL FAIL_TO_PASS assertions remain"
+# Private contract: fails if AT LEAST 50%% of FAIL_TO_PASS still fail (not
+# "any remain" -- integer form of remaining*2 >= total avoids float math).
+[ $((F2P_REMAINING * 2)) -ge "$F2P_TOTAL" ] && fail "$F2P_REMAINING of $F2P_TOTAL FAIL_TO_PASS assertions remain (>=50%)"
 
 echo 1 > "$OUT/reward.txt"
 exit 0

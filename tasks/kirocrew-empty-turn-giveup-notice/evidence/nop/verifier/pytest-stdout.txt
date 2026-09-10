@@ -1,4 +1,4 @@
-/app/xdist_budget.py:417: UserWarning: xdist worker budget: 2 of 16 workers (28.6 GiB free, 30 GiB installed). Each worker needs about 2 GiB, mostly to collect the suite. A run this narrow is slow, not stuck -- free some memory, run a subset (pytest test/test_thing.py), or pass an explicit -n <N> to bypass this budget.
+/app/xdist_budget.py:417: UserWarning: xdist worker budget: 2 of 16 workers (29.0 GiB free, 30 GiB installed). Each worker needs about 2 GiB, mostly to collect the suite. A run this narrow is slow, not stuck -- free some memory, run a subset (pytest test/test_thing.py), or pass an explicit -n <N> to bypass this budget.
   warnings.warn(
 [1m============================= test session starts ==============================[0m
 platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
@@ -20,48 +20,15 @@ created: 2/2 workers
 [0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m [ 55%]
 [0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m [ 64%]
 [0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m [ 73%]
-[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m [ 83%]
+[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[31m [ 83%]
 [0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m [ 92%]
 [0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m              [100%][0m
 =================================== FAILURES ===================================
-[31m[1m___ TestEmptyResponseRetry.test_giveup_without_recoveries_drops_retry_claim ____[0m
+[31m[1m_ TestEmptyResponseRetry.test_productive_giveup_notice_does_not_claim_nothing_happened _[0m
 [gw1] linux -- Python 3.12.14 /app/.venv/bin/python
 
-self = <test_dashboard_chat.TestEmptyResponseRetry object at 0x7344f307b890>
-tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw1/test_giveup_without_recoveries0')
-
-    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
-    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_giveup_without_recoveries_drops_retry_claim[39;49;00m([96mself[39;49;00m, tmp_path: Path) -> [94mNone[39;49;00m:[90m[39;49;00m
-    [90m    [39;49;00m[33m"""A give-up reached with the recovery counter still at zero (here: a[39;49;00m
-    [33m    nested depth>0 turn) must not assert that a retry and an auto-continue[39;49;00m
-    [33m    ran — neither did. The counter is the evidence, not the rung."""[39;49;00m[90m[39;49;00m
-        state, slot, client, _run_chat = [96mself[39;49;00m._make_state_and_slot(tmp_path)[90m[39;49;00m
-        [96mself[39;49;00m._make_empty_stream(client)[90m[39;49;00m
-    [90m[39;49;00m
-        [94mawait[39;49;00m _run_chat(state, slot, [33m"[39;49;00m[33mtest message[39;49;00m[33m"[39;49;00m, _prompt_depth=[94m1[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-        notice_msgs = [m [94mfor[39;49;00m m [95min[39;49;00m slot.messages [94mif[39;49;00m m.get([33m"[39;49;00m[33mrole[39;49;00m[33m"[39;49;00m) == [33m"[39;49;00m[33mnotice[39;49;00m[33m"[39;49;00m][90m[39;49;00m
-        [94massert[39;49;00m [96many[39;49;00m([33m"[39;49;00m[33mreturned nothing this turn[39;49;00m[33m"[39;49;00m [95min[39;49;00m m.get([33m"[39;49;00m[33mcontent[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m"[39;49;00m) [94mfor[39;49;00m m [95min[39;49;00m notice_msgs)[90m[39;49;00m
->       [94massert[39;49;00m [95mnot[39;49;00m [96many[39;49;00m([33m"[39;49;00m[33mretried[39;49;00m[33m"[39;49;00m [95min[39;49;00m m.get([33m"[39;49;00m[33mcontent[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m"[39;49;00m) [94mfor[39;49;00m m [95min[39;49;00m notice_msgs), ([90m[39;49;00m
-            [33m"[39;49;00m[33mthe give-up card claims a retry ran, but slot._empty_response_retries [39;49;00m[33m"[39;49;00m[90m[39;49;00m
-            [33m"[39;49;00m[33mis still 0 on this path[39;49;00m[33m"[39;49;00m[90m[39;49;00m
-        )[90m[39;49;00m
-[1m[31mE       AssertionError: the give-up card claims a retry ran, but slot._empty_response_retries is still 0 on this path[0m
-[1m[31mE       assert not True[0m
-[1m[31mE        +  where True = any(<generator object TestEmptyResponseRetry.test_giveup_without_recoveries_drops_retry_claim.<locals>.<genexpr> at 0x7344f398cba0>)[0m
-
-[1m[31mtest/test_dashboard_chat.py[0m:16686: AssertionError
------------------------------- Captured log call -------------------------------
-[33mWARNING [0m kiro_crew.config.loader:loader.py:5487 Agent workspace 'default' not found, falling back to default_workspace 'default'
-[33mWARNING [0m kiro_crew.config.loader:loader.py:5498 Agent memory_store 'default' not found, falling back to 'default'
-[33mWARNING [0m kiro_crew.config.loader:loader.py:5487 Agent workspace 'default' not found, falling back to default_workspace 'default'
-[33mWARNING [0m kiro_crew.config.loader:loader.py:5498 Agent memory_store 'default' not found, falling back to 'default'
-[33mWARNING [0m kiro_crew.dashboard.chat_runner:chat_runner.py:11150 Empty model response for slot empty-resp-slot (attempt 1) cause=provider_empty rung=give_up stop_reason=end_turn terminal=True synthetic=False text=False flushed_visible=False tools=False thinking=False billed=False
-[31m[1m_ TestEmptyResponseRetry.test_productive_giveup_notice_does_not_claim_nothing_happened _[0m
-[gw0] linux -- Python 3.12.14 /app/.venv/bin/python
-
-self = <test_dashboard_chat.TestEmptyResponseRetry object at 0x71d0565717f0>
-tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw0/test_productive_giveup_notice_0')
+self = <test_dashboard_chat.TestEmptyResponseRetry object at 0x787070e17020>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw1/test_productive_giveup_notice_0')
 
     [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
     [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_productive_giveup_notice_does_not_claim_nothing_happened[39;49;00m([90m[39;49;00m
@@ -102,7 +69,7 @@ tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw0/test_productive_giv
         )[90m[39;49;00m
 [1m[31mE       AssertionError: the give-up card claims the turn produced nothing, but this turn ran a tool whose side effects already landed[0m
 [1m[31mE       assert not True[0m
-[1m[31mE        +  where True = any(<generator object TestEmptyResponseRetry.test_productive_giveup_notice_does_not_claim_nothing_happened.<locals>.<genexpr> at 0x71d058c299a0>)[0m
+[1m[31mE        +  where True = any(<generator object TestEmptyResponseRetry.test_productive_giveup_notice_does_not_claim_nothing_happened.<locals>.<genexpr> at 0x78707174b060>)[0m
 
 [1m[31mtest/test_dashboard_chat.py[0m:16664: AssertionError
 ------------------------------ Captured log call -------------------------------
@@ -111,11 +78,74 @@ tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw0/test_productive_giv
 [33mWARNING [0m kiro_crew.config.loader:loader.py:5487 Agent workspace 'default' not found, falling back to default_workspace 'default'
 [33mWARNING [0m kiro_crew.config.loader:loader.py:5498 Agent memory_store 'default' not found, falling back to 'default'
 [33mWARNING [0m kiro_crew.dashboard.chat_runner:chat_runner.py:11150 Empty model response for slot empty-resp-slot (attempt 3) cause=tool_only rung=give_up stop_reason=end_turn terminal=True synthetic=False text=False flushed_visible=False tools=True thinking=False billed=False
-[31m[1m________ TestEmptyResponseRetry.test_second_empty_flag_off_shows_notice ________[0m
+[31m[1m__ TestEmptyResponseRetry.test_giveup_after_spent_recoveries_reports_recovery __[0m
+[gw0] linux -- Python 3.12.14 /app/.venv/bin/python
+
+self = <test_dashboard_chat.TestEmptyResponseRetry object at 0x700087074050>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw0/test_giveup_after_spent_recove0')
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_giveup_after_spent_recoveries_reports_recovery[39;49;00m([96mself[39;49;00m, tmp_path: Path) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""When the recovery budget was actually spent (counter exhausted, turn[39;49;00m
+    [33m    not productive), the card reports that automatic recovery was[39;49;00m
+    [33m    attempted. Phrased phase-neutrally on purpose: the counter counts[39;49;00m
+    [33m    budget spent, not which rungs ran."""[39;49;00m[90m[39;49;00m
+        state, slot, client, _run_chat = [96mself[39;49;00m._make_state_and_slot(tmp_path)[90m[39;49;00m
+        slot._empty_response_retries = [94m2[39;49;00m  [90m# re-queue + nudge both spent[39;49;00m[90m[39;49;00m
+        [96mself[39;49;00m._make_empty_stream(client)[90m[39;49;00m
+    [90m[39;49;00m
+        [94mawait[39;49;00m _run_chat(state, slot, [33m"[39;49;00m[33mtest message[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        notice_msgs = [m [94mfor[39;49;00m m [95min[39;49;00m slot.messages [94mif[39;49;00m m.get([33m"[39;49;00m[33mrole[39;49;00m[33m"[39;49;00m) == [33m"[39;49;00m[33mnotice[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+>       [94massert[39;49;00m [96many[39;49;00m([33m"[39;49;00m[33mautomatic recovery was attempted[39;49;00m[33m"[39;49;00m [95min[39;49;00m m.get([33m"[39;49;00m[33mcontent[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m"[39;49;00m) [94mfor[39;49;00m m [95min[39;49;00m notice_msgs)[90m[39;49;00m
+[1m[31mE       assert False[0m
+[1m[31mE        +  where False = any(<generator object TestEmptyResponseRetry.test_giveup_after_spent_recoveries_reports_recovery.<locals>.<genexpr> at 0x7000858297e0>)[0m
+
+[1m[31mtest/test_dashboard_chat.py[0m:16706: AssertionError
+------------------------------ Captured log call -------------------------------
+[33mWARNING [0m kiro_crew.config.loader:loader.py:5487 Agent workspace 'default' not found, falling back to default_workspace 'default'
+[33mWARNING [0m kiro_crew.config.loader:loader.py:5498 Agent memory_store 'default' not found, falling back to 'default'
+[33mWARNING [0m kiro_crew.config.loader:loader.py:5487 Agent workspace 'default' not found, falling back to default_workspace 'default'
+[33mWARNING [0m kiro_crew.config.loader:loader.py:5498 Agent memory_store 'default' not found, falling back to 'default'
+[33mWARNING [0m kiro_crew.dashboard.chat_runner:chat_runner.py:11150 Empty model response for slot empty-resp-slot (attempt 3) cause=provider_empty rung=give_up stop_reason=end_turn terminal=True synthetic=False text=False flushed_visible=False tools=False thinking=False billed=False
+[31m[1m___ TestEmptyResponseRetry.test_giveup_without_recoveries_drops_retry_claim ____[0m
 [gw1] linux -- Python 3.12.14 /app/.venv/bin/python
 
-self = <test_dashboard_chat.TestEmptyResponseRetry object at 0x7344f3021550>
-tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw1/test_second_empty_flag_off_sho0')
+self = <test_dashboard_chat.TestEmptyResponseRetry object at 0x787070e15670>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw1/test_giveup_without_recoveries0')
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_giveup_without_recoveries_drops_retry_claim[39;49;00m([96mself[39;49;00m, tmp_path: Path) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""A give-up reached with the recovery counter still at zero (here: a[39;49;00m
+    [33m    nested depth>0 turn) must not assert that a retry and an auto-continue[39;49;00m
+    [33m    ran — neither did. The counter is the evidence, not the rung."""[39;49;00m[90m[39;49;00m
+        state, slot, client, _run_chat = [96mself[39;49;00m._make_state_and_slot(tmp_path)[90m[39;49;00m
+        [96mself[39;49;00m._make_empty_stream(client)[90m[39;49;00m
+    [90m[39;49;00m
+        [94mawait[39;49;00m _run_chat(state, slot, [33m"[39;49;00m[33mtest message[39;49;00m[33m"[39;49;00m, _prompt_depth=[94m1[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        notice_msgs = [m [94mfor[39;49;00m m [95min[39;49;00m slot.messages [94mif[39;49;00m m.get([33m"[39;49;00m[33mrole[39;49;00m[33m"[39;49;00m) == [33m"[39;49;00m[33mnotice[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+        [94massert[39;49;00m [96many[39;49;00m([33m"[39;49;00m[33mreturned nothing this turn[39;49;00m[33m"[39;49;00m [95min[39;49;00m m.get([33m"[39;49;00m[33mcontent[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m"[39;49;00m) [94mfor[39;49;00m m [95min[39;49;00m notice_msgs)[90m[39;49;00m
+>       [94massert[39;49;00m [95mnot[39;49;00m [96many[39;49;00m([33m"[39;49;00m[33mretried[39;49;00m[33m"[39;49;00m [95min[39;49;00m m.get([33m"[39;49;00m[33mcontent[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m"[39;49;00m) [94mfor[39;49;00m m [95min[39;49;00m notice_msgs), ([90m[39;49;00m
+            [33m"[39;49;00m[33mthe give-up card claims a retry ran, but slot._empty_response_retries [39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            [33m"[39;49;00m[33mis still 0 on this path[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        )[90m[39;49;00m
+[1m[31mE       AssertionError: the give-up card claims a retry ran, but slot._empty_response_retries is still 0 on this path[0m
+[1m[31mE       assert not True[0m
+[1m[31mE        +  where True = any(<generator object TestEmptyResponseRetry.test_giveup_without_recoveries_drops_retry_claim.<locals>.<genexpr> at 0x787073950040>)[0m
+
+[1m[31mtest/test_dashboard_chat.py[0m:16686: AssertionError
+------------------------------ Captured log call -------------------------------
+[33mWARNING [0m kiro_crew.config.loader:loader.py:5487 Agent workspace 'default' not found, falling back to default_workspace 'default'
+[33mWARNING [0m kiro_crew.config.loader:loader.py:5498 Agent memory_store 'default' not found, falling back to 'default'
+[33mWARNING [0m kiro_crew.config.loader:loader.py:5487 Agent workspace 'default' not found, falling back to default_workspace 'default'
+[33mWARNING [0m kiro_crew.config.loader:loader.py:5498 Agent memory_store 'default' not found, falling back to 'default'
+[33mWARNING [0m kiro_crew.dashboard.chat_runner:chat_runner.py:11150 Empty model response for slot empty-resp-slot (attempt 1) cause=provider_empty rung=give_up stop_reason=end_turn terminal=True synthetic=False text=False flushed_visible=False tools=False thinking=False billed=False
+[31m[1m________ TestEmptyResponseRetry.test_second_empty_flag_off_shows_notice ________[0m
+[gw0] linux -- Python 3.12.14 /app/.venv/bin/python
+
+self = <test_dashboard_chat.TestEmptyResponseRetry object at 0x700087074e60>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw0/test_second_empty_flag_off_sho0')
 
     [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
     [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_second_empty_flag_off_shows_notice[39;49;00m([96mself[39;49;00m, tmp_path: Path) -> [94mNone[39;49;00m:[90m[39;49;00m
@@ -144,41 +174,11 @@ tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw1/test_second_empty_f
         [90m# zero-recoveries wording would be wrong too.[39;49;00m[90m[39;49;00m
 >       [94massert[39;49;00m [96many[39;49;00m([33m"[39;49;00m[33mautomatic recovery was attempted[39;49;00m[33m"[39;49;00m [95min[39;49;00m m.get([33m"[39;49;00m[33mcontent[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m"[39;49;00m) [94mfor[39;49;00m m [95min[39;49;00m notice_msgs)[90m[39;49;00m
 [1m[31mE       assert False[0m
-[1m[31mE        +  where False = any(<generator object TestEmptyResponseRetry.test_second_empty_flag_off_shows_notice.<locals>.<genexpr> at 0x7344f398dee0>)[0m
+[1m[31mE        +  where False = any(<generator object TestEmptyResponseRetry.test_second_empty_flag_off_shows_notice.<locals>.<genexpr> at 0x700085a53680>)[0m
 
 [1m[31mtest/test_dashboard_chat.py[0m:16737: AssertionError
 ------------------------------ Captured log call -------------------------------
 [33mWARNING [0m kiro_crew.dashboard.chat_runner:chat_runner.py:11150 Empty model response for slot empty-resp-slot (attempt 2) cause=provider_empty rung=give_up stop_reason=end_turn terminal=True synthetic=False text=False flushed_visible=False tools=False thinking=False billed=False
-[31m[1m__ TestEmptyResponseRetry.test_giveup_after_spent_recoveries_reports_recovery __[0m
-[gw0] linux -- Python 3.12.14 /app/.venv/bin/python
-
-self = <test_dashboard_chat.TestEmptyResponseRetry object at 0x71d056573470>
-tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw0/test_giveup_after_spent_recove0')
-
-    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
-    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_giveup_after_spent_recoveries_reports_recovery[39;49;00m([96mself[39;49;00m, tmp_path: Path) -> [94mNone[39;49;00m:[90m[39;49;00m
-    [90m    [39;49;00m[33m"""When the recovery budget was actually spent (counter exhausted, turn[39;49;00m
-    [33m    not productive), the card reports that automatic recovery was[39;49;00m
-    [33m    attempted. Phrased phase-neutrally on purpose: the counter counts[39;49;00m
-    [33m    budget spent, not which rungs ran."""[39;49;00m[90m[39;49;00m
-        state, slot, client, _run_chat = [96mself[39;49;00m._make_state_and_slot(tmp_path)[90m[39;49;00m
-        slot._empty_response_retries = [94m2[39;49;00m  [90m# re-queue + nudge both spent[39;49;00m[90m[39;49;00m
-        [96mself[39;49;00m._make_empty_stream(client)[90m[39;49;00m
-    [90m[39;49;00m
-        [94mawait[39;49;00m _run_chat(state, slot, [33m"[39;49;00m[33mtest message[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
-    [90m[39;49;00m
-        notice_msgs = [m [94mfor[39;49;00m m [95min[39;49;00m slot.messages [94mif[39;49;00m m.get([33m"[39;49;00m[33mrole[39;49;00m[33m"[39;49;00m) == [33m"[39;49;00m[33mnotice[39;49;00m[33m"[39;49;00m][90m[39;49;00m
->       [94massert[39;49;00m [96many[39;49;00m([33m"[39;49;00m[33mautomatic recovery was attempted[39;49;00m[33m"[39;49;00m [95min[39;49;00m m.get([33m"[39;49;00m[33mcontent[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m"[39;49;00m) [94mfor[39;49;00m m [95min[39;49;00m notice_msgs)[90m[39;49;00m
-[1m[31mE       assert False[0m
-[1m[31mE        +  where False = any(<generator object TestEmptyResponseRetry.test_giveup_after_spent_recoveries_reports_recovery.<locals>.<genexpr> at 0x71d058c2aa40>)[0m
-
-[1m[31mtest/test_dashboard_chat.py[0m:16706: AssertionError
------------------------------- Captured log call -------------------------------
-[33mWARNING [0m kiro_crew.config.loader:loader.py:5487 Agent workspace 'default' not found, falling back to default_workspace 'default'
-[33mWARNING [0m kiro_crew.config.loader:loader.py:5498 Agent memory_store 'default' not found, falling back to 'default'
-[33mWARNING [0m kiro_crew.config.loader:loader.py:5487 Agent workspace 'default' not found, falling back to default_workspace 'default'
-[33mWARNING [0m kiro_crew.config.loader:loader.py:5498 Agent memory_store 'default' not found, falling back to 'default'
-[33mWARNING [0m kiro_crew.dashboard.chat_runner:chat_runner.py:11150 Empty model response for slot empty-resp-slot (attempt 3) cause=provider_empty rung=give_up stop_reason=end_turn terminal=True synthetic=False text=False flushed_visible=False tools=False thinking=False billed=False
 [33m=============================== warnings summary ===============================[0m
 .venv/lib/python3.12/site-packages/xdist/plugin.py:289
 .venv/lib/python3.12/site-packages/xdist/plugin.py:289
@@ -221,14 +221,19 @@ test/test_dashboard_chat.py: 42 warnings
   Enable tracemalloc to get traceback where the object was allocated.
   See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
 
-test/test_dashboard_chat.py::TestRunChatCompactDeferredWait::test_claude_backend_skips_wait_for_compaction
-test/test_dashboard_chat.py::TestRunChatCompactDeferredWait::test_failed_compaction_without_a_reason_keeps_the_bare_notice
-test/test_dashboard_chat.py::TestTokenPersistenceBackfill::test_existing_slot_model_is_not_overwritten
-test/test_dashboard_chat.py::TestPinnedModelWithheld::test_run_chat_stays_quiet_on_a_warm_session
-test/test_dashboard_chat.py::TestRuntimeWiring::test_api_chat_slot_agent_reset_raise_with_successor_succeeds
-test/test_dashboard_chat.py::TestRunChatToolCallUpdate::test_tool_meta_persists_kind
-test/test_dashboard_chat.py::TestApiChatModePropagation::test_trust_mode_propagates_approval_policy_to_session
-test/test_dashboard_chat.py::TestAcpProcessDiedRecovery::test_a_second_failure_before_output_keeps_the_text_machine_authored
+test/test_dashboard_chat.py::TestRunChatCompactDeferredWait::test_kiro_backend_still_waits_for_compaction
+  /usr/local/lib/python3.12/unittest/mock.py:420: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    def __new__(
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+test/test_dashboard_chat.py::TestRunChatCompactDeferredWait::test_failed_compaction_surfaces_the_reason
+test/test_dashboard_chat.py::TestTokenUsageSurface::test_completion_uses_effective_session_identity[telegram-tab-telegram:123:456-telegram]
+test/test_dashboard_chat.py::TestPinnedModelWithheld::test_run_chat_survives_an_unreadable_config_on_a_pinned_slot
+test/test_dashboard_chat.py::TestRuntimeWiring::test_api_chat_slot_agent_success_commit_spares_concurrent_pick
+test/test_dashboard_chat.py::TestApiChatModePropagation::test_trust_mode_all_channels_when_no_slot
+test/test_dashboard_chat.py::TestStopDuringSessionPrep::test_stop_of_a_previous_turn_does_not_abort_the_next
+test/test_dashboard_chat.py::TestAcpProcessDiedRecovery::test_prompt_busy_requeue_does_not_claim_a_lost_connection
   /usr/local/lib/python3.12/unittest/mock.py:2217: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
     def __init__(self, name, parent):
   Enable tracemalloc to get traceback where the object was allocated.
@@ -246,25 +251,26 @@ test/test_dashboard_chat.py::TestTokenPersistenceBackfill::test_existing_slot_mo
   Enable tracemalloc to get traceback where the object was allocated.
   See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
 
-test/test_dashboard_chat.py::TestTokenUsageSurface::test_completion_keeps_source_of_session_that_ran
-  /usr/local/lib/python3.12/unittest/mock.py:404: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
-    def __init__(self, /, *args, **kwargs):
-  Enable tracemalloc to get traceback where the object was allocated.
-  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
-
 test/test_dashboard_chat.py: 29 warnings
   /app/test/chat_test_helpers.py:267: NotAppKeyWarning: It is recommended to use web.AppKey instances for keys.
   https://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config
     app["state"] = state
 
-test/test_dashboard_chat.py::TestRunChatToolCallUpdate::test_refinement_breaks_on_first_match_walking_reverse
-  /usr/local/lib/python3.12/collections/__init__.py:458: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
-    result = self._make(_map(kwds.pop, field_names, self))
+test/test_dashboard_chat.py::TestRunChatToolCallUpdate::test_refinement_patches_pill_content_and_meta
+  /usr/local/lib/python3.12/unittest/mock.py:769: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    def __setattr__(self, name, value):
   Enable tracemalloc to get traceback where the object was allocated.
   See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
 
-test/test_dashboard_chat.py::TestApiChatModeGlobalOverrideScope::test_declared_grant_is_revoked_at_any_scope[trust]
-  <string>:52: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+test/test_dashboard_chat.py::TestRunChatToolCallUpdate::test_refinement_preserves_existing_icon
+  /usr/local/lib/python3.12/unittest/mock.py:434: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    new = type(cls.__name__, bases, {'__doc__': cls.__doc__})
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+test/test_dashboard_chat.py::TestApiChatModeGlobalOverrideScope::test_declared_grant_is_revoked_at_any_scope[trust_reads]
+  /usr/local/lib/python3.12/json/encoder.py:249: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    _iterencode = c_make_encoder(
   Enable tracemalloc to get traceback where the object was allocated.
   See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
 
@@ -278,16 +284,10 @@ test/test_dashboard_chat.py::TestRegenerateAndVariants::test_edit_resend_non_dic
   https://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config
     app["state"] = state
 
-test/test_dashboard_chat.py::TestStopReasonCancelled::test_landed_turn_does_not_restore_the_reinjection_flag
 test/test_dashboard_chat.py::TestStopReasonCancelled::test_cancelled_turn_restores_the_reinjection_flag
+test/test_dashboard_chat.py::TestStopReasonCancelled::test_landed_turn_does_not_restore_the_reinjection_flag
   /app/src/kiro_crew/dashboard/chat_runner.py:7428: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
     model_window = window_for_provider_client(client)
-  Enable tracemalloc to get traceback where the object was allocated.
-  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
-
-test/test_dashboard_chat.py::TestAcpProcessDiedRecovery::test_budget_exhaustion_shows_stuck
-  /usr/local/lib/python3.12/unittest/mock.py:470: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
-    __dict__['_mock_mock_calls'] = _CallList()
   Enable tracemalloc to get traceback where the object was allocated.
   See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
 
@@ -296,8 +296,8 @@ test/test_dashboard_chat.py::TestSlotsGetWarmsGitLabAllowlist::test_cold_get_ret
   https://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config
     app["state"] = state
 
-test/test_dashboard_chat.py::TestBulkModelSwitch::test_switches_all_differing_slots_and_resets_each
 test/test_dashboard_chat.py::TestBulkModelSwitch::test_skips_running_slot_by_default
+test/test_dashboard_chat.py::TestBulkModelSwitch::test_switches_all_differing_slots_and_resets_each
 test/test_dashboard_chat.py::TestBulkModelSwitch::test_skip_running_false_forces_running_slot
 test/test_dashboard_chat.py::TestBulkModelSwitch::test_already_on_target_is_unchanged_not_reset
 test/test_dashboard_chat.py::TestBulkModelSwitch::test_reset_failure_is_isolated_and_reported
@@ -335,19 +335,19 @@ test/test_dashboard_chat.py: 27 warnings
 ----------------- generated xml file: /logs/verifier/junit.xml -----------------
 ============================= slowest 5 durations ==============================
 1.00s call     test/test_dashboard_chat.py::TestOrchestratorPlanGateArming::test_stage_loop_times_out_a_stage_that_swallows_cancellation
-0.39s call     test/test_dashboard_chat.py::TestFullPaginationWalk::test_walk_all_pages
-0.37s call     test/test_dashboard_chat.py::TestFullPaginationWalk::test_walk_with_trimmed_memory
-0.27s call     test/test_dashboard_chat.py::TestSlotDetailPagination::test_pagination_with_before
-0.25s call     test/test_dashboard_chat.py::TestHistoryPersistence::test_disk_fallback_for_trimmed_slot
+0.41s call     test/test_dashboard_chat.py::TestFullPaginationWalk::test_walk_all_pages
+0.36s call     test/test_dashboard_chat.py::TestFullPaginationWalk::test_walk_with_trimmed_memory
+0.26s call     test/test_dashboard_chat.py::TestSlotDetailPagination::test_pagination_with_before
+0.24s call     test/test_dashboard_chat.py::TestHistoryPersistence::test_disk_fallback_for_trimmed_slot
 [36m[1m=========================== short test summary info ============================[0m
-[31mFAILED[0m test/test_dashboard_chat.py::[1mTestEmptyResponseRetry::test_giveup_without_recoveries_drops_retry_claim[0m - AssertionError: the give-up card claims a retry ran, but slot._empty_response_retries is still 0 on this path
-assert not True
- +  where True = any(<generator object TestEmptyResponseRetry.test_giveup_without_recoveries_drops_retry_claim.<locals>.<genexpr> at 0x7344f398cba0>)
 [31mFAILED[0m test/test_dashboard_chat.py::[1mTestEmptyResponseRetry::test_productive_giveup_notice_does_not_claim_nothing_happened[0m - AssertionError: the give-up card claims the turn produced nothing, but this turn ran a tool whose side effects already landed
 assert not True
- +  where True = any(<generator object TestEmptyResponseRetry.test_productive_giveup_notice_does_not_claim_nothing_happened.<locals>.<genexpr> at 0x71d058c299a0>)
-[31mFAILED[0m test/test_dashboard_chat.py::[1mTestEmptyResponseRetry::test_second_empty_flag_off_shows_notice[0m - assert False
- +  where False = any(<generator object TestEmptyResponseRetry.test_second_empty_flag_off_shows_notice.<locals>.<genexpr> at 0x7344f398dee0>)
+ +  where True = any(<generator object TestEmptyResponseRetry.test_productive_giveup_notice_does_not_claim_nothing_happened.<locals>.<genexpr> at 0x78707174b060>)
 [31mFAILED[0m test/test_dashboard_chat.py::[1mTestEmptyResponseRetry::test_giveup_after_spent_recoveries_reports_recovery[0m - assert False
- +  where False = any(<generator object TestEmptyResponseRetry.test_giveup_after_spent_recoveries_reports_recovery.<locals>.<genexpr> at 0x71d058c2aa40>)
-[31m================= [31m[1m4 failed[0m, [32m775 passed[0m, [33m543 warnings[0m[31m in 15.31s[0m[31m =================[0m
+ +  where False = any(<generator object TestEmptyResponseRetry.test_giveup_after_spent_recoveries_reports_recovery.<locals>.<genexpr> at 0x7000858297e0>)
+[31mFAILED[0m test/test_dashboard_chat.py::[1mTestEmptyResponseRetry::test_giveup_without_recoveries_drops_retry_claim[0m - AssertionError: the give-up card claims a retry ran, but slot._empty_response_retries is still 0 on this path
+assert not True
+ +  where True = any(<generator object TestEmptyResponseRetry.test_giveup_without_recoveries_drops_retry_claim.<locals>.<genexpr> at 0x787073950040>)
+[31mFAILED[0m test/test_dashboard_chat.py::[1mTestEmptyResponseRetry::test_second_empty_flag_off_shows_notice[0m - assert False
+ +  where False = any(<generator object TestEmptyResponseRetry.test_second_empty_flag_off_shows_notice.<locals>.<genexpr> at 0x700085a53680>)
+[31m================= [31m[1m4 failed[0m, [32m775 passed[0m, [33m542 warnings[0m[31m in 15.53s[0m[31m =================[0m

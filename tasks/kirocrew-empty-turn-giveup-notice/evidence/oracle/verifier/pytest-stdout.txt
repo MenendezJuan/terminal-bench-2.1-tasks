@@ -1,4 +1,4 @@
-/app/xdist_budget.py:417: UserWarning: xdist worker budget: 2 of 16 workers (28.9 GiB free, 30 GiB installed). Each worker needs about 2 GiB, mostly to collect the suite. A run this narrow is slow, not stuck -- free some memory, run a subset (pytest test/test_thing.py), or pass an explicit -n <N> to bypass this budget.
+/app/xdist_budget.py:417: UserWarning: xdist worker budget: 2 of 16 workers (29.0 GiB free, 30 GiB installed). Each worker needs about 2 GiB, mostly to collect the suite. A run this narrow is slow, not stuck -- free some memory, run a subset (pytest test/test_thing.py), or pass an explicit -n <N> to bypass this budget.
   warnings.warn(
 [1m============================= test session starts ==============================[0m
 platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
@@ -41,13 +41,13 @@ test/test_dashboard_chat.py: 263 warnings
   https://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config
     app["state"] = state
 
-test/test_dashboard_chat.py::TestApiChatMemoryModeForwarding::test_temporary_memory_mode_propagates_to_new_slot
+test/test_dashboard_chat.py::TestApiChatMemoryModeForwarding::test_missing_memory_mode_defaults_to_persistent
 test/test_dashboard_chat.py::TestApiChatDrainOnDisconnect::test_sse_reader_drains_pending_on_cancel
   /app/test/chat_test_helpers.py:225: NotAppKeyWarning: It is recommended to use web.RequestKey instances for keys.
   https://docs.aiohttp.org/en/stable/web_advanced.html#request-s-storage
     request["app"] = ""  # dashboard user, not an app
 
-test/test_dashboard_chat.py::TestApiChatMemoryModeForwarding::test_temporary_memory_mode_propagates_to_new_slot
+test/test_dashboard_chat.py::TestApiChatMemoryModeForwarding::test_missing_memory_mode_defaults_to_persistent
 test/test_dashboard_chat.py::TestApiChatDrainOnDisconnect::test_sse_reader_drains_pending_on_cancel
   /app/test/chat_test_helpers.py:227: NotAppKeyWarning: It is recommended to use web.RequestKey instances for keys.
   https://docs.aiohttp.org/en/stable/web_advanced.html#request-s-storage
@@ -65,22 +65,16 @@ test/test_dashboard_chat.py: 42 warnings
   Enable tracemalloc to get traceback where the object was allocated.
   See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
 
-test/test_dashboard_chat.py::TestRunChatCompactDeferredWait::test_claude_backend_skips_wait_for_compaction
-test/test_dashboard_chat.py::TestTokenUsageSurface::test_completion_uses_effective_session_identity[slack-tab-slack:1234567890.123456-slack]
-test/test_dashboard_chat.py::TestPinnedModelWithheld::test_run_chat_keeps_an_entitled_pin
-test/test_dashboard_chat.py::TestPinnedModelWithheld::test_run_chat_stays_quiet_on_a_warm_session
+test/test_dashboard_chat.py::TestRunChatSegmentFlush::test_text_permission_request_flushes_segment
+test/test_dashboard_chat.py::TestRunChatCompactDeferredWait::test_failed_compaction_reason_is_length_capped
+test/test_dashboard_chat.py::TestTokenUsageSurface::test_completion_keeps_source_of_session_that_ran
+test/test_dashboard_chat.py::TestRunChatToolCallUpdate::test_refinement_patches_pill_content_and_meta
 test/test_dashboard_chat.py::TestRunChatToolCallUpdate::test_refinement_broadcasts_chat_message_update
-test/test_dashboard_chat.py::TestApiChatModePropagation::test_normal_mode_resets_approval_policy
-test/test_dashboard_chat.py::TestApiChatModePropagation::test_trust_reads_mode_resets_approval_policy
-test/test_dashboard_chat.py::TestStopDuringSessionPrep::test_stop_of_a_previous_turn_does_not_abort_the_next
+test/test_dashboard_chat.py::TestApiChatModeGlobalOverrideScope::test_declared_grant_is_revoked_at_any_scope[trust]
+test/test_dashboard_chat.py::TestStopDuringSessionPrep::test_no_stop_dispatches_normally
+test/test_dashboard_chat.py::TestAcpProcessDiedRecovery::test_output_reports_irreversible_consumption_before_turn_end[tool]
   /usr/local/lib/python3.12/unittest/mock.py:2217: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
     def __init__(self, name, parent):
-  Enable tracemalloc to get traceback where the object was allocated.
-  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
-
-test/test_dashboard_chat.py::TestRunChatCompactDeferredWait::test_failed_compaction_surfaces_the_reason
-  /usr/local/lib/python3.12/unittest/mock.py:646: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
-    key=lambda entry: entry[0].count('.')):
   Enable tracemalloc to get traceback where the object was allocated.
   See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
 
@@ -90,9 +84,21 @@ test/test_dashboard_chat.py: 13 warnings
   Enable tracemalloc to get traceback where the object was allocated.
   See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
 
+test/test_dashboard_chat.py::TestTokenPersistenceBackfill::test_monitor_reauthorizes_at_provider_entry
+  /usr/local/lib/python3.12/threading.py:287: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    if hasattr(lock, '_release_save'):
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
 test/test_dashboard_chat.py::TestTokenPersistenceBackfill::test_existing_slot_model_is_not_overwritten
   /app/src/kiro_crew/dashboard/chat_runner.py:1109: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
     advertised = advertised_model_ids(getter())
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+test/test_dashboard_chat.py::TestPinnedModelWithheld::test_a_replacement_session_that_advertises_nothing_publishes_unknown
+  /usr/local/lib/python3.12/unittest/mock.py:478: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    _safe_super(NonCallableMock, self).__init__(
   Enable tracemalloc to get traceback where the object was allocated.
   See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
 
@@ -101,9 +107,15 @@ test/test_dashboard_chat.py: 29 warnings
   https://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config
     app["state"] = state
 
-test/test_dashboard_chat.py::TestRunChatToolCallUpdate::test_tool_meta_persists_kind
-  /usr/local/lib/python3.12/unittest/mock.py:470: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
-    __dict__['_mock_mock_calls'] = _CallList()
+test/test_dashboard_chat.py::TestRuntimeWiring::test_api_chat_slot_agent_success_commit_spares_concurrent_pick
+  /app/.venv/lib/python3.12/site-packages/aiohttp/client.py:468: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    self._skip_auto_headers = frozenset()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+test/test_dashboard_chat.py::TestApiChatModePropagation::test_normal_mode_scoped_resets_only_linked_channel
+  /usr/local/lib/python3.12/selectors.py:351: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
+    def register(self, fileobj, events, data=None):
   Enable tracemalloc to get traceback where the object was allocated.
   See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
 
@@ -124,23 +136,17 @@ test/test_dashboard_chat.py::TestStopReasonCancelled::test_landed_turn_does_not_
   Enable tracemalloc to get traceback where the object was allocated.
   See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
 
-test/test_dashboard_chat.py::TestAcpProcessDiedRecovery::test_a_recovery_turns_reply_still_reaches_the_linked_thread
-  /usr/local/lib/python3.12/unittest/mock.py:434: RuntimeWarning: coroutine 'AsyncMockMixin._execute_mock_call' was never awaited
-    new = type(cls.__name__, bases, {'__doc__': cls.__doc__})
-  Enable tracemalloc to get traceback where the object was allocated.
-  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
-
 test/test_dashboard_chat.py::TestSlotsGetWarmsGitLabAllowlist::test_cold_get_returns_the_authorized_self_hosted_link
   /app/test/test_dashboard_chat.py:19186: NotAppKeyWarning: It is recommended to use web.AppKey instances for keys.
   https://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config
     app["state"] = state
 
-test/test_dashboard_chat.py::TestBulkModelSwitch::test_switches_all_differing_slots_and_resets_each
 test/test_dashboard_chat.py::TestBulkModelSwitch::test_skips_running_slot_by_default
+test/test_dashboard_chat.py::TestBulkModelSwitch::test_switches_all_differing_slots_and_resets_each
 test/test_dashboard_chat.py::TestBulkModelSwitch::test_skip_running_false_forces_running_slot
 test/test_dashboard_chat.py::TestBulkModelSwitch::test_already_on_target_is_unchanged_not_reset
-test/test_dashboard_chat.py::TestBulkModelSwitch::test_reset_failure_is_isolated_and_reported
 test/test_dashboard_chat.py::TestBulkModelSwitch::test_app_caller_only_switches_own_slots
+test/test_dashboard_chat.py::TestBulkModelSwitch::test_reset_failure_is_isolated_and_reported
 test/test_dashboard_chat.py::TestBulkModelSwitch::test_non_boolean_skip_running_is_rejected
 test/test_dashboard_chat.py::TestBulkModelSwitch::test_canonical_key_rejected_no_slot_touched
   /app/test/test_dashboard_chat.py:19267: NotAppKeyWarning: It is recommended to use web.AppKey instances for keys.
@@ -157,10 +163,10 @@ test/test_dashboard_chat.py::TestBulkModelSwitch::test_falsy_non_string_marker_f
   https://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config
     app_obj["state"] = state
 
-test/test_dashboard_chat.py::TestSlotModelGuard::test_empty_string_auto_default_is_allowed
-test/test_dashboard_chat.py::TestSlotModelGuard::test_valid_kiro_alias_is_allowed
 test/test_dashboard_chat.py::TestSlotModelGuard::test_canonical_key_rejected_slot_unchanged
+test/test_dashboard_chat.py::TestSlotModelGuard::test_empty_string_auto_default_is_allowed
 test/test_dashboard_chat.py::TestSlotModelGuard::test_auto_literal_is_allowed
+test/test_dashboard_chat.py::TestSlotModelGuard::test_valid_kiro_alias_is_allowed
   /app/test/test_dashboard_chat.py:19502: NotAppKeyWarning: It is recommended to use web.AppKey instances for keys.
   https://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config
     app["state"] = state
@@ -174,8 +180,8 @@ test/test_dashboard_chat.py: 27 warnings
 ----------------- generated xml file: /logs/verifier/junit.xml -----------------
 ============================= slowest 5 durations ==============================
 1.00s call     test/test_dashboard_chat.py::TestOrchestratorPlanGateArming::test_stage_loop_times_out_a_stage_that_swallows_cancellation
-0.42s call     test/test_dashboard_chat.py::TestFullPaginationWalk::test_walk_all_pages
-0.37s call     test/test_dashboard_chat.py::TestFullPaginationWalk::test_walk_with_trimmed_memory
+0.41s call     test/test_dashboard_chat.py::TestFullPaginationWalk::test_walk_all_pages
+0.36s call     test/test_dashboard_chat.py::TestFullPaginationWalk::test_walk_with_trimmed_memory
 0.26s call     test/test_dashboard_chat.py::TestSlotDetailPagination::test_pagination_with_before
 0.25s call     test/test_dashboard_chat.py::TestHistoryPersistence::test_disk_fallback_for_trimmed_slot
-[33m====================== [32m779 passed[0m, [33m[1m542 warnings[0m[33m in 14.69s[0m[33m ======================[0m
+[33m====================== [32m779 passed[0m, [33m[1m543 warnings[0m[33m in 14.93s[0m[33m ======================[0m

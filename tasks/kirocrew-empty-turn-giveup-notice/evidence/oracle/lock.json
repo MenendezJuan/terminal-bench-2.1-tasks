@@ -3,7 +3,7 @@
     "task": {
         "name": "kirocrew-empty-turn-giveup-notice",
         "type": "local",
-        "digest": "sha256:38f42d83c05060ef3f4ed6f1a2096b0066800c8d565befe83132e63f1fa4f5e5",
+        "digest": "sha256:daa572e700bde5e656244387c7e7f2f9992a2bbe3c78e21153f1ccc2ef28d570",
         "path": "tasks\\kirocrew-empty-turn-giveup-notice"
     },
     "install_only": false,

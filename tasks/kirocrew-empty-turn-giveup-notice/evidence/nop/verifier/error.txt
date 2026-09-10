@@ -1,1 +1,1 @@
-4 of 4 FAIL_TO_PASS assertions remain
+4 of 4 FAIL_TO_PASS assertions remain (>=50%)
