@@ -1,0 +1,17 @@
+{
+  "measured_at": "2026-09-10",
+  "collected_base": 23,
+  "collected_gold": 23,
+  "failed_base": 3,
+  "failed_gold": 0,
+  "fail_to_pass": [
+    "test.test_lazy_data_home_paths.TestRecoveryBreadcrumb::test_symlinked_breadcrumb_is_replaced_and_its_target_untouched",
+    "test.test_lazy_data_home_paths.TestRecoveryBreadcrumb::test_normal_breadcrumb_write_is_private_and_contains_the_data_home",
+    "test.test_lazy_data_home_paths.TestRecoveryBreadcrumb::test_fifo_at_breadcrumb_path_neither_hangs_nor_survives"
+  ],
+  "pass_to_pass_sample": [
+    "test.test_lazy_data_home_paths.TestRecoveryBreadcrumb::test_existing_breadcrumb_that_contains_the_data_home_is_unchanged",
+    "test.test_lazy_data_home_paths.TestRecoveryBreadcrumb::test_without_o_nofollow_the_read_is_skipped_and_write_still_lands"
+  ],
+  "derivation": "Empirical set-diff, not guessed. Built the sealed image at base_commit, installed the PR's post-fix test/test_lazy_data_home_paths.py, ran pytest: 23 collected, 3 failed (the fail_to_pass list above), 20 passed. Applied solution/patch.diff (verbatim gold patch, source+docs only) on top of the same image and re-ran: 23 collected, 0 failed. Two candidate F2P tests from a first-pass reading of the diff (test_existing_breadcrumb_that_contains_the_data_home_is_unchanged, test_without_o_nofollow_the_read_is_skipped_and_write_still_lands) turned out to ALREADY pass at base -- both exercise plain idempotence paths that the pre-fix code satisfies by coincidence (no symlink/FIFO involved in either), so they are PASS_TO_PASS, not FAIL_TO_PASS. Caught by measuring, not by reasoning about the diff in isolation. test_fifo_at_breadcrumb_path_neither_hangs_nor_survives times out at 120s at base (pytest-timeout, the base code's read_text() blocks forever on a FIFO with no writer) and completes normally once the fix is applied -- this is the test that most directly exercises the read-side check-then-read race the tempting 'just use atomic_write' partial fix leaves open."
+}

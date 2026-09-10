@@ -1,0 +1,190 @@
+/app/xdist_budget.py:417: UserWarning: xdist worker budget: 14 of 16 workers (29.0 GiB free, 30 GiB installed). Each worker needs about 2 GiB, mostly to collect the suite. A run this narrow is slow, not stuck -- free some memory, run a subset (pytest test/test_thing.py), or pass an explicit -n <N> to bypass this budget.
+  warnings.warn(
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /app
+configfile: setup.cfg
+plugins: cov-6.3.0, asyncio-1.4.0, hypothesis-6.168.0, testmon-2.2.0, timeout-2.4.0, xdist-3.8.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+timeout: 120.0s
+timeout method: signal
+timeout func_only: False
+created: 14/14 workers
+14 workers [23 items]
+
+[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[31m                                                  [100%][0m
+=================================== FAILURES ===================================
+[31m[1m_ TestRecoveryBreadcrumb.test_symlinked_breadcrumb_is_replaced_and_its_target_untouched _[0m
+[gw12] linux -- Python 3.12.14 /app/.venv/bin/python
+
+self = <test_lazy_data_home_paths.TestRecoveryBreadcrumb object at 0x7aaa473e0ef0>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw12/test_symlinked_breadcrumb_is_r0')
+
+    [0m[37m@requires_symlinks[39;49;00m[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_symlinked_breadcrumb_is_replaced_and_its_target_untouched[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m, tmp_path: Path[90m[39;49;00m
+    ) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""A planted symlink can never redirect the write onto its target.[39;49;00m
+    [33m[39;49;00m
+    [33m    The atomic rename replaces the directory entry at the breadcrumb path[39;49;00m
+    [33m    without following it: the symlink is consumed (a regular breadcrumb[39;49;00m
+    [33m    takes its place) and the file it pointed at keeps its exact content.[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [94mfrom[39;49;00m[90m [39;49;00m[04m[96mkiro_crew[39;49;00m[04m[96m.[39;49;00m[04m[96mconfig[39;49;00m[90m [39;49;00m[94mimport[39;49;00m paths[90m[39;49;00m
+    [90m[39;49;00m
+        data_home = tmp_path / [33m"[39;49;00m[33mdata-home[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        crumb = tmp_path / paths.RECOVERY_BREADCRUMB_NAME[90m[39;49;00m
+        target = tmp_path / [33m"[39;49;00m[33mtarget[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        target.write_text([33m"[39;49;00m[33mleave this untouched[39;49;00m[33m"[39;49;00m, encoding=[33m"[39;49;00m[33mutf-8[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        os.symlink(target, crumb)[90m[39;49;00m
+    [90m[39;49;00m
+        [94mwith[39;49;00m patch([33m"[39;49;00m[33mpathlib.Path.home[39;49;00m[33m"[39;49;00m, return_value=tmp_path):[90m[39;49;00m
+            paths._write_recovery_breadcrumb(data_home)[90m[39;49;00m
+    [90m[39;49;00m
+>       [94massert[39;49;00m target.read_text(encoding=[33m"[39;49;00m[33mutf-8[39;49;00m[33m"[39;49;00m) == [33m"[39;49;00m[33mleave this untouched[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+[1m[31mE       AssertionError: assert 'KiroCrew dat...T a backup.\n' == 'leave this untouched'[0m
+[1m[31mE         [0m
+[1m[31mE         [0m[91m- leave this untouched[39;49;00m[90m[39;49;00m[0m
+[1m[31mE         [92m+ KiroCrew data-home location pointer (safe to delete).[39;49;00m[90m[39;49;00m[0m
+[1m[31mE         [92m+ [39;49;00m[90m[39;49;00m[0m
+[1m[31mE         [92m+ KiroCrew stores its data (config, credentials, history, DBs) at:[39;49;00m[90m[39;49;00m[0m
+[1m[31mE         [92m+     /tmp/pytest-of-root/pytest-0/popen-gw12/test_symlinked_breadcrumb_is_r0/data-home[39;49;00m[90m[39;49;00m[0m
+[1m[31mE         [92m+ [39;49;00m[90m[39;49;00m[0m
+[1m[31mE         [92m+ This pointer lives outside ~/.kiro/ on purpose: if a Kiro-family[39;49;00m[90m[39;49;00m[0m
+[1m[31mE         [92m+ uninstaller ever removes ~/.kiro/, this file survives so you can find[39;49;00m[90m[39;49;00m[0m
+[1m[31mE         [92m+ any surviving data or know where it had been. It is NOT a backup.[39;49;00m[90m[39;49;00m[0m
+
+[1m[31mtest/test_lazy_data_home_paths.py[0m:713: AssertionError
+[31m[1m_ TestRecoveryBreadcrumb.test_normal_breadcrumb_write_is_private_and_contains_the_data_home _[0m
+[gw12] linux -- Python 3.12.14 /app/.venv/bin/python
+
+self = <test_lazy_data_home_paths.TestRecoveryBreadcrumb object at 0x7aaa473f48f0>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw12/test_normal_breadcrumb_write_i0')
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_normal_breadcrumb_write_is_private_and_contains_the_data_home[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m, tmp_path: Path[90m[39;49;00m
+    ) -> [94mNone[39;49;00m:[90m[39;49;00m
+        [94mfrom[39;49;00m[90m [39;49;00m[04m[96mkiro_crew[39;49;00m[04m[96m.[39;49;00m[04m[96mconfig[39;49;00m[90m [39;49;00m[94mimport[39;49;00m paths[90m[39;49;00m
+    [90m[39;49;00m
+        data_home = tmp_path / [33m"[39;49;00m[33mdata-home[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        crumb = tmp_path / paths.RECOVERY_BREADCRUMB_NAME[90m[39;49;00m
+    [90m[39;49;00m
+        [94mwith[39;49;00m patch([33m"[39;49;00m[33mpathlib.Path.home[39;49;00m[33m"[39;49;00m, return_value=tmp_path):[90m[39;49;00m
+            paths._write_recovery_breadcrumb(data_home)[90m[39;49;00m
+    [90m[39;49;00m
+        [94massert[39;49;00m [96mstr[39;49;00m(data_home) [95min[39;49;00m crumb.read_text(encoding=[33m"[39;49;00m[33mutf-8[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        [94mif[39;49;00m os.name == [33m"[39;49;00m[33mposix[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+            [90m# Windows has no POSIX permission bits; st_mode reads 0o666 there.[39;49;00m[90m[39;49;00m
+>           [94massert[39;49;00m stat.S_IMODE(crumb.stat().st_mode) == [94m0o600[39;49;00m[90m[39;49;00m
+[1m[31mE           AssertionError: assert 420 == 384[0m
+[1m[31mE            +  where 420 = <built-in function S_IMODE>(33188)[0m
+[1m[31mE            +    where <built-in function S_IMODE> = stat.S_IMODE[0m
+[1m[31mE            +    and   33188 = os.stat_result(st_mode=33188, st_ino=1232329, st_dev=86, st_nlink=1, st_uid=0, st_gid=0, st_size=408, st_atime=1789019616, st_mtime=1789019616, st_ctime=1789019616).st_mode[0m
+[1m[31mE            +      where os.stat_result(st_mode=33188, st_ino=1232329, st_dev=86, st_nlink=1, st_uid=0, st_gid=0, st_size=408, st_atime=1789019616, st_mtime=1789019616, st_ctime=1789019616) = stat()[0m
+[1m[31mE            +        where stat = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw12/test_normal_breadcrumb_write_i0/.kirocrew.breadcrumb').stat[0m
+
+[1m[31mtest/test_lazy_data_home_paths.py[0m:731: AssertionError
+[31m[1m_ TestRecoveryBreadcrumb.test_fifo_at_breadcrumb_path_neither_hangs_nor_survives _[0m
+[gw12] linux -- Python 3.12.14 /app/.venv/bin/python
+
+self = <test_lazy_data_home_paths.TestRecoveryBreadcrumb object at 0x7aaa473e2cc0>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw12/test_fifo_at_breadcrumb_path_n0')
+
+    [0m[37m@pytest[39;49;00m.mark.skipif([95mnot[39;49;00m [96mhasattr[39;49;00m(os, [33m"[39;49;00m[33mmkfifo[39;49;00m[33m"[39;49;00m), reason=[33m"[39;49;00m[33mneeds os.mkfifo[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_fifo_at_breadcrumb_path_neither_hangs_nor_survives[39;49;00m([96mself[39;49;00m, tmp_path: Path) -> [94mNone[39;49;00m:[90m[39;49;00m
+    [90m    [39;49;00m[33m"""A non-regular file at the breadcrumb path must not stall startup.[39;49;00m
+    [33m[39;49;00m
+    [33m    The old idempotence check called ``read_text`` after a ``is_symlink``[39;49;00m
+    [33m    re-check; a FIFO (or a symlink swapped in after the check) would make[39;49;00m
+    [33m    that read block forever or follow the swap. The read now goes through a[39;49;00m
+    [33m    no-follow, non-blocking descriptor gated on ``S_ISREG``, so a FIFO is[39;49;00m
+    [33m    skipped and atomically replaced by the real breadcrumb.[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [94mfrom[39;49;00m[90m [39;49;00m[04m[96mkiro_crew[39;49;00m[04m[96m.[39;49;00m[04m[96mconfig[39;49;00m[90m [39;49;00m[94mimport[39;49;00m paths[90m[39;49;00m
+    [90m[39;49;00m
+        data_home = tmp_path / [33m"[39;49;00m[33mdata-home[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        crumb = tmp_path / paths.RECOVERY_BREADCRUMB_NAME[90m[39;49;00m
+        os.mkfifo(crumb)[90m[39;49;00m
+    [90m[39;49;00m
+        [94mwith[39;49;00m patch([33m"[39;49;00m[33mpathlib.Path.home[39;49;00m[33m"[39;49;00m, return_value=tmp_path):[90m[39;49;00m
+>           paths._write_recovery_breadcrumb(data_home)[90m[39;49;00m
+
+[1m[31mtest/test_lazy_data_home_paths.py[0m:775: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+[1m[31mconftest.py[0m:2478: in _guarded
+    [0m[94mreturn[39;49;00m real(data_home)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31msrc/kiro_crew/config/paths.py[0m:156: in _write_recovery_breadcrumb
+    [0mcrumb.write_text(content, encoding=[33m"[39;49;00m[33mutf-8[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31m/usr/local/lib/python3.12/pathlib.py[0m:1047: in write_text
+    [0m[94mwith[39;49;00m [96mself[39;49;00m.open(mode=[33m'[39;49;00m[33mw[39;49;00m[33m'[39;49;00m, encoding=encoding, errors=errors, newline=newline) [94mas[39;49;00m f:[90m[39;49;00m
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw12/test_fifo_at_breadcrumb_path_n0/.kirocrew.breadcrumb')
+mode = 'w', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mopen[39;49;00m([96mself[39;49;00m, mode=[33m'[39;49;00m[33mr[39;49;00m[33m'[39;49;00m, buffering=-[94m1[39;49;00m, encoding=[94mNone[39;49;00m,[90m[39;49;00m
+             errors=[94mNone[39;49;00m, newline=[94mNone[39;49;00m):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""[39;49;00m
+    [33m    Open the file pointed to by this path and return a file object, as[39;49;00m
+    [33m    the built-in open() function does.[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [33m"[39;49;00m[33mb[39;49;00m[33m"[39;49;00m [95mnot[39;49;00m [95min[39;49;00m mode:[90m[39;49;00m
+            encoding = io.text_encoding(encoding)[90m[39;49;00m
+>       [94mreturn[39;49;00m io.open([96mself[39;49;00m, mode, buffering, encoding, errors, newline)[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE       Failed: Timeout (>120.0s) from pytest-timeout.[0m
+
+[1m[31m/usr/local/lib/python3.12/pathlib.py[0m:1013: Failed
+----------------------------- Captured stdout call -----------------------------
+~~~~~~~~~~~~~~~~~~~~~ Stack of <unknown> (134871897761472) ~~~~~~~~~~~~~~~~~~~~~
+  File "/app/.venv/lib/python3.12/site-packages/execnet/gateway_base.py", line 411, in _perform_spawn
+    reply.run()
+  File "/app/.venv/lib/python3.12/site-packages/execnet/gateway_base.py", line 341, in run
+    self._result = func(*args, **kwargs)
+  File "/app/.venv/lib/python3.12/site-packages/execnet/gateway_base.py", line 1160, in _thread_receiver
+    msg = Message.from_io(io)
+  File "/app/.venv/lib/python3.12/site-packages/execnet/gateway_base.py", line 567, in from_io
+    header = io.read(9)  # type 1, channel 4, payload 4
+  File "/app/.venv/lib/python3.12/site-packages/execnet/gateway_base.py", line 534, in read
+    data = self._read(numbytes - len(buf))
+[33m=============================== warnings summary ===============================[0m
+.venv/lib/python3.12/site-packages/xdist/plugin.py:289: 15 warnings
+  /app/.venv/lib/python3.12/site-packages/xdist/plugin.py:289: DeprecationWarning: The --looponfail command line argument and looponfailroots config variable are deprecated.
+  The loop-on-fail feature will be removed in pytest-xdist 4.0.
+    config.issue_config_time_warning(warning, 2)
+
+test/test_lazy_data_home_paths.py::TestNoImportTimePathResolution::test_no_module_level_path_constants@tree_scan_test_lazy_data_home_paths
+  /app/test/conftest.py:845: DeprecationWarning: There is no current event loop
+    loop = asyncio.get_event_loop()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+----------------- generated xml file: /logs/verifier/junit.xml -----------------
+============================= slowest 5 durations ==============================
+120.00s call     test/test_lazy_data_home_paths.py::TestRecoveryBreadcrumb::test_fifo_at_breadcrumb_path_neither_hangs_nor_survives@tree_scan_test_lazy_data_home_paths
+8.42s call     test/test_lazy_data_home_paths.py::TestNoImportTimePathResolution::test_no_module_level_path_constants@tree_scan_test_lazy_data_home_paths
+0.88s setup    test/test_lazy_data_home_paths.py::TestNoImportTimePathResolution::test_no_module_level_path_constants@tree_scan_test_lazy_data_home_paths
+0.24s call     test/test_lazy_data_home_paths.py::TestAccessorsFollowTheLiveHome::test_every_accessor_follows_a_post_import_home_change@tree_scan_test_lazy_data_home_paths
+
+(1 durations < 0.005s hidden.  Use -vv to show these durations.)
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m test/test_lazy_data_home_paths.py::[1mTestRecoveryBreadcrumb::test_symlinked_breadcrumb_is_replaced_and_its_target_untouched@tree_scan_test_lazy_data_home_paths[0m - AssertionError: assert 'KiroCrew dat...T a backup.\n' == 'leave this untouched'
+  
+  [0m[91m- leave this untouched[39;49;00m[90m[39;49;00m
+  [92m+ KiroCrew data-home location pointer (safe to delete).[39;49;00m[90m[39;49;00m
+  [92m+ [39;49;00m[90m[39;49;00m
+  [92m+ KiroCrew stores its data (config, credentials, history, DBs) at:[39;49;00m[90m[39;49;00m
+  [92m+     /tmp/pytest-of-root/pytest-0/popen-gw12/test_symlinked_breadcrumb_is_r0/data-home[39;49;00m[90m[39;49;00m
+  [92m+ [39;49;00m[90m[39;49;00m
+  [92m+ This pointer lives outside ~/.kiro/ on purpose: if a Kiro-family[39;49;00m[90m[39;49;00m
+  [92m+ uninstaller ever removes ~/.kiro/, this file survives so you can find[39;49;00m[90m[39;49;00m
+  [92m+ any surviving data or know where it had been. It is NOT a backup.[39;49;00m[90m[39;49;00m
+[31mFAILED[0m test/test_lazy_data_home_paths.py::[1mTestRecoveryBreadcrumb::test_normal_breadcrumb_write_is_private_and_contains_the_data_home@tree_scan_test_lazy_data_home_paths[0m - AssertionError: assert 420 == 384
+ +  where 420 = <built-in function S_IMODE>(33188)
+ +    where <built-in function S_IMODE> = stat.S_IMODE
+ +    and   33188 = os.stat_result(st_mode=33188, st_ino=1232329, st_dev=86, st_nlink=1, st_uid=0, st_gid=0, st_size=408, st_atime=1789019616, st_mtime=1789019616, st_ctime=1789019616).st_mode
+ +      where os.stat_result(st_mode=33188, st_ino=1232329, st_dev=86, st_nlink=1, st_uid=0, st_gid=0, st_size=408, st_atime=1789019616, st_mtime=1789019616, st_ctime=1789019616) = stat()
+ +        where stat = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw12/test_normal_breadcrumb_write_i0/.kirocrew.breadcrumb').stat
+[31mFAILED[0m test/test_lazy_data_home_paths.py::[1mTestRecoveryBreadcrumb::test_fifo_at_breadcrumb_path_neither_hangs_nor_survives@tree_scan_test_lazy_data_home_paths[0m - Failed: Timeout (>120.0s) from pytest-timeout.
+[31m============ [31m[1m3 failed[0m, [32m20 passed[0m, [33m16 warnings[0m[31m in 133.70s (0:02:13)[0m[31m =============[0m

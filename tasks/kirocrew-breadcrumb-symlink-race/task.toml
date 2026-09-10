@@ -1,0 +1,43 @@
+schema_version = "1.1"
+artifacts = []
+
+[task]
+name = "bugfix/kirocrew-breadcrumb-symlink-race"
+description = "Evaluates repair of a TOCTOU symlink/FIFO race in KiroCrew's startup recovery-breadcrumb writer that lets a planted symlink redirect a write or a swapped-in non-regular file stall startup."
+keywords = ["python", "filesystem", "security", "toctou", "symlink", "regression-test"]
+
+[[task.authors]]
+name = "Juan Cruz"
+email = "jumenendez01@gmail.com"
+
+[metadata]
+author_name = "Juan Cruz"
+author_email = "jumenendez01@gmail.com"
+# Estimated until five valid comparable model attempts are complete.
+difficulty = "hard"
+category = "software-engineering"
+tags = ["python", "filesystem", "security", "toctou", "symlink", "regression-test"]
+expert_time_estimate_min = 60.0
+junior_time_estimate_min = 200.0
+
+[verifier]
+timeout_sec = 900.0
+
+[agent]
+timeout_sec = 5400.0
+
+[environment]
+build_timeout_sec = 3600.0
+docker_image = "python:3.12-bookworm"
+cpus = 2
+memory_mb = 4096
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[environment.env]
+
+[solution.env]

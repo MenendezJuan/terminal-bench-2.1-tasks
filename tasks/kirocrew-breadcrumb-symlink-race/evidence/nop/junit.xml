@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="23" time="133.678" timestamp="2026-09-10T05:53:22.761038+00:00" hostname="64824f12b609"><testcase classname="test.test_lazy_data_home_paths.TestNoImportTimePathResolution" name="test_no_module_level_path_constants@tree_scan_test_lazy_data_home_paths" time="9.309" /><testcase classname="test.test_lazy_data_home_paths.TestNoImportTimePathResolution" name="test_guard_can_actually_fail@tree_scan_test_lazy_data_home_paths" time="0.002" /><testcase classname="test.test_lazy_data_home_paths.TestNoImportTimePathResolution" name="test_annotated_and_nested_forms_are_detected@tree_scan_test_lazy_data_home_paths" time="0.002" /><testcase classname="test.test_lazy_data_home_paths.TestNoImportTimePathResolution" name="test_transitive_accessor_is_detected@tree_scan_test_lazy_data_home_paths" time="0.002" /><testcase classname="test.test_lazy_data_home_paths.TestNoImportTimePathResolution" name="test_factory_set_excludes_non_path_helpers@tree_scan_test_lazy_data_home_paths" time="0.002" /><testcase classname="test.test_lazy_data_home_paths.TestNoImportTimePathResolution" name="test_transitive_closure_covers_accessors@tree_scan_test_lazy_data_home_paths" time="0.002" /><testcase classname="test.test_lazy_data_home_paths.TestNoImportTimePathResolution" name="test_detector_covers_class_body_and_default_args@tree_scan_test_lazy_data_home_paths" time="0.005" /><testcase classname="test.test_lazy_data_home_paths.TestNoImportTimePathResolution" name="test_detector_covers_transitive_accessor@tree_scan_test_lazy_data_home_paths" time="0.004" /><testcase classname="test.test_lazy_data_home_paths.TestAccessorsFollowTheLiveHome" name="test_every_accessor_follows_a_post_import_home_change@tree_scan_test_lazy_data_home_paths" time="0.241" /><testcase classname="test.test_lazy_data_home_paths.TestAccessorsFollowTheLiveHome" name="test_accessor_tracks_a_second_change@tree_scan_test_lazy_data_home_paths" time="0.004" /><testcase classname="test.test_lazy_data_home_paths.TestAccessorsFollowTheLiveHome" name="test_override_hook_still_wins@tree_scan_test_lazy_data_home_paths" time="0.003" /><testcase classname="test.test_lazy_data_home_paths.TestResolutionDoesNotRepeatStartupMaintenance" name="test_repeat_calls_skip_maintenance_but_config_dir_still_runs_it@tree_scan_test_lazy_data_home_paths" time="0.003" /><testcase classname="test.test_lazy_data_home_paths.TestResolutionDoesNotRepeatStartupMaintenance" name="test_first_resolution_still_performs_maintenance@tree_scan_test_lazy_data_home_paths" time="0.003" /><testcase classname="test.test_lazy_data_home_paths.TestResolutionDoesNotRepeatStartupMaintenance" name="test_override_is_never_cached@tree_scan_test_lazy_data_home_paths" time="0.004" /><testcase classname="test.test_lazy_data_home_paths.TestResolutionDoesNotRepeatStartupMaintenance" name="test_invalid_override_does_not_reopen_the_maintenance_path@tree_scan_test_lazy_data_home_paths" time="0.004" /><testcase classname="test.test_lazy_data_home_paths.TestResolutionDoesNotRepeatStartupMaintenance" name="test_valid_override_still_delegates@tree_scan_test_lazy_data_home_paths" time="0.003" /><testcase classname="test.test_lazy_data_home_paths.TestConfigDirMemoIsNotServedAfterTheHomeIsCleared" name="test_entry_from_a_bypassed_resolution_is_not_served_later@tree_scan_test_lazy_data_home_paths" time="0.005" /><testcase classname="test.test_lazy_data_home_paths.TestConfigDirMemoIsNotServedAfterTheHomeIsCleared" name="test_the_memo_still_caches_a_normal_default_resolution@tree_scan_test_lazy_data_home_paths" time="0.004" /><testcase classname="test.test_lazy_data_home_paths.TestRecoveryBreadcrumb" name="test_symlinked_breadcrumb_is_replaced_and_its_target_untouched@tree_scan_test_lazy_data_home_paths" time="0.005"><failure message="AssertionError: assert 'KiroCrew dat...T a backup.\n' == 'leave this untouched'&#10;  &#10;  #x1B[0m#x1B[91m- leave this untouched#x1B[39;49;00m#x1B[90m#x1B[39;49;00m&#10;  #x1B[92m+ KiroCrew data-home location pointer (safe to delete).#x1B[39;49;00m#x1B[90m#x1B[39;49;00m&#10;  #x1B[92m+ #x1B[39;49;00m#x1B[90m#x1B[39;49;00m&#10;  #x1B[92m+ KiroCrew stores its data (config, credentials, history, DBs) at:#x1B[39;49;00m#x1B[90m#x1B[39;49;00m&#10;  #x1B[92m+     /tmp/pytest-of-root/pytest-0/popen-gw12/test_symlinked_breadcrumb_is_r0/data-home#x1B[39;49;00m#x1B[90m#x1B[39;49;00m&#10;  #x1B[92m+ #x1B[39;49;00m#x1B[90m#x1B[39;49;00m&#10;  #x1B[92m+ This pointer lives outside ~/.kiro/ on purpose: if a Kiro-family#x1B[39;49;00m#x1B[90m#x1B[39;49;00m&#10;  #x1B[92m+ uninstaller ever removes ~/.kiro/, this file survives so you can find#x1B[39;49;00m#x1B[90m#x1B[39;49;00m&#10;  #x1B[92m+ any surviving data or know where it had been. It is NOT a backup.#x1B[39;49;00m#x1B[90m#x1B[39;49;00m">self = &lt;test_lazy_data_home_paths.TestRecoveryBreadcrumb object at 0x7aaa473e0ef0&gt;
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw12/test_symlinked_breadcrumb_is_r0')
+
+    @requires_symlinks
+    def test_symlinked_breadcrumb_is_replaced_and_its_target_untouched(
+        self, tmp_path: Path
+    ) -&gt; None:
+        """A planted symlink can never redirect the write onto its target.
+    
+        The atomic rename replaces the directory entry at the breadcrumb path
+        without following it: the symlink is consumed (a regular breadcrumb
+        takes its place) and the file it pointed at keeps its exact content.
+        """
+        from kiro_crew.config import paths
+    
+        data_home = tmp_path / "data-home"
+        crumb = tmp_path / paths.RECOVERY_BREADCRUMB_NAME
+        target = tmp_path / "target"
+        target.write_text("leave this untouched", encoding="utf-8")
+        os.symlink(target, crumb)
+    
+        with patch("pathlib.Path.home", return_value=tmp_path):
+            paths._write_recovery_breadcrumb(data_home)
+    
+&gt;       assert target.read_text(encoding="utf-8") == "leave this untouched"
+E       AssertionError: assert 'KiroCrew dat...T a backup.\n' == 'leave this untouched'
+E         
+E         #x1B[0m#x1B[91m- leave this untouched#x1B[39;49;00m#x1B[90m#x1B[39;49;00m
+E         #x1B[92m+ KiroCrew data-home location pointer (safe to delete).#x1B[39;49;00m#x1B[90m#x1B[39;49;00m
+E         #x1B[92m+ #x1B[39;49;00m#x1B[90m#x1B[39;49;00m
+E         #x1B[92m+ KiroCrew stores its data (config, credentials, history, DBs) at:#x1B[39;49;00m#x1B[90m#x1B[39;49;00m
+E         #x1B[92m+     /tmp/pytest-of-root/pytest-0/popen-gw12/test_symlinked_breadcrumb_is_r0/data-home#x1B[39;49;00m#x1B[90m#x1B[39;49;00m
+E         #x1B[92m+ #x1B[39;49;00m#x1B[90m#x1B[39;49;00m
+E         #x1B[92m+ This pointer lives outside ~/.kiro/ on purpose: if a Kiro-family#x1B[39;49;00m#x1B[90m#x1B[39;49;00m
+E         #x1B[92m+ uninstaller ever removes ~/.kiro/, this file survives so you can find#x1B[39;49;00m#x1B[90m#x1B[39;49;00m
+E         #x1B[92m+ any surviving data or know where it had been. It is NOT a backup.#x1B[39;49;00m#x1B[90m#x1B[39;49;00m
+
+test/test_lazy_data_home_paths.py:713: AssertionError</failure></testcase><testcase classname="test.test_lazy_data_home_paths.TestRecoveryBreadcrumb" name="test_normal_breadcrumb_write_is_private_and_contains_the_data_home@tree_scan_test_lazy_data_home_paths" time="0.003"><failure message="AssertionError: assert 420 == 384&#10; +  where 420 = &lt;built-in function S_IMODE&gt;(33188)&#10; +    where &lt;built-in function S_IMODE&gt; = stat.S_IMODE&#10; +    and   33188 = os.stat_result(st_mode=33188, st_ino=1232329, st_dev=86, st_nlink=1, st_uid=0, st_gid=0, st_size=408, st_atime=1789019616, st_mtime=1789019616, st_ctime=1789019616).st_mode&#10; +      where os.stat_result(st_mode=33188, st_ino=1232329, st_dev=86, st_nlink=1, st_uid=0, st_gid=0, st_size=408, st_atime=1789019616, st_mtime=1789019616, st_ctime=1789019616) = stat()&#10; +        where stat = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw12/test_normal_breadcrumb_write_i0/.kirocrew.breadcrumb').stat">self = &lt;test_lazy_data_home_paths.TestRecoveryBreadcrumb object at 0x7aaa473f48f0&gt;
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw12/test_normal_breadcrumb_write_i0')
+
+    def test_normal_breadcrumb_write_is_private_and_contains_the_data_home(
+        self, tmp_path: Path
+    ) -&gt; None:
+        from kiro_crew.config import paths
+    
+        data_home = tmp_path / "data-home"
+        crumb = tmp_path / paths.RECOVERY_BREADCRUMB_NAME
+    
+        with patch("pathlib.Path.home", return_value=tmp_path):
+            paths._write_recovery_breadcrumb(data_home)
+    
+        assert str(data_home) in crumb.read_text(encoding="utf-8")
+        if os.name == "posix":
+            # Windows has no POSIX permission bits; st_mode reads 0o666 there.
+&gt;           assert stat.S_IMODE(crumb.stat().st_mode) == 0o600
+E           AssertionError: assert 420 == 384
+E            +  where 420 = &lt;built-in function S_IMODE&gt;(33188)
+E            +    where &lt;built-in function S_IMODE&gt; = stat.S_IMODE
+E            +    and   33188 = os.stat_result(st_mode=33188, st_ino=1232329, st_dev=86, st_nlink=1, st_uid=0, st_gid=0, st_size=408, st_atime=1789019616, st_mtime=1789019616, st_ctime=1789019616).st_mode
+E            +      where os.stat_result(st_mode=33188, st_ino=1232329, st_dev=86, st_nlink=1, st_uid=0, st_gid=0, st_size=408, st_atime=1789019616, st_mtime=1789019616, st_ctime=1789019616) = stat()
+E            +        where stat = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw12/test_normal_breadcrumb_write_i0/.kirocrew.breadcrumb').stat
+
+test/test_lazy_data_home_paths.py:731: AssertionError</failure></testcase><testcase classname="test.test_lazy_data_home_paths.TestRecoveryBreadcrumb" name="test_existing_breadcrumb_that_contains_the_data_home_is_unchanged@tree_scan_test_lazy_data_home_paths" time="0.003" /><testcase classname="test.test_lazy_data_home_paths.TestRecoveryBreadcrumb" name="test_fifo_at_breadcrumb_path_neither_hangs_nor_survives@tree_scan_test_lazy_data_home_paths" time="120.001"><failure message="Failed: Timeout (&gt;120.0s) from pytest-timeout.">self = &lt;test_lazy_data_home_paths.TestRecoveryBreadcrumb object at 0x7aaa473e2cc0&gt;
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw12/test_fifo_at_breadcrumb_path_n0')
+
+    @pytest.mark.skipif(not hasattr(os, "mkfifo"), reason="needs os.mkfifo")
+    def test_fifo_at_breadcrumb_path_neither_hangs_nor_survives(self, tmp_path: Path) -&gt; None:
+        """A non-regular file at the breadcrumb path must not stall startup.
+    
+        The old idempotence check called ``read_text`` after a ``is_symlink``
+        re-check; a FIFO (or a symlink swapped in after the check) would make
+        that read block forever or follow the swap. The read now goes through a
+        no-follow, non-blocking descriptor gated on ``S_ISREG``, so a FIFO is
+        skipped and atomically replaced by the real breadcrumb.
+        """
+        from kiro_crew.config import paths
+    
+        data_home = tmp_path / "data-home"
+        crumb = tmp_path / paths.RECOVERY_BREADCRUMB_NAME
+        os.mkfifo(crumb)
+    
+        with patch("pathlib.Path.home", return_value=tmp_path):
+&gt;           paths._write_recovery_breadcrumb(data_home)
+
+test/test_lazy_data_home_paths.py:775: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+conftest.py:2478: in _guarded
+    return real(data_home)
+           ^^^^^^^^^^^^^^^
+src/kiro_crew/config/paths.py:156: in _write_recovery_breadcrumb
+    crumb.write_text(content, encoding="utf-8")
+/usr/local/lib/python3.12/pathlib.py:1047: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw12/test_fifo_at_breadcrumb_path_n0/.kirocrew.breadcrumb')
+mode = 'w', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+&gt;       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: Timeout (&gt;120.0s) from pytest-timeout.
+
+/usr/local/lib/python3.12/pathlib.py:1013: Failed</failure></testcase><testcase classname="test.test_lazy_data_home_paths.TestRecoveryBreadcrumb" name="test_without_o_nofollow_the_read_is_skipped_and_write_still_lands@tree_scan_test_lazy_data_home_paths" time="0.005" /></testsuite></testsuites>
