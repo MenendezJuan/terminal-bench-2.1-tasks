@@ -1,0 +1,80 @@
+{
+  "status": "UNMEASURED",
+  "warning": "These sets are pre-registered from static analysis of the sealed base commit. They have NOT been observed. No container runtime was available at authoring time, so no build, oracle, no-op, or mutation run has been executed. Do not publish, package, or cite this task until every field below is replaced with observed values.",
+  "base_commit": "1b1252505b41be283c9249e27f78b2c8ff158514",
+  "gold_commit": "ebd849a956147bcc9c5e2e3fa945f716ac2cb671",
+  "test_class": "io.github.hectorvent.floci.services.lambda.LambdaSnapshotSerialisationBehaviorTest",
+  "FAIL_TO_PASS": [
+    "updateFunctionCodeSerialisesAgainstTheFunctionsConcurrencyLock",
+    "updateFunctionConfigurationSerialisesAgainstTheFunctionsConcurrencyLock"
+  ],
+  "PASS_TO_PASS": [
+    "updateFunctionConfigurationRejectsScalarStructureMembersOnAnUnknownFunction",
+    "updateFunctionConfigurationStillReportsNotFoundForAWellFormedRequest",
+    "publishVersionStillSucceedsAfterAConfigurationUpdate",
+    "updateFunctionCodeStillSucceedsOnAnExistingFunction",
+    "distinctFunctionsDoNotShareAConcurrencyLock"
+  ],
+  "collected_base": null,
+  "failed_base": null,
+  "collected_gold": null,
+  "failed_gold": null,
+  "expected_base_failure_message": "the updater must block while another operation holds this function's lock ==> Expected java.util.concurrent.TimeoutException to be thrown, but nothing was thrown.",
+  "grouping": {
+    "shape": "leaves",
+    "note": "Five PASS_TO_PASS and two FAIL_TO_PASS leaf @Test methods, scored individually by name. No semantic grouping is used: each FAIL_TO_PASS leaf is one updater path, which is already one natural user-facing behaviour. With two leaves the 50% private threshold means locking only one updater fails the attempt, which is the intended partial-repair trap. This grouping is fixed before any model run and must not be revised after observing a model result."
+  },
+  "mutation_matrix": {
+    "status": "NOT RUN",
+    "pre_registered": [
+      {
+        "id": "partial-A",
+        "description": "acquire the existing per-function monitor in updateFunctionCode only, leaving updateFunctionConfiguration unlocked",
+        "predicted_f2p_remaining": 1,
+        "predicted_verdict": "FAIL (1 of 2 = 50%)"
+      },
+      {
+        "id": "partial-B",
+        "description": "introduce a new ReentrantLock or a private monitor keyed per ARN instead of contending for the existing one",
+        "predicted_f2p_remaining": 2,
+        "predicted_verdict": "FAIL (2 of 2 = 100%), and genuinely broken: publishVersion still holds the original monitor, so nothing is serialised"
+      },
+      {
+        "id": "naive-refactor",
+        "description": "move the whole body of updateFunctionConfiguration into the locked section, placing the structure-member shape checks behind the function lookup",
+        "predicted_f2p_remaining": 0,
+        "predicted_verdict": "FAIL via PASS_TO_PASS regression on updateFunctionConfigurationRejectsScalarStructureMembersOnAnUnknownFunction (400 flipped to 404). Per the pre-spend gate this is NOT evidence of difficulty."
+      },
+      {
+        "id": "coarse-lock",
+        "description": "serialise on a single global monitor instead of a per-ARN one",
+        "predicted_f2p_remaining": 2,
+        "predicted_verdict": "FAIL on distinctFunctionsDoNotShareAConcurrencyLock and on both FAIL_TO_PASS leaves"
+      },
+      {
+        "id": "oracle",
+        "description": "the gold diff of PR #3010 applied to the sealed base",
+        "predicted_f2p_remaining": 0,
+        "predicted_verdict": "PASS, reward 1"
+      },
+      {
+        "id": "no-op",
+        "description": "empty patch",
+        "predicted_f2p_remaining": 2,
+        "predicted_verdict": "FAIL on tests, not on the environment"
+      }
+    ]
+  },
+  "flake_risk": {
+    "level": "medium",
+    "reason": "Both FAIL_TO_PASS leaves are timing-sensitive. They assert that a background submission does NOT complete within 500ms while a monitor is held, which is a negative timing assertion and can only false-PASS if the machine stalls the updater thread for other reasons; it cannot false-FAIL from slowness. The completion assertion after release has a 30s budget and the harness acquisition a 10s budget, both generous. Even so, the oracle must be repeated at least ten times on the target hardware before this task is considered stable."
+  },
+  "next_steps": [
+    "Build environment/Dockerfile and confirm all four in-image assertions pass.",
+    "Run the verifier at base: expect reward 0, both FAIL_TO_PASS failing on the TimeoutException assertion, and zero PASS_TO_PASS failures.",
+    "Apply the gold diff of PR #3010 and run the verifier: expect reward 1 and all seven leaves passing.",
+    "Repeat the oracle at least ten times to bound flake.",
+    "Execute the full pre-registered mutation matrix and record observed results here.",
+    "Only then set collected_base, failed_base, collected_gold, failed_gold, flip status to MEASURED, and confirm or revise the difficulty label in task.toml."
+  ]
+}

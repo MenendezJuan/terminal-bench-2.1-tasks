@@ -1,0 +1,45 @@
+schema_version = "1.1"
+artifacts = []
+
+[task]
+name = "bugfix/floci-lambda-publish-snapshot-serialisation"
+description = "Evaluates repair of an unserialised PublishVersion snapshot in the AWS Lambda emulation: the snapshot copy holds a per-function monitor that neither UpdateFunctionCode nor UpdateFunctionConfiguration acquires, so an update landing mid-copy yields a version carrying the code of one revision, the configuration of another, and a source revision id identifying neither, while the natural whole-body refactor of the configuration path silently reorders request validation against the function lookup."
+keywords = ["java", "concurrency", "lambda", "snapshot", "race-condition", "regression-test"]
+
+[[task.authors]]
+name = "Juan Cruz"
+email = "jumenendez01@gmail.com"
+
+[metadata]
+author_name = "Juan Cruz"
+author_email = "jumenendez01@gmail.com"
+# Estimated until five valid comparable model attempts are complete.
+difficulty = "hard"
+category = "software-engineering"
+tags = ["java", "concurrency", "lambda", "snapshot", "race-condition", "regression-test"]
+expert_time_estimate_min = 75.0
+junior_time_estimate_min = 240.0
+
+[verifier]
+timeout_sec = 1200.0
+
+[agent]
+timeout_sec = 5400.0
+[agent.kwargs]
+max_turns = 60
+
+[environment]
+build_timeout_sec = 3600.0
+docker_image = "eclipse-temurin:25-jdk"
+cpus = 4
+memory_mb = 8192
+storage_mb = 20480
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[environment.env]
+
+[solution.env]

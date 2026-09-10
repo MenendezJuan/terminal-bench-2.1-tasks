@@ -1,0 +1,48 @@
+{
+  "repo": "floci-io/floci",
+  "pull_number": 3010,
+  "url": "https://github.com/floci-io/floci/pull/3010",
+  "title": "fix(lambda): serialise the version snapshot against function updates",
+  "base_commit": "1b1252505b41be283c9249e27f78b2c8ff158514",
+  "merge_commit": "ebd849a956147bcc9c5e2e3fa945f716ac2cb671",
+  "head_commit": "e274791497d7f77ec0aa7443511c1f7ced67cb61",
+  "merged_at": "2026-09-08T11:23:24Z",
+  "pr_author": "avison9",
+  "pr_author_association": "CONTRIBUTOR",
+  "merged_by": "pgermosen",
+  "closes_issue": 3007,
+  "additions": 124,
+  "deletions": 7,
+  "changed_files": 3,
+  "source_files": [
+    "src/main/java/io/github/hectorvent/floci/services/lambda/LambdaService.java"
+  ],
+  "test_files": [
+    "src/test/java/io/github/hectorvent/floci/services/lambda/LambdaServiceTest.java",
+    "src/test/java/io/github/hectorvent/floci/services/lambda/LambdaStructureSerializationIntegrationTest.java"
+  ],
+  "touches_dependencies": false,
+  "origin": "mined",
+  "verification": {
+    "docker_available": false,
+    "method": "static verification against a local shallow clone of floci-io/floci at the sealed base commit; no build, no test execution",
+    "confirmed_at_base": [
+      "base_commit resolved as the single parent of the squash-merge commit ebd849a9; the PR's own base.sha (cc8b8e9f14a8d382471366662b5807f3be62a3c0) is the tip of main at PR creation and is NOT the pre-merge parent",
+      "LambdaService.lockForConcurrencyOp(String) is declared package-private at base (no access modifier), so a test in the same package may hold it",
+      "LambdaServiceTest.publishVersionWaitsForAConcurrentHolderOfTheFunctionsConcurrencyLock already calls service.lockForConcurrencyOp(...) at base, establishing the idiom the graded tests reuse",
+      "updateFunctionCode spans lines 600-643 and updateFunctionConfiguration spans lines 644-811 at base; zero occurrences of lockForConcurrencyOp fall inside either range, matching the PR body's stated counts",
+      "publishVersion (line 1941) acquires lockForConcurrencyOp and carries, at line 1951, the comment 'Inside the lock UpdateFunctionCode takes', which is false at base; the PR author states this comment is his own error from #2939",
+      "the structure-member shape checks sit at lines 645-653, ahead of the function lookup, which is the ordering the PASS_TO_PASS case pins",
+      "structureValue throws AwsException(\"SerializationException\", ..., 400) and getFunction throws AwsException(\"ResourceNotFoundException\", ..., 404); error.getErrorCode() is the accessor already used by the existing suite",
+      "pom.xml is byte-identical between base and merge: no dependency churn",
+      "none of the graded test method names occur anywhere under src/test at base: no leak"
+    ],
+    "not_yet_verified": [
+      "image build, oracle run, no-op run",
+      "empirical FAIL_TO_PASS and PASS_TO_PASS derivation",
+      "the mutation matrix",
+      "flake repetition of the two timing-sensitive FAIL_TO_PASS cases"
+    ]
+  },
+  "notes": "Human-authored PR. Filtered for 'Generated with Claude Code' and 'Co-Authored-By: Claude'; neither appears. Post-cutoff (merged 2026-09-08). Bounded scope: one production file, two test files, no dependency change.\n\nCAUSAL CORE. publishVersion copies roughly thirty fields off the live LambdaFunction while holding synchronized (lockForConcurrencyOp(fn.getFunctionArn())). Neither updateFunctionCode nor updateFunctionConfiguration acquired that monitor, so the snapshot copy held a lock no writer contended for. An update landing mid-copy produced a version that was part old code and part new configuration, carrying a sourceRevisionId identifying neither state. A secondary consequence: extractZipCodeBytes calls zipExtractor.extractTo(...) outside the lock, so a deploy can rewrite the code directory while a publish copies it.\n\nHARD-CORE DENSITY. Both FAIL_TO_PASS leaves traverse the causal core, so density is 2/2 = 100%. Pre-registered incomplete repair A: lock only one of the two updaters, which is plausible because the false in-code comment names UpdateFunctionCode specifically; that leaves 1 of 2 = 50% of FAIL_TO_PASS failing and correctly fails the attempt. Pre-registered incomplete repair B: introduce a new monitor or ReentrantLock instead of contending for the existing per-ARN one; that leaves 2 of 2 failing, and is genuinely broken rather than merely differently named, because publishVersion, extractZipCodeBytes, deleteFunctionVersion and deleteWholeFunction all already acquire the existing monitor, so a parallel mechanism does not serialise against the snapshot copy at all.\n\nFAIRNESS. The graded tests introduce no new production symbol. Every symbol they touch exists at the sealed base commit, so the file compiles at base and fails on a real assertion ('Expected java.util.concurrent.TimeoutException to be thrown, but nothing was thrown') rather than on a build error. Base and gold therefore expose the same graded identities. Because the tests assert contention on the pre-existing monitor rather than an observed interleaving, the prompt states explicitly that the fix must serialise against the mechanism the codebase already uses and must not introduce a parallel one; this closes the only known alternative-implementation gap, at the cost of one sentence of guidance. The prompt names the interface and the required outcomes but never the fix, its ordering, or the lock's per-ARN granularity as an implementation instruction.\n\nPASS_TO_PASS TRAP. #3051 extracts UpdateFunctionConfiguration's structure members above the function lookup, so a malformed member on a nonexistent function reports SerializationException/400 rather than 404. The naive resolution of this PR moves the whole method body into the locked section, which puts those checks behind the lookup and silently flips 400 to 404. Nothing at base pinned that ordering. Per the pre-spend gate this regression is NOT counted as evidence of difficulty; it is included because it is a real preservation requirement and the prompt states it.\n\nDEVIATION FROM THE PR. The graded tests are not copied verbatim. The two FAIL_TO_PASS cases follow the PR's assertUpdaterWaitsForTheLock helper closely but were re-authored into a single self-contained file in the same package, with timeouts widened (2s -> 10s harness acquisition, 200ms -> 500ms block probe, 5s -> 30s completion) to reduce flake under a constrained container. The PR's third test is a RestAssured integration test; it was re-expressed at the service level so the whole graded set lives in one plain-JUnit file, matching the pattern already used by floci-kinesis-concurrent-append-race. Three further PASS_TO_PASS leaves were added to cover basic updater behaviour and per-ARN lock isolation.\n\nSTATUS. Authored without a container runtime. No empirical control run has been performed. F2P.json is explicitly unmeasured and the difficulty label in task.toml is an estimate; neither may be treated as observed until the image is built and the oracle, no-op and mutation runs are executed."
+}
