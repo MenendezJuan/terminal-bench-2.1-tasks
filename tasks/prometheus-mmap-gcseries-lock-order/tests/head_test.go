@@ -10372,8 +10372,12 @@ func TestHead_mmapHeadChunks(t *testing.T) {
 	// stripe's lock. This is a deadlock.
 	//
 	// Since a pure timing/scheduling based test is unlikely to fail, this test
-	// mimics gcSeries locking behavior and drives the real mmapHeadChunksInStripe.
-	// The test fails if it regresses to holding the stripe's RLock while locking a series.
+	// mimics gcSeries locking behavior and drives the real mmapHeadChunks entry
+	// point. Deliberately calls the public mmapHeadChunks(), not any internal
+	// per-stripe helper, so this does not depend on a particular internal
+	// function signature or decomposition, only on the observable locking
+	// contract. The test fails if it regresses to holding a stripe's RLock
+	// while locking a series.
 	t.Run("mmapHeadChunksInStripe releases the stripe lock before locking a series", func(t *testing.T) {
 		h, _ := newTestHead(t, DefaultBlockDuration, compression.None, false)
 		require.NoError(t, h.Init(0))
@@ -10402,34 +10406,33 @@ func TestHead_mmapHeadChunks(t *testing.T) {
 		mmapDone := make(chan struct{})
 		go func() {
 			defer close(mmapDone)
-			var candidates []*memSeries
-			h.mmapHeadChunksInStripe(stripe, &candidates)
+			h.mmapHeadChunks()
 		}()
 		select {
 		case <-mmapDone:
-			t.Fatal("mmapHeadChunksInStripe returned without ever blocking on the series lock")
+			t.Fatal("mmapHeadChunks returned without ever blocking on the series lock")
 		case <-time.After(time.Second):
 		}
 
-		// If mmapHeadChunksInStripe still holds the stripe's RLock, this TryLock (write)
-		// fails (it's blocked on the series lock while also holding the stripe lock).
-		// This can only pass if the RLock has been released before ever locking the
-		// series lock.
+		// If the mmap path still holds this series's stripe RLock, this TryLock
+		// (write) fails (it's blocked on the series lock while also holding the
+		// stripe lock). This can only pass if the RLock has been released before
+		// ever locking the series lock.
 		gotLock := h.series.locks[stripe].TryLock()
 		if gotLock {
 			h.series.locks[stripe].Unlock()
 		}
 
-		// Unblock mmapHeadChunksInStripe and wait for it to finish before asserting, so
+		// Unblock mmapHeadChunks and wait for it to finish before asserting, so
 		// this test doesn't leak a goroutine regardless of the outcome.
 		series.Unlock()
 		select {
 		case <-mmapDone:
 		case <-time.After(5 * time.Second):
-			t.Fatal("mmapHeadChunksInStripe never completed after the series lock was released")
+			t.Fatal("mmapHeadChunks never completed after the series lock was released")
 		}
 
-		require.True(t, gotLock, "mmapHeadChunksInStripe held the stripe's RLock while blocked on a series lock; "+
+		require.True(t, gotLock, "the mmap path held this series's stripe RLock while blocked on the series lock; "+
 			"this deadlocks against a concurrent gcSeries")
 	})
 
