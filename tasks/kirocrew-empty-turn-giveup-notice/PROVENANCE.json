@@ -1,0 +1,24 @@
+{
+  "repo": "kirodotdev/KiroCrew",
+  "pull_number": 9825,
+  "url": "https://github.com/kirodotdev/KiroCrew/pull/9825",
+  "title": "fix(chat): make the empty-turn give-up notice cause-aware",
+  "base_commit": "160343495894edde05af057032b6b62dd6df1984",
+  "merge_commit": "60005d4d9d01eb8e23353208a49e2343ade7b809",
+  "merged_at": "2026-09-10T04:07:04Z",
+  "issue_numbers": [9809],
+  "issue_url": "https://github.com/kirodotdev/KiroCrew/issues/9809",
+  "issue_char_count": 4099,
+  "source_files": [
+    "src/kiro_crew/dashboard/chat_runner.py"
+  ],
+  "docs_files": [
+    "docs/system-specs/modules/session.md"
+  ],
+  "test_files": [
+    "test/test_dashboard_chat.py"
+  ],
+  "touches_dependencies": false,
+  "origin": "mined",
+  "notes": "Human-authored (PR author dwu96, issue author patrigao; no bot markers, unlike two docker/docker-agent PRs scouted for this same slot that were opened by Docker's Automated implementer agent and rejected for that reason). The issue describes TWO problems: (1) raise the auto-continue budget from one continuation to N, (2) make the give-up notice cause-aware across three branches. This PR (#9825) implements only #2 -- the message-wording fix -- which is the graded scope here; #1 is a separate, unmerged concern and out of scope. Picked deliberately after two prior candidates (docker/docker-agent #4155, kirodotdev/KiroCrew #9734) were both solved by GPT 5.6 on pass@1: those were single-conceptual-fix bugs, this one requires getting three mutually exclusive message branches right (productive-turn / zero-recoveries-spent / recoveries-spent), where a plausible partial fix nails one or two branches but not all three. Gold patch is the merged fix byte for byte, both the runtime file and the doc; the test file is huge (21k+ lines, whole-repo test file) so the task ships its complete post-fix form rather than a diff, same copy-over-patch reasoning as the prior two tasks."
+}

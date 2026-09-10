@@ -1,0 +1,6 @@
+Checking patch docs/system-specs/modules/session.md...
+Checking patch src/kiro_crew/dashboard/chat_runner.py...
+Hunk #1 succeeded at 11123 (offset 35 lines).
+Applied patch docs/system-specs/modules/session.md cleanly.
+Applied patch src/kiro_crew/dashboard/chat_runner.py cleanly.
+oracle applied

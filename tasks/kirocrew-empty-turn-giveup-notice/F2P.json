@@ -1,0 +1,13 @@
+{
+  "collected_base": 779,
+  "collected_gold": 779,
+  "FAIL_TO_PASS": [
+    "test.test_dashboard_chat.TestEmptyResponseRetry::test_productive_giveup_notice_does_not_claim_nothing_happened",
+    "test.test_dashboard_chat.TestEmptyResponseRetry::test_giveup_without_recoveries_drops_retry_claim",
+    "test.test_dashboard_chat.TestEmptyResponseRetry::test_giveup_after_spent_recoveries_reports_recovery",
+    "test.test_dashboard_chat.TestEmptyResponseRetry::test_second_empty_flag_off_shows_notice"
+  ],
+  "PASS_TO_PASS_NOTE": "775 tests pass at base and stay passing at gold. Not enumerated by name (the file has 779 tests total): PASS_TO_PASS is graded as 'zero failures outside the FAIL_TO_PASS set', equivalent here because collection is stable (779 at both base and gold) and the floor (776) would catch under-collection. The fourth FAIL_TO_PASS entry, test_second_empty_flag_off_shows_notice, is a PRE-EXISTING test the PR modifies (adds two new assertions to it) rather than a wholly new one -- it fails at base because the new assertions are new, not because the old ones broke.",
+  "gold_failing": [],
+  "derivation": "Measured directly: built the environment image, copied the graded test file in, ran `pytest test/test_dashboard_chat.py` at base_commit (4 failed, 775 passed, 779 collected) and again after applying solution/solve.sh (0 failed, 779 passed, 779 collected). FAIL_TO_PASS is the set-diff of failing test names between those two runs."
+}
