@@ -1,0 +1,45 @@
+schema_version = "1.1"
+artifacts = []
+
+[task]
+name = "bugfix/prometheus-mmap-gcseries-lock-order"
+description = "Evaluates repair of a real lock-ordering deadlock between Head.mmapHeadChunksInStripe and stripeSeries.gcSeries in the Prometheus TSDB head, combined with a second, independent invariant (detaching an evicted series' head chunk state) needed to avoid orphaned mmap files once the lock-ordering fix changes the timing of an existing eviction race."
+keywords = ["go", "concurrency", "locking", "deadlock", "mmap", "tsdb"]
+
+[[task.authors]]
+name = "Juan Cruz"
+email = "jumenendez01@gmail.com"
+
+[metadata]
+author_name = "Juan Cruz"
+author_email = "jumenendez01@gmail.com"
+# Estimated until five valid comparable model attempts are complete.
+difficulty = "hard"
+category = "software-engineering"
+tags = ["go", "concurrency", "locking", "deadlock", "mmap", "tsdb"]
+expert_time_estimate_min = 75.0
+junior_time_estimate_min = 240.0
+
+[verifier]
+timeout_sec = 900.0
+
+[agent]
+timeout_sec = 5400.0
+[agent.kwargs]
+max_turns = 60
+
+[environment]
+build_timeout_sec = 3600.0
+docker_image = "golang:1.26-bookworm"
+cpus = 2
+memory_mb = 4096
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[environment.env]
+
+[solution.env]

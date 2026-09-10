@@ -1,0 +1,21 @@
+{
+  "measured_at": "2026-09-10",
+  "collected_base": 0,
+  "collected_gold": 15,
+  "failed_base": 0,
+  "failed_gold": 0,
+  "fail_to_pass": [
+    "TestHead_mmapHeadChunks/mmapHeadChunksInStripe_releases_the_stripe_lock_before_locking_a_series",
+    "TestHead_mmapHeadChunks/gcSeries_clears_headChunks_so_a_stale_mmap_is_a_no-op"
+  ],
+  "pass_to_pass_sample": [
+    "TestHead_mmapHeadChunks/ooo_does_not_inflate_count"
+  ],
+  "derivation": "Empirical, not guessed. Built the sealed image at base_commit, installed the PR's own post-fix head_test.go (base file plus the two new t.Run subtests spliced in at their original PR location, verbatim), ran go test ./tsdb/... -run TestHead_mmapHeadChunks -v -json: at base_commit the package fails to COMPILE, since the graded test file calls h.mmapHeadChunksInStripe(stripe, &candidates) with a second argument that the base signature (i int) does not accept -- this takes down the whole tsdb package build, so go test -json emits zero Test events (verified: 0 collected, caught by the verifier's floor check rather than the exit code). Applied solution/patch.diff (verbatim gold patch, tsdb/head.go only) on the same image and re-ran: 15 top-level/subtest results collected under the TestHead_mmapHeadChunks run filter, all passing, including both new FAIL_TO_PASS subtests and the pre-existing sibling subtest ooo_does_not_inflate_count used as PASS_TO_PASS. Repeated the oracle run 5 times in a row to rule out flakiness in the lock-ordering test's timing-based safety-net waits (it asserts via TryLock, not timing, per the PR's own test comment): all 5 runs passed identically with the same summary (f2p_remaining=0, p2p_failures=0).",
+  "mutation_testing": {
+    "note": "Two independent pre-registered mutations were run before any model spend, since the PR combines two genuinely separate invariants that a partial repair could satisfy only one of.",
+    "mutation_1_revert_fix_2_only": "Applied the real gold patch, then programmatically removed only the `series.setHeadChunks(nil, 0)` line added to gcSeries, leaving the lock-ordering fix (mmapHeadChunksInStripe releasing the stripe RLock before locking a series) fully intact. This models a model that correctly fixes the deadlock but misses the second, less obviously-connected invariant needed once the lock-ordering fix changes the timing of the eviction race. Result: reward=0, f2p_remaining=1/2 (>=50% threshold correctly triggered), p2p_failures=0. The mmapHeadChunksInStripe lock-ordering subtest passed (fix 1 present); the gcSeries subtest failed exactly as intended (fix 2 absent).",
+    "mutation_2_revert_fix_1_only": "Applied the real gold patch, then programmatically replaced mmapHeadChunksInStripe's body with the original base-commit implementation (stripe RLock held across the series-locking loop, no snapshot/release), keeping the gcSeries setHeadChunks(nil, 0) fix intact and the call site's two-argument signature unchanged so the package still compiles. This models a model that adds the defensive nil-clear but does not actually fix the lock-ordering deadlock. Result: reward=0, f2p_remaining=1/2 (>=50% threshold correctly triggered), p2p_failures=0. The gcSeries subtest passed (fix 2 present); the lock-ordering subtest correctly failed via its TryLock assertion (fix 1 absent, stripe RLock held while blocked on the series lock).",
+    "conclusion": "Both mutations independently and correctly fail grading under the zero-tolerance/50% FAIL_TO_PASS rule, confirming the two fixes are graded as genuinely separable and neither alone is scored as a pass."
+  }
+}
