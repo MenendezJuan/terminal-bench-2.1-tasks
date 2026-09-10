@@ -1,0 +1,6 @@
+# Files that are executed inside the Linux task containers must keep LF.
+# A CRLF test.sh fails at run time with "bad interpreter: /bin/bash^M",
+# which surfaces as an environment fault rather than a test failure and
+# would be indistinguishable from a no-op result.
+*.sh text eol=lf
+Dockerfile text eol=lf
