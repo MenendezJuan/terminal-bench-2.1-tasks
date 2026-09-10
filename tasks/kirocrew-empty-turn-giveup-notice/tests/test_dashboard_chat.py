@@ -16509,7 +16509,7 @@ class TestEmptyResponseRetry:
         assert [args.args for args in on_consumed.call_args_list] == [(True,), (False,)]
         # No notice card shown on first attempt — the empty is silently re-queued
         notice_msgs = [m for m in slot.messages if m.get("role") == "notice"]
-        assert not any("returned nothing this turn" in m.get("content", "") for m in notice_msgs)
+        assert not any("returned nothing this turn" in m.get("content", "").lower() for m in notice_msgs)
         # Re-queue path must NOT persist/consolidate the spurious empty turn or
         # record success (item 3 of the CR).
         mock_save.assert_not_called()
@@ -16542,7 +16542,7 @@ class TestEmptyResponseRetry:
         # depth>0: the `if _prompt_depth == 0 ...` guard is false, so the else fires —
         # terminal card immediately, no silent retry, no increment of the counter.
         notice_msgs = [m for m in slot.messages if m.get("role") == "notice"]
-        assert any("returned nothing this turn" in m.get("content", "") for m in notice_msgs)
+        assert any("returned nothing this turn" in m.get("content", "").lower() for m in notice_msgs)
         assert slot._empty_response_retries == 0
 
     @pytest.mark.asyncio
@@ -16575,7 +16575,7 @@ class TestEmptyResponseRetry:
         # Visible recovery notice, counter advanced to the terminal rung, and
         # the recovery turn is excluded from the cycle-complete counter reset.
         notice_msgs = [m for m in slot.messages if m.get("role") == "notice"]
-        assert any("auto-continuing once" in m.get("content", "") for m in notice_msgs)
+        assert any("auto-continuing once" in m.get("content", "").lower() for m in notice_msgs)
         assert slot._empty_response_retries == 2
 
     @pytest.mark.asyncio
@@ -16623,7 +16623,7 @@ class TestEmptyResponseRetry:
         await _run_chat(state, slot, "test message")
 
         notice_msgs = [m for m in slot.messages if m.get("role") == "notice"]
-        assert any("returned nothing this turn" in m.get("content", "") for m in notice_msgs)
+        assert any("returned nothing this turn" in m.get("content", "").lower() for m in notice_msgs)
         # After the terminal notice, the counter resets so the NEXT independent
         # user turn gets a fresh budget (not sticky).
         assert slot._empty_response_retries == 0
@@ -16661,13 +16661,13 @@ class TestEmptyResponseRetry:
 
         notice_msgs = [m for m in slot.messages if m.get("role") == "notice"]
         assert notice_msgs, "give-up produced no notice card"
-        assert not any("returned nothing" in m.get("content", "") for m in notice_msgs), (
+        assert not any("returned nothing" in m.get("content", "").lower() for m in notice_msgs), (
             "the give-up card claims the turn produced nothing, but this turn "
             "ran a tool whose side effects already landed"
         )
-        assert any("without a closing reply" in m.get("content", "") for m in notice_msgs)
+        assert any("without a closing reply" in m.get("content", "").lower() for m in notice_msgs)
         # The card reassures rather than inviting a redo: completed steps stay done.
-        assert any("will not re-run" in m.get("content", "") for m in notice_msgs)
+        assert any("will not re-run" in m.get("content", "").lower() for m in notice_msgs)
         # Terminal rung still resets the budget for the next genuine user turn.
         assert slot._empty_response_retries == 0
 
@@ -16682,13 +16682,13 @@ class TestEmptyResponseRetry:
         await _run_chat(state, slot, "test message", _prompt_depth=1)
 
         notice_msgs = [m for m in slot.messages if m.get("role") == "notice"]
-        assert any("returned nothing this turn" in m.get("content", "") for m in notice_msgs)
-        assert not any("retried" in m.get("content", "") for m in notice_msgs), (
+        assert any("returned nothing this turn" in m.get("content", "").lower() for m in notice_msgs)
+        assert not any("retried" in m.get("content", "").lower() for m in notice_msgs), (
             "the give-up card claims a retry ran, but slot._empty_response_retries "
             "is still 0 on this path"
         )
-        assert not any("auto-continued" in m.get("content", "") for m in notice_msgs)
-        assert not any("recovery was attempted" in m.get("content", "") for m in notice_msgs)
+        assert not any("auto-continued" in m.get("content", "").lower() for m in notice_msgs)
+        assert not any("recovery was attempted" in m.get("content", "").lower() for m in notice_msgs)
 
     @pytest.mark.asyncio
     async def test_giveup_after_spent_recoveries_reports_recovery(self, tmp_path: Path) -> None:
@@ -16703,11 +16703,20 @@ class TestEmptyResponseRetry:
         await _run_chat(state, slot, "test message")
 
         notice_msgs = [m for m in slot.messages if m.get("role") == "notice"]
-        assert any("automatic recovery was attempted" in m.get("content", "") for m in notice_msgs)
+        # Case-insensitive: the required clause can legitimately open its own
+        # sentence ("Automatic recovery...") instead of sitting mid-sentence
+        # ("...turn (automatic recovery...)"). The instruction states the
+        # required CONTENT, not a required capitalization, so the grader must
+        # not fail a correct message over sentence-initial capitalization.
+        assert any(
+            "automatic recovery was attempted" in m.get("content", "").lower() for m in notice_msgs
+        )
         # The counter alone cannot prove WHICH rungs ran (a productive turn's
         # continuation arrives here at 2 with no verbatim retry), so the card
         # must not name specific recovery phases.
-        assert not any("auto-continued automatically" in m.get("content", "") for m in notice_msgs)
+        assert not any(
+            "auto-continued automatically" in m.get("content", "").lower() for m in notice_msgs
+        )
 
     @pytest.mark.asyncio
     async def test_second_empty_flag_off_shows_notice(self, tmp_path: Path) -> None:
@@ -16727,15 +16736,18 @@ class TestEmptyResponseRetry:
             await _run_chat(state, slot, "test message")
 
         notice_msgs = [m for m in slot.messages if m.get("role") == "notice"]
-        assert any("returned nothing this turn" in m.get("content", "") for m in notice_msgs)
+        assert any("returned nothing this turn" in m.get("content", "").lower() for m in notice_msgs)
         # Counter is 1 here: ONLY the silent verbatim re-queue ran (rung 1's
         # guard ignores the gate); the auto-continue was forbidden by config.
         # The card reports budget spent phase-neutrally and must not assert
         # the auto-continue that provably did not run. This is also the
         # boundary case for the counter gate: budget WAS spent, so the bare
         # zero-recoveries wording would be wrong too.
-        assert any("automatic recovery was attempted" in m.get("content", "") for m in notice_msgs)
-        assert not any("auto-continued" in m.get("content", "") for m in notice_msgs)
+        # Case-insensitive, same reasoning as test_giveup_after_spent_recoveries_reports_recovery.
+        assert any(
+            "automatic recovery was attempted" in m.get("content", "").lower() for m in notice_msgs
+        )
+        assert not any("auto-continued" in m.get("content", "").lower() for m in notice_msgs)
         assert slot._empty_response_retries == 0
 
     @pytest.mark.asyncio
@@ -16774,7 +16786,7 @@ class TestEmptyResponseRetry:
         await _run_chat(state, slot, "/compact")
 
         notice_msgs = [m for m in slot.messages if m.get("role") == "notice"]
-        assert not any("returned nothing this turn" in m.get("content", "") for m in notice_msgs)
+        assert not any("returned nothing this turn" in m.get("content", "").lower() for m in notice_msgs)
 
     @pytest.mark.asyncio
     async def test_clear_turn_no_empty_response_error(self, tmp_path: Path) -> None:
@@ -16793,7 +16805,7 @@ class TestEmptyResponseRetry:
         await _run_chat(state, slot, "/clear")
 
         notice_msgs = [m for m in slot.messages if m.get("role") == "notice"]
-        assert not any("returned nothing this turn" in m.get("content", "") for m in notice_msgs)
+        assert not any("returned nothing this turn" in m.get("content", "").lower() for m in notice_msgs)
 
     @pytest.mark.asyncio
     async def test_agent_switch_turn_no_empty_response_error(self, tmp_path: Path) -> None:
@@ -16812,7 +16824,7 @@ class TestEmptyResponseRetry:
         await _run_chat(state, slot, "test message")
 
         notice_msgs = [m for m in slot.messages if m.get("role") == "notice"]
-        assert not any("returned nothing this turn" in m.get("content", "") for m in notice_msgs)
+        assert not any("returned nothing this turn" in m.get("content", "").lower() for m in notice_msgs)
 
 
 class TestProductiveTurnNeverReplaysVerbatim:

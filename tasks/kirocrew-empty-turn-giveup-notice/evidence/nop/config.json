@@ -2,8 +2,8 @@
     "task": {
         "path": "tasks\\kirocrew-empty-turn-giveup-notice"
     },
-    "trial_name": "kirocrew-empty-turn-giveup-notic__gYCGq3j",
-    "trials_dir": "jobs\\2026-09-10__02-03-11",
+    "trial_name": "kirocrew-empty-turn-giveup-notic__WhKRHat",
+    "trials_dir": "jobs\\2026-09-10__02-15-21",
     "agent": {
         "name": "nop"
     },
@@ -11,5 +11,5 @@
         "type": "docker",
         "force_build": true
     },
-    "job_id": "91667b87-03d3-4e13-bf30-1d420e3c7bc5"
+    "job_id": "fe7e0d24-ed1a-47c8-a828-724533714776"
 }
