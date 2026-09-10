@@ -1,0 +1,17 @@
+{
+  "measured_at": "2026-09-10",
+  "collected_base": 2,
+  "collected_gold": 2,
+  "failed_base": 1,
+  "failed_gold": 0,
+  "fail_to_pass": [
+    "TestCatalog_Register_NodeIDCrossNodeTakeover"
+  ],
+  "pass_to_pass": [
+    "TestTxn_Apply_NodeSetRejectsCrossNodeTakeoverByID"
+  ],
+  "derivation": "Empirical, not guessed. Built the sealed image at base_commit, installed the PR's own post-fix catalog_endpoint_test.go and txn_endpoint_test.go, ran go test -run against both new tests: TestCatalog_Register_NodeIDCrossNodeTakeover FAILS at base (the exploit succeeds: the attacker's Catalog.Register call is not rejected, and the victim node's underlying data is destroyed), TestTxn_Apply_NodeSetRejectsCrossNodeTakeoverByID PASSES at base (the Txn.Apply code path already had this protection before this PR -- confirmed by the PR's own changelog text 'mirroring the protection ALREADY PRESENT in vetNodeTxnOp' -- so this test is a real PASS_TO_PASS regression guard, not part of the fix). Applied solution/patch.diff (verbatim gold patch, one source file) on the same image and re-ran: both tests pass. Repeated the base and gold runs once more each to rule out flakes: fully stable both times (no concurrency or timing involved in this bug at all, unlike the other 6 candidates in this delivery -- deterministic by construction).",
+  "mutation_testing": {
+    "note": "A hand-written plausible incomplete repair was tested before any model run, per PRE_SPEND_ACCEPTANCE_GATE.md: applied the real gold patch, then flipped the authorization target from the EXISTING node's real name (existingByID.Node, the correct target) to the REQUEST's own name (args.Node) -- an easy mistake for a model that understands 'authorize before allowing the ID-based lookup to proceed' but gets the specific field backwards, since args.Node reads naturally as 'the thing being registered.' TestCatalog_Register_NodeIDCrossNodeTakeover correctly FAILS under this mutation (the attacker has write on their own node name, so authorizing against args.Node always succeeds and the exploit is not blocked), TestTxn_Apply_NodeSetRejectsCrossNodeTakeoverByID still passes (that code path is untouched by the mutation). With F2P_TOTAL=1, any single failure already crosses the 50% threshold by construction -- this candidate does not have the coarse-bucket grading-design risk that floci-kinesis-concurrent-append-race (candidate 6) had with more than 2 F2P units; no gate restructuring was needed."
+  }
+}
