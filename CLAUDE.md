@@ -2,6 +2,10 @@
 
 Contexto para agentes trabajando en este repo. La fuente de verdad completa es [`guidelines/guidelines-extracted-text.md`](guidelines/guidelines-extracted-text.md) — esto es un resumen operativo, no un sustituto. Ante cualquier duda de gate/formato, leé el original antes de asumir.
 
+Para scouting multiagente, selección de modelo/esfuerzo y uso combinado de
+CodeGraph + búsqueda exacta, seguir también `AGENTS.md` y
+`docs/MULTI_AGENT_ROUTING.md`.
+
 ## Gate de contrato
 
 Antes de crear una task, leer `AUDIT_2026-09-09.md`. La guía privada y el

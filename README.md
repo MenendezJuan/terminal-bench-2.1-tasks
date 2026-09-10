@@ -26,3 +26,10 @@ Pendiente de conseguir: `terminal-bench/tools/package-delivery.sh` y la versión
 exacta de Harbor que valida el formato privado. Hasta tener ambos, no declarar el
 template “exacto” ni armar una entrega manual; el hook local sólo cubre canary y
 em dash.
+
+## Flujo de agentes
+
+Las reglas de descubrimiento, selección de modelo y handoff están en
+[`AGENTS.md`](AGENTS.md). La matriz explicada y el router reproducible están en
+[`docs/MULTI_AGENT_ROUTING.md`](docs/MULTI_AGENT_ROUTING.md) y
+[`scripts/route_agent.py`](scripts/route_agent.py).
