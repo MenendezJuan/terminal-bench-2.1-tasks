@@ -1,0 +1,19 @@
+{
+  "measured_at": "2026-09-10",
+  "collected_base": 261,
+  "collected_gold": 452,
+  "failed_base": 4,
+  "failed_gold": 0,
+  "fail_to_pass": [
+    "TestUpstreamTokenRefresher_RowIdentity",
+    "TestUpstreamTokenRowIDResolution"
+  ],
+  "pass_to_pass_sample": [
+    "TestUpstreamTokenRefresher_SingleflightDedup",
+    "TestUpstreamTokenRefresher_RefreshAndStore"
+  ],
+  "derivation": "Empirical, not guessed. Built the sealed image at base_commit, installed the PR's own post-fix refresher_test.go and types_test.go, ran go test -json ./pkg/authserver/...: the two packages containing the graded test files (pkg/authserver and pkg/authserver/storage) fail to COMPILE at base, since the test files reference storage.UpstreamTokenRowID and ResolveUpstreamTokenRowID, symbols that do not exist yet -- this takes down every test in both packages, including 2 pre-existing ones (TestUpstreamTokenRefresher_SingleflightDedup, TestUpstreamTokenRefresher_RefreshAndStore) that are genuinely unaffected in behavior but share the same test file. 261 top-level test results are still collected from sibling subpackages under pkg/authserver/... that do compile independently and are untouched. Applied solution/patch.diff (verbatim gold patch, 6 source files plus a docs file and the mocks file) on the same image and re-ran: 452 top-level test results, all passing, including both new tests and both previously-uncompilable existing ones. Repeated the base and gold runs once more each to rule out flakes: fully stable both times.",
+  "mutation_testing": {
+    "note": "A hand-written plausible incomplete repair was tested before any model run: applied the real gold patch, then replaced the singleflight critical-section body with a version that resolves and keys on the new row identity (so deduplication itself appears correctly wired) but never re-reads the authoritative storage row inside the critical section before redeeming -- it just calls refreshAndStore directly with the original expired token the caller passed in. This is a realistic partial fix: a model could easily add the identity-resolution machinery (the more visible half of the PR) and miss that the critical section must ALSO re-read storage before deciding whether a refresh is even still needed, which is what actually prevents a stale concurrent caller from redeeming with outdated data. TestUpstreamTokenRefresher_RowIdentity (F2P) and TestUpstreamTokenRefresher_SingleflightDedup (P2P) both correctly fail under this mutation -- the P2P failure alone would already fail the whole attempt under the zero-tolerance PASS_TO_PASS rule, and the F2P failure independently crosses the 50% threshold (1 of 2)."
+  }
+}

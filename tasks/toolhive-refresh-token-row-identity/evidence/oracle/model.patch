@@ -1,0 +1,331 @@
+diff --git a/docs/arch/11-auth-server-storage.md b/docs/arch/11-auth-server-storage.md
+index 2435737..9029e2d 100644
+--- a/docs/arch/11-auth-server-storage.md
++++ b/docs/arch/11-auth-server-storage.md
+@@ -176,6 +176,26 @@ The implementation uses different strategies based on consistency requirements:
+ - **Pipelines** (`MULTI`/`EXEC`) for batched operations: authorization code invalidation, token session creation with secondary index updates
+ - **Individual commands** with best-effort cleanup: token revocation, refresh token rotation — partial failures are safe since orphaned keys expire via TTL
+ 
++### Refresh Coordination Scope
++
++When an expired upstream access token is refreshed, `UpstreamTokenStorage` derives
++an opaque SHA-256 identity from its storage-defined row representation. For
++Redis, that representation is its row-key format, so two `(sessionID,
++providerName)` pairs that happen to produce the same Redis key resolve to the
++same identity — that's safe because they're the same physical row. What's
++not allowed is aliasing two pairs that are genuinely different rows: the
++auth server uses this identity only as the key for its in-process
++`singleflight` group, then its leader re-reads the row before redeeming its
++refresh token, and it reads/writes under its own sessionID — aliasing
++distinct rows would cross credentials between sessions. This prevents
++duplicate redemption from stale concurrent callers served by the same
++process; the identity is not persisted, logged, or exposed.
++
++This is deliberately narrower than #4122: it does not provide distributed
++coordination across replicas, row-addressed mutation, compare-and-swap, or any
++other cross-process consistency guarantee. Redis remains the durable storage
++backend, while each replica coordinates only its own in-flight refreshes.
++
+ ### Serialization
+ 
+ All values are stored as JSON. The implementation uses defensive copies on read and write to prevent caller mutations from affecting stored data.
+diff --git a/pkg/auth/upstreamtoken/service.go b/pkg/auth/upstreamtoken/service.go
+index 3c948b5..20f51ff 100644
+--- a/pkg/auth/upstreamtoken/service.go
++++ b/pkg/auth/upstreamtoken/service.go
+@@ -16,8 +16,9 @@ import (
+ // InProcessService implements the Service interface for in-process use.
+ // It composes storage (read) and refresher (refresh + persist) to provide a
+ // single GetValidTokens call. Concurrent-refresh deduplication is delegated to
+-// the refresher's own singleflight.Group so the same Group covers both the
+-// handler's chain-walk path and the runtime token-swap path.
++// the refresher's own singleflight.Group keyed by an opaque storage-row identity,
++// so the same Group covers both the handler's chain-walk path and the runtime
++// token-swap path within this process.
+ type InProcessService struct {
+ 	storage   storage.UpstreamTokenStorage
+ 	refresher storage.UpstreamTokenRefresher
+@@ -147,7 +148,8 @@ func (s *InProcessService) GetAllUpstreamCredentials(
+ 
+ // refreshOrFail attempts a refresh via the shared refresher and maps errors to
+ // the service's sentinel errors. Deduplication of concurrent refreshes for the
+-// same (session, provider) pair is handled inside the refresher.
++// same logical upstream-token row is handled inside the refresher using an
++// opaque storage-row identity.
+ func (s *InProcessService) refreshOrFail(
+ 	ctx context.Context,
+ 	sessionID string,
+diff --git a/pkg/authserver/refresher.go b/pkg/authserver/refresher.go
+index d5b772f..d0dcab3 100644
+--- a/pkg/authserver/refresher.go
++++ b/pkg/authserver/refresher.go
+@@ -37,8 +37,8 @@ const upstreamDeleteTimeout = 5 * time.Second
+ // a set of upstream OAuth2Providers (keyed by provider name) and
+ // UpstreamTokenStorage (for persisting the refreshed tokens). On each refresh
+ // call it dispatches to the correct provider based on the expired token's
+-// ProviderID, deduplicating concurrent refreshes for the same
+-// (session, provider) pair via sfGroup.
++// ProviderID. It deduplicates concurrent refreshes by the opaque storage-row
++// identity returned by UpstreamTokenStorage, within this process only.
+ type upstreamTokenRefresher struct {
+ 	providers            map[string]upstream.OAuth2Provider
+ 	storage              storage.UpstreamTokenStorage
+@@ -49,10 +49,12 @@ type upstreamTokenRefresher struct {
+ // Compile-time check that upstreamTokenRefresher implements storage.UpstreamTokenRefresher.
+ var _ storage.UpstreamTokenRefresher = (*upstreamTokenRefresher)(nil)
+ 
+-// RefreshAndStore deduplicates concurrent refreshes for the same (session,
+-// provider) pair, then delegates to refreshAndStore. The detached-context
+-// timeout ensures waiting callers are not abandoned if the initiating request
+-// cancels before the upstream round-trip completes.
++// RefreshAndStore validates deterministic input errors before resolving the
++// opaque storage-row identity used to deduplicate a refresh within this process.
++// The leader re-reads that row under a detached timeout so it never redeems a
++// stale refresh token supplied by a caller. It only short-circuits on that
++// re-read when the row is actually unexpired; a storage backend that returns
++// tokens without checking expiry does not fool it into skipping the refresh.
+ func (r *upstreamTokenRefresher) RefreshAndStore(
+ 	ctx context.Context,
+ 	sessionID string,
+@@ -61,14 +63,47 @@ func (r *upstreamTokenRefresher) RefreshAndStore(
+ 	if expired == nil {
+ 		return nil, errors.New("expired tokens are required")
+ 	}
++	if expired.RefreshToken == "" {
++		return nil, errors.New("no refresh token available for upstream token refresh")
++	}
++	if _, ok := r.providers[expired.ProviderID]; !ok {
++		return nil, fmt.Errorf("no upstream provider configured for %q", expired.ProviderID)
++	}
+ 
+-	// providerName == ProviderID throughout the authserver; both originate from
+-	// UpstreamConfig.Name and are stored verbatim in UpstreamTokens.ProviderID.
+-	key := sessionID + ":" + expired.ProviderID
+-	result, err, _ := r.sfGroup.Do(key, func() (any, error) {
++	rowID, err := r.storage.ResolveUpstreamTokenRowID(ctx, sessionID, expired.ProviderID)
++	if err != nil {
++		return nil, err
++	}
++	if rowID == "" {
++		return nil, errors.New("upstream token row ID cannot be empty")
++	}
++
++	result, err, _ := r.sfGroup.Do(string(rowID), func() (any, error) {
+ 		refreshCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), refreshTimeout)
+ 		defer cancel()
+-		return r.refreshAndStore(refreshCtx, sessionID, expired)
++
++		authoritative, readErr := r.storage.GetUpstreamTokens(refreshCtx, sessionID, expired.ProviderID)
++		if readErr == nil {
++			// Some storage implementations may return tokens without checking
++			// access-token expiry (the interface does not require it; see
++			// storage.UpstreamTokenStorage.GetUpstreamTokens). Only short-circuit
++			// when the re-read row is actually unexpired; otherwise fall through
++			// and refresh using it as the authoritative row.
++			if authoritative == nil {
++				return nil, fmt.Errorf(
++					"upstream token row missing on re-read for session %q provider %q",
++					sessionID, expired.ProviderID,
++				)
++			}
++			if !authoritative.IsExpired(time.Now()) {
++				return authoritative, nil
++			}
++			return r.refreshAndStore(refreshCtx, sessionID, authoritative)
++		}
++		if !errors.Is(readErr, storage.ErrExpired) || authoritative == nil {
++			return nil, readErr
++		}
++		return r.refreshAndStore(refreshCtx, sessionID, authoritative)
+ 	})
+ 	if err != nil {
+ 		return nil, err
+@@ -77,7 +112,8 @@ func (r *upstreamTokenRefresher) RefreshAndStore(
+ 	if !ok || refreshed == nil {
+ 		return nil, errors.New("unexpected nil result from upstream token refresh")
+ 	}
+-	return refreshed, nil
++	refreshedCopy := *refreshed
++	return &refreshedCopy, nil
+ }
+ 
+ // refreshAndStore performs the actual token refresh and storage write.
+diff --git a/pkg/authserver/server_impl.go b/pkg/authserver/server_impl.go
+index a8b2e73..020bb9d 100644
+--- a/pkg/authserver/server_impl.go
++++ b/pkg/authserver/server_impl.go
+@@ -205,7 +205,8 @@ func newServer(ctx context.Context, cfg Config, stor storage.Storage, opts ...se
+ 	// refresh an expired upstream leg during login instead of skipping it and
+ 	// failing later at MCP-request token-swap time. The same instance is stored
+ 	// on the server so UpstreamTokenRefresher() returns the identical object,
+-	// ensuring both paths share one singleflight.Group.
++	// ensuring both paths share one process-local singleflight.Group keyed by
++	// opaque storage-row identity.
+ 	refresher := newUpstreamTokenRefresher(upstreams, stor, cfg.RefreshTokenLifespan)
+ 	handlerInstance, err := handlers.NewHandler(fositeProvider, authServerConfig, stor, upstreams,
+ 		buildHandlerOptions(refresher, cfg.UpstreamFilter)...)
+@@ -324,8 +325,8 @@ func (s *server) DCRStore() storage.DCRCredentialStore {
+ 
+ // UpstreamTokenRefresher returns the single shared refresher constructed in
+ // newServer. Both the handler's chain-walk path and the runtime token-swap
+-// path use this instance, ensuring concurrent refreshes for the same
+-// (session, provider) pair are deduplicated by a single singleflight.Group.
++// path use this instance, ensuring concurrent refreshes for the same logical
++// upstream-token row are deduplicated by one process-local singleflight.Group.
+ func (s *server) UpstreamTokenRefresher() storage.UpstreamTokenRefresher {
+ 	return s.upstreamRefresher
+ }
+diff --git a/pkg/authserver/storage/memory.go b/pkg/authserver/storage/memory.go
+index 21f20e7..d7c97a9 100644
+--- a/pkg/authserver/storage/memory.go
++++ b/pkg/authserver/storage/memory.go
+@@ -863,6 +863,18 @@ func (s *MemoryStorage) DeletePKCERequestSession(_ context.Context, signature st
+ // Upstream Token Storage
+ // -----------------------
+ 
++// ResolveUpstreamTokenRowID returns an opaque ID for process-local refresh
++// coordination of a logical upstream-token row.
++func (*MemoryStorage) ResolveUpstreamTokenRowID(_ context.Context, sessionID, providerName string) (UpstreamTokenRowID, error) {
++	if sessionID == "" {
++		return "", fosite.ErrInvalidRequest.WithHint("session ID cannot be empty")
++	}
++	if providerName == "" {
++		return "", fosite.ErrInvalidRequest.WithHint("provider name cannot be empty")
++	}
++	return upstreamTokenRowID(sessionID, providerName), nil
++}
++
+ // StoreUpstreamTokens stores the upstream IDP tokens for a session and provider.
+ // A defensive copy is made to prevent aliasing issues.
+ func (s *MemoryStorage) StoreUpstreamTokens(_ context.Context, sessionID, providerName string, tokens *UpstreamTokens) error {
+diff --git a/pkg/authserver/storage/mocks/mock_storage.go b/pkg/authserver/storage/mocks/mock_storage.go
+index 467bd2e..f062b97 100644
+--- a/pkg/authserver/storage/mocks/mock_storage.go
++++ b/pkg/authserver/storage/mocks/mock_storage.go
+@@ -331,6 +331,21 @@ func (mr *MockUpstreamTokenStorageMockRecorder) GetUpstreamTokens(ctx, sessionID
+ 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUpstreamTokens", reflect.TypeOf((*MockUpstreamTokenStorage)(nil).GetUpstreamTokens), ctx, sessionID, providerName)
+ }
+ 
++// ResolveUpstreamTokenRowID mocks base method.
++func (m *MockUpstreamTokenStorage) ResolveUpstreamTokenRowID(ctx context.Context, sessionID, providerName string) (storage.UpstreamTokenRowID, error) {
++	m.ctrl.T.Helper()
++	ret := m.ctrl.Call(m, "ResolveUpstreamTokenRowID", ctx, sessionID, providerName)
++	ret0, _ := ret[0].(storage.UpstreamTokenRowID)
++	ret1, _ := ret[1].(error)
++	return ret0, ret1
++}
++
++// ResolveUpstreamTokenRowID indicates an expected call of ResolveUpstreamTokenRowID.
++func (mr *MockUpstreamTokenStorageMockRecorder) ResolveUpstreamTokenRowID(ctx, sessionID, providerName any) *gomock.Call {
++	mr.mock.ctrl.T.Helper()
++	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResolveUpstreamTokenRowID", reflect.TypeOf((*MockUpstreamTokenStorage)(nil).ResolveUpstreamTokenRowID), ctx, sessionID, providerName)
++}
++
+ // StoreUpstreamTokens mocks base method.
+ func (m *MockUpstreamTokenStorage) StoreUpstreamTokens(ctx context.Context, sessionID, providerName string, tokens *storage.UpstreamTokens) error {
+ 	m.ctrl.T.Helper()
+@@ -979,6 +994,21 @@ func (mr *MockStorageMockRecorder) RenewClientTTL(ctx, client any) *gomock.Call
+ 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RenewClientTTL", reflect.TypeOf((*MockStorage)(nil).RenewClientTTL), ctx, client)
+ }
+ 
++// ResolveUpstreamTokenRowID mocks base method.
++func (m *MockStorage) ResolveUpstreamTokenRowID(ctx context.Context, sessionID, providerName string) (storage.UpstreamTokenRowID, error) {
++	m.ctrl.T.Helper()
++	ret := m.ctrl.Call(m, "ResolveUpstreamTokenRowID", ctx, sessionID, providerName)
++	ret0, _ := ret[0].(storage.UpstreamTokenRowID)
++	ret1, _ := ret[1].(error)
++	return ret0, ret1
++}
++
++// ResolveUpstreamTokenRowID indicates an expected call of ResolveUpstreamTokenRowID.
++func (mr *MockStorageMockRecorder) ResolveUpstreamTokenRowID(ctx, sessionID, providerName any) *gomock.Call {
++	mr.mock.ctrl.T.Helper()
++	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResolveUpstreamTokenRowID", reflect.TypeOf((*MockStorage)(nil).ResolveUpstreamTokenRowID), ctx, sessionID, providerName)
++}
++
+ // RevokeAccessToken mocks base method.
+ func (m *MockStorage) RevokeAccessToken(ctx context.Context, requestID string) error {
+ 	m.ctrl.T.Helper()
+diff --git a/pkg/authserver/storage/redis.go b/pkg/authserver/storage/redis.go
+index ad6fadd..305552a 100644
+--- a/pkg/authserver/storage/redis.go
++++ b/pkg/authserver/storage/redis.go
+@@ -1044,6 +1044,18 @@ func (s *RedisStorage) StoreUpstreamTokens(ctx context.Context, sessionID, provi
+ 	return nil
+ }
+ 
++// ResolveUpstreamTokenRowID returns an opaque ID for process-local refresh
++// coordination of a logical upstream-token row.
++func (s *RedisStorage) ResolveUpstreamTokenRowID(_ context.Context, sessionID, providerName string) (UpstreamTokenRowID, error) {
++	if sessionID == "" {
++		return "", fosite.ErrInvalidRequest.WithHint("session ID cannot be empty")
++	}
++	if providerName == "" {
++		return "", fosite.ErrInvalidRequest.WithHint("provider name cannot be empty")
++	}
++	return upstreamTokenRowID(redisUpstreamKey(s.keyPrefix, sessionID, providerName)), nil
++}
++
+ // GetUpstreamTokens retrieves the upstream IDP tokens for a session and provider.
+ // Returns a new UpstreamTokens struct deserialized from Redis, which acts as
+ // a defensive copy - callers cannot modify the stored data by mutating the return value.
+diff --git a/pkg/authserver/storage/types.go b/pkg/authserver/storage/types.go
+index 3813741..b59ebde 100644
+--- a/pkg/authserver/storage/types.go
++++ b/pkg/authserver/storage/types.go
+@@ -23,6 +23,7 @@ import (
+ 	"crypto/sha256"
+ 	"encoding/hex"
+ 	"errors"
++	"fmt"
+ 	"slices"
+ 	"sort"
+ 	"time"
+@@ -550,6 +551,23 @@ type ClientRegistry interface {
+ 	RenewClientTTL(ctx context.Context, client fosite.Client) error
+ }
+ 
++// UpstreamTokenRowID is an opaque, process-local coordination key for one
++// logical upstream token row. Callers must not persist, log, or expose it.
++type UpstreamTokenRowID string
++
++// upstreamTokenRowID returns a SHA-256 digest of the supplied row-key components.
++// Each component is length-prefixed so the encoding is self-delimiting: distinct
++// inputs cannot share a canonical representation when a component contains the
++// delimiter. Hashing keeps the session ID out of a value that is easy to log.
++func upstreamTokenRowID(components ...string) UpstreamTokenRowID {
++	h := sha256.New()
++	for _, component := range components {
++		// hash.Hash.Write never returns an error.
++		_, _ = fmt.Fprintf(h, "%d:%s", len(component), component)
++	}
++	return UpstreamTokenRowID(hex.EncodeToString(h.Sum(nil)))
++}
++
+ // UpstreamTokenStorage provides storage for tokens obtained from upstream identity providers.
+ // The auth server exposes this interface via Server.UpstreamTokenStorage() for use by
+ // middleware that needs to retrieve upstream tokens (e.g., token swap middleware that
+@@ -560,6 +578,23 @@ type ClientRegistry interface {
+ // A secondary lookup by (userID, providerID) is exposed via GetLatestUpstreamTokensForUser;
+ // see that method for usage and security contract.
+ type UpstreamTokenStorage interface {
++	// ResolveUpstreamTokenRowID returns an opaque non-empty identity for the
++	// (sessionID, providerName) row. Equal physical rows must resolve to equal
++	// IDs; implementations must NOT alias rows that are not physically the
++	// same row (e.g. two distinct sessionIDs), because the singleflight leader
++	// reads and writes under its own sessionID, and aliasing distinct rows
++	// would cross credentials between sessions. A backend whose storage key is
++	// derived from (sessionID, providerName) may legitimately map two
++	// different (sessionID, providerName) pairs to the same ID when they are
++	// the same physical row under that key scheme.
++	//
++	// Resolution must be local and side-effect-free (no I/O): it is called
++	// before the singleflight joins, so any I/O here gives every concurrent
++	// caller its own round-trip and partially defeats the deduplication. This
++	// ID is solely for process-local refresh coordination: callers must not
++	// persist, log, or expose it.
++	ResolveUpstreamTokenRowID(ctx context.Context, sessionID, providerName string) (UpstreamTokenRowID, error)
++
+ 	// StoreUpstreamTokens stores the upstream IDP tokens for a session and provider.
+ 	// The providerName identifies which upstream provider these tokens belong to.
+ 	StoreUpstreamTokens(ctx context.Context, sessionID, providerName string, tokens *UpstreamTokens) error
