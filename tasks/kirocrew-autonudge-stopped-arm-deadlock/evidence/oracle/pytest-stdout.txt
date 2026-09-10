@@ -1,0 +1,48 @@
+/app/xdist_budget.py:417: UserWarning: xdist worker budget: 14 of 16 workers (29.0 GiB free, 30 GiB installed). Each worker needs about 2 GiB, mostly to collect the suite. A run this narrow is slow, not stuck -- free some memory, run a subset (pytest test/test_thing.py), or pass an explicit -n <N> to bypass this budget.
+  warnings.warn(
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /app
+configfile: setup.cfg
+plugins: cov-6.3.0, asyncio-1.4.0, hypothesis-6.168.0, testmon-2.2.0, timeout-2.4.0, xdist-3.8.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+timeout: 120.0s
+timeout method: signal
+timeout func_only: False
+created: 14/14 workers
+14 workers [194 items]
+
+[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m [ 37%]
+[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m [ 74%]
+[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0mTask was destroyed but it is pending!
+task: <Task pending name='Task-83' coro=<TestATimerOutlivesItsEventLoop._timer_on_a_closed_loop.<locals>._own_loop.<locals>._arm.<locals>._sleeper() done, defined at /app/test/test_autonudge.py:5475> wait_for=<Future pending cb=[Task.task_wakeup()]>>
+[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m                       [100%][0mTask was destroyed but it is pending!
+task: <Task pending name='Task-81' coro=<TestATimerOutlivesItsEventLoop._timer_on_a_closed_loop.<locals>._own_loop.<locals>._arm.<locals>._sleeper() running at /app/test/test_autonudge.py:5476> wait_for=<Future pending cb=[Task.task_wakeup()]>>
+
+[33m=============================== warnings summary ===============================[0m
+.venv/lib/python3.12/site-packages/xdist/plugin.py:289: 15 warnings
+  /app/.venv/lib/python3.12/site-packages/xdist/plugin.py:289: DeprecationWarning: The --looponfail command line argument and looponfailroots config variable are deprecated.
+  The loop-on-fail feature will be removed in pytest-xdist 4.0.
+    config.issue_config_time_warning(warning, 2)
+
+test/test_autonudge.py: 14 warnings
+  /app/test/conftest.py:687: DeprecationWarning: There is no current event loop
+    loop = asyncio.get_event_loop()
+
+test/test_autonudge.py::TestAutonudgeStartIntCoercion::test_non_integer_idle_secs_is_400_not_500
+test/test_autonudge.py::TestAutonudgeStartIntCoercion::test_valid_integers_still_start
+test/test_autonudge.py::TestAutonudgeStartIntCoercion::test_budget_bounds_enforced_not_truncated
+test/test_autonudge.py::TestAutonudgeStartIntCoercion::test_overflowing_budget_is_400_not_500
+  /app/test/test_autonudge.py:4221: NotAppKeyWarning: It is recommended to use web.AppKey instances for keys.
+  https://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config
+    app["state"] = state
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+----------------- generated xml file: /logs/verifier/junit.xml -----------------
+============================= slowest 5 durations ==============================
+0.54s call     test/test_autonudge.py::test_every_nudge_able_channel_has_a_fire_adapter
+0.27s call     test/test_autonudge.py::test_a_long_quiet_streak_is_delivered_anyway
+0.22s call     test/test_autonudge.py::TestAutonudgeUpdateConcurrency::test_cancelled_update_cannot_clobber_a_later_one
+0.21s call     test/test_autonudge.py::TestAutonudgeUpdateConcurrency::test_delivered_cycle_persistence_is_not_cancellable_by_update
+0.21s call     test/test_autonudge.py::TestAutonudgeUpdateConcurrency::test_update_mid_fire_does_not_cancel_the_turn
+[33m======================= [32m194 passed[0m, [33m[1m33 warnings[0m[33m in 4.00s[0m[33m =======================[0m

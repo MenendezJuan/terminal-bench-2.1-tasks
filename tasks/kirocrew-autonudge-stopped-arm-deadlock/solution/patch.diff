@@ -1,0 +1,373 @@
+diff --git a/docs/system-specs/modules/learn-cron-dashboard.md b/docs/system-specs/modules/learn-cron-dashboard.md
+index b21573cf5..29d9893be 100644
+--- a/docs/system-specs/modules/learn-cron-dashboard.md
++++ b/docs/system-specs/modules/learn-cron-dashboard.md
+@@ -71,7 +71,7 @@ Scheduled job execution with three schedule types: `every` (interval, min 60s),
+ - Semaphore safety: `_acquired` flag pattern in gateway.py, handler.py, chat.py, task_executor.py prevents over-release when `get_or_create()` throws
+ - ACP zombie detection: `_last_activity` timestamp on AcpClient, `is_responsive()` returns False after 10 minutes of inactivity
+ - Job execution: resets LLM session, streams response, posts to the job's own surface plus the dashboard (unless `silent`). Delivery is routed by ORIGIN: `_deliver_cron_to_channel` resolves the session that CREATED the job (`_cron_origin_key`, off `job.session_key`) and, when that session belongs to a non-Slack channel, delivers there and the Slack owner-DM leg stands down, so one run notifies one operator once. Every leg gates on that send's own return value rather than on a prediction, so a governance refusal or a wire failure falls through to Slack instead of dropping the run, and the SEL `downstream_service` names `slack` only when the Slack post landed. An explicit `job.channel` is a destination the user pinned and takes precedence over both. A Slack-origin, dashboard-origin or origin-less job keeps the Slack leg, which is every job an install carries today. The same routing covers the result, the run-failure alert and the crash alert. Delivery via `_deliver_cron_response`: attempts configured `channel`/`thread_ts` first, falls back to owner-DM if channel delivery fails; applies boundary redaction to all output before posting. It also renders any `[OPTIONS: ...]` tags as interactive Slack buttons — `extract_options()` strips them from the text and `build_options_blocks()` posts them under a try/except guard so a Block Kit failure never blocks the text delivery (`gateway.py`)
+-- Session scoping: identity comes from the per-call caller block gatewayd injects (`_meta.kirocrew.caller`, consumed via `_resolve_session_key_strict`), with `KIROCREW_SESSION_KEY` and `KIROCREW_HOST_PID`+HMAC as the non-gateway-launch fallbacks; the lenient `/proc` pid walk is deliberately NOT an authorization source. `kirocrew-cron` advertises `kirocrew.caller-identity` so gatewayd injects that block — without the advertisement it is pooled AND identity-blind (nothing declines to pool an unadvertised backend), which is why every session-scoped path used to read an empty key and fail open. One scope function, `_owned_by`, gates BOTH reads and writes: a caller reaches only the jobs whose `session_key` matches its own. Consequences: an unidentifiable caller (gatewayd forwards `caller=None` when a stub registers with no key and peer resolution fails, so it may be sharing a pooled backend with identified sessions) reaches nothing and every write refuses; `cron_add` refuses rather than storing an ownerless row; a job with no recorded owner — written by `kirocrew cron add`, the onboarding importer, and pre-fix pooled `cron_add` — is outside every session's scope in both directions, so it does not appear in `cron_list` from chat and the CLI remains its management surface; `cron_remove_all` removes only the calling session's jobs. `_caller_is_cli()` (`KIROCREW_CLI=1`) is an in-process admin bypass that nothing in `src/` sets today; the CLI reaches `CronService` directly and never routes through this server. `cron_add` also takes its default delivery channel from the caller block's `channelId`, since `KIROCREW_CHANNEL_ID` has the same one-session-per-process defect as the key
++- Session scoping: identity comes from the per-call caller block gatewayd injects (`_meta.kirocrew.caller`, consumed via `_resolve_session_key_strict`), with `KIROCREW_SESSION_KEY` and `KIROCREW_HOST_PID`+HMAC as the non-gateway-launch fallbacks; the lenient `/proc` pid walk is deliberately NOT an authorization source. `kirocrew-cron` advertises `kirocrew.caller-identity` so gatewayd injects that block — without the advertisement it is pooled AND identity-blind (nothing declines to pool an unadvertised backend), which is why every session-scoped path used to read an empty key and fail open. One scope function, `_owned_by`, gates BOTH reads and writes: a caller reaches only the jobs whose `session_key` matches its own. Consequences: an unidentifiable caller (gatewayd forwards `caller=None` when a stub registers with no key and peer resolution fails, so it may be sharing a pooled backend with identified sessions) reaches nothing and every write refuses; `cron_add` refuses rather than storing an ownerless row; a job with no recorded owner — written by `kirocrew cron add`, the onboarding importer, and pre-fix pooled `cron_add` — is outside every session's scope in both directions, so it does not appear in `cron_list` from chat and the CLI remains its management surface; `cron_remove_all` removes only the calling session's jobs. There is no admin bypass on this server and no ambient environment value grants cross-session scope: identity comes only from the sources `_authz_session_key` accepts. The CLI's authority does not come from this server at all — `kirocrew cron ...` reaches `CronService` directly and never routes through it, which is why the refusal text names that route. `cron_add` also takes its default delivery channel from the caller block's `channelId`, since `KIROCREW_CHANNEL_ID` has the same one-session-per-process defect as the key
+ - Silent mode: `CronJob.silent = True` suppresses auto-delivery of results; the agent decides when to notify the user via the `send_message` MCP tool. Silent also gates **failure** broadcasts: the failure-alert sites — the dup-failure dashboard bell, the fresh-failure dashboard bell, and the fresh-failure Slack DM (`gateway.py`) — are wrapped in `not job.silent`, so a silent cron's failure is *recorded but not broadcast*. The dedup-state advance (`last_failure_hash`/`last_failure_at`), the consecutive-failure auto-pause, the SEL `cron_failure_alert` audit, and the re-raise still fire regardless of `silent`
+ - Per-agent cron: jobs store optional `agent_id`; gateway passes `agent=job.agent_id` to `get_or_create()` so each job runs with its configured agent
+ - Handler intercepts cron commands before ACP (no LLM round-trip needed)
+@@ -255,7 +255,7 @@ Deterministic cron jobs that bypass the LLM entirely:
+ - **Script-mode MCP identity**: a script cron runs as the principal `cron:<job id>` — the same key `ScriptContext` presents to the gateway over HTTP (`X-Session-Key` / `caller_session`) and the key an agent cron's session runs under, so ownership and audit see one principal per job whichever surface the job uses. It is delivered on two hops: `run_script_sandboxed` exports `KIROCREW_SESSION_KEY=cron:<job id>` into the script child, and `McpToolClient` hard-assigns the same key on the env of every MCP server `ctx.call_tool()` spawns — after both the inherited-env and per-server `env` overlays, so a script that rewrites its own `os.environ` cannot present a different principal (best-effort friction on the same footing as the rest of the env-based identity contract, not a containment boundary). This is load-bearing rather than cosmetic: a direct MCP spawn is not routed through gatewayd, so it gets no caller block, and nobody publishes a signed `session_pid_*` sidecar for the launcher pid — leaving a script cron with **none** of the three sources `_resolve_session_key_strict()` accepts, which fails closed for writes only. Every state-mutating tool then returns its refusal as an ordinary result string while read-only calls keep working, so the job reports `ok` and writes nothing. Two consequences to keep in mind: `cloud.aws.assert_human_action` keys on the same env var, so destructive cloud verbs from a script cron are refused exactly as they are from an agent session; and job ownership is unchanged, so a script cron reaches only the jobs recorded under its own key (`cron_trigger` against another job stays refused, as it is for agent crons). The general rule this is one instance of: **a spawn path that hands a child MCP access must hand it an identity too**, because the strict resolver fails closed for writes alone and the omission is therefore silent.
+ - **Command mode**: `command` field specifies a shell command to run (mutually exclusive with `script`). Stdout captured as result.
+ - **Timeout**: configurable per job (default 30s for scripts, 300s for commands).
+-- **Safety**: scripts must live under `~/.kiro/crew/crons/`. `is_sensitive_path()` blocks credential file access. SEL audit on every invocation. Auto-pause after 5 consecutive failures (`_AUTO_PAUSE_THRESHOLD`, single-sourced in `CronJob.record_failure`/`record_success`). The auto-pause is **persistent**: an execution-owned `auto_paused` flag (distinct from `user_paused`) is written by `_save`, propagated by `_merge_job_result`, and folded into the effective `enabled` derivation in `_load` — so a failing job stays paused across a daemon restart; `enable_job(True)` or a later success clears it (SEL-audited transitions). Concurrent execution guard prevents double-fire. The script **body** is scanned as well — at authoring time and again at every fire, via `_vet_script_file` on the freshly re-resolved path — for credential-path references, protected secret environment variables, exfiltration URLs, and the shared sensitive-path matcher. Two shell-grammar heuristics are deliberately excluded there, because a body is Python source rather than a command line: `is_denied` (tool-name semantics such as `*git*push*`) and the raw-text separator-run collapse (in source a backslash run is an escape, so collapsing it manufactures paths the body never contained). The collapse is **replaced, not dropped** — `security.is_sensitive_source_body()` owns both halves, applying the same fence checks to each decoded string or bytes literal and exonerating one only when it sits provably in the pattern operand of a pattern-consuming call that is the outermost expression it reaches, and the body has neither rebound `re` or one of its attributes nor read a pattern back off an `re` object, so a run that survives into a real path (`open(r"…\\kiro-cli\\c.json")`, which Win32 collapses at open time) is still refused; docstrings are scanned, because Python retains them as `__doc__` where a body can read them back; see [security.md](security.md). A body that does not parse, or one too deep to traverse, keeps the raw-text collapse instead. A fire-time denial keeps the job and does not feed the auto-pause counter, so a body the scan misjudges is denied on every tick until it is edited.
++- **Safety**: scripts must live under `~/.kiro/crew/crons/`. `is_sensitive_path()` blocks credential file access. SEL audit on every invocation. Auto-pause after 5 consecutive failures (`_AUTO_PAUSE_THRESHOLD`, single-sourced in `CronJob.record_failure`/`record_success`). The auto-pause is **persistent**: an execution-owned `auto_paused` flag (distinct from `user_paused`) is written by `_save`, propagated by `_merge_job_result`, and folded into the effective `enabled` derivation in `_load` — so a failing job stays paused across a daemon restart; `enable_job(True)` or a later success clears it (SEL-audited transitions). Concurrent execution guard prevents double-fire. The script **body** is scanned as well — at authoring time and again at every fire, via `_vet_script_file` on the freshly re-resolved path — for credential-path references, protected secret environment variables, exfiltration URLs, and the shared sensitive-path matcher. Two shell-grammar heuristics are deliberately excluded there, because a body is Python source rather than a command line: `is_denied` (tool-name semantics such as `*git*push*`) and the raw-text separator-run collapse (in source a backslash run is an escape, so collapsing it manufactures paths the body never contained). The collapse is **replaced, not dropped** — `security.is_sensitive_source_body()` owns both halves, applying the same fence checks to each decoded string or bytes literal and exonerating one only when it sits provably in the pattern operand of a pattern-consuming call that is the outermost expression it reaches, and the body has neither rebound `re` or one of its attributes nor read a pattern back off an `re` object, so a run that survives into a real path (`open(r"…\\kiro-cli\\c.json")`, which Win32 collapses at open time) is still refused; docstrings are scanned, because Python retains them as `__doc__` where a body can read them back; see [security.md](security.md). A body that does not parse, or one too deep to traverse, keeps the raw-text collapse instead. The passes that need a command line are likewise pointed at the command strings the body CONTAINS rather than at the document: two of them walk shell structure under a fail-closed budget and every line of a Python file counts as a pipeline stage — so before that a body of a few hundred lines was refused for its LENGTH, on every fire, carrying no shell at all — and the third, the env-credential rules, are ordered-existence patterns that over a document match pieces lying arbitrarily far apart (`_SOURCE_COMMAND_SUBJECT_CAP` bounds the subject count; an unparseable body keeps the whole-document scan). A fire-time denial keeps the job and does not feed the auto-pause counter, so a body the scan misjudges is denied on every tick until it is edited.
+ - **Kind tag**: `cron_list` labels each job as `script`, `command`, or `agent` based on which mode is configured.
+ 
+ #### Auto-pause applies to `agent` (message) crons too
+@@ -1633,9 +1633,9 @@ React 18 + TypeScript + Vite 5 + Redux Toolkit + React Router v7 + Tailwind CSS
+   - **Agent Config tab**: JSON editor with Save + warning about `kirocrew setup --agent-only`
+ - **Settings → Voice** (`/settings/voice`) — the Speech-to-Text card (`website/src/pages/settings/SttSettings.tsx`, rendered inside `VoicePanel.tsx`, so voice-in and voice-out settings share one tab). Controls: enabled, provider (`local` / `apple` / `transcribe`), model, language, and the dictation knobs `streaming` / `silence_ms` / `partial_interval_ms` / `idle_evict_secs` / `endpointing` / `dictation_panel`. **Nothing in the offered set is hardcoded in the frontend**: `providers`, `models`, `language_codes` and `streaming_providers` all come from `GET /api/config/stt`, because what a host can run differs per host (`_stt_providers()` omits `apple` entirely where macOS is too old or the Swift toolchain is absent, rather than offering an option that cannot be selected) and it is the single source of truth for what GET advertises AND what PUT accepts. `streaming_providers` is served from `stt_stream._STREAMING_PROVIDERS` so the streaming controls gate on a CAPABILITY rather than on a provider name; a hardcoded copy goes stale in the permissive direction, offering a provider this host cannot run or hiding a control for one it can. PUT applies **floors only** on the three millisecond/second knobs, each floor owned by the module that reads the value (`vad.MIN_SILENCE_MS`), because a value above the detector's own cap is inert rather than unsafe; a `bool` is rejected explicitly since it subclasses `int` and a checkbox value would otherwise persist as `1`.
+   - **Runtime state is a different endpoint from settings.** `GET /api/stt/status` serves what a panel polls: the availability reason as a `code` plus advisory prose (`transcribe.availability_detail()`), the resolved model with `model_present` and its byte size, `engine_loaded` (whether a model is resident, which is the difference between a ~30 ms transcription and one that pays a load first), and the live `download` state. `POST /api/stt/prepare` starts **or joins** the one-time model download and answers 202 with the current transfer state; concurrent callers share one transfer because the model store serialises them behind its own lock, so the in-flight check is only there to stop a polling panel accumulating tasks. `POST /api/stt/prewarm` answers 202 and loads plus warms the recogniser when the user REACHES for the mic rather than when they release it: a first-ever load compiles a GPU pipeline (measured at 7.4 s) and the first decode after any load allocates its graph (154-528 ms), so both are paid while the user is still speaking.
+-  - **Those three are dashboard-only.** `_deny_app_token` refuses an app token on `status` / `prepare` / `prewarm`: `request["user"]` is truthy for an app token too, so a cookie check alone does not separate a browser from an app that named the path in its manifest, and these start a download and warm a resident model inside the gateway, which is operator setup rather than something an app earns by naming a path. It requires `request["app"] == ""`, so an ABSENT key is refused along with a non-empty one and an unauthenticated route can only fail closed. The transcription surfaces (`GET /api/ws/stt`, `POST /api/stt/transcribe`) are deliberately NOT gated this way, so a shipped app can still transcribe.
+-  - **There is no dependency-install button.** Desktop releases already carry the recognizer and pinned `imageio-ffmpeg` decoder; the only user action is selecting an on-demand model and clicking **Download now**. A source install can need a `voice`-extra command in the gateway's OWN interpreter plus a system FFmpeg command for compressed input; project-venv binaries are not trusted executable storage. These commands are suppressed where no channel into this interpreter exists (frozen build, code-signed app bundle, pip-less or PEP 668 externally-managed python): `transcribe_unsupported` makes the page show an unsupported notice instead of a command that cannot succeed. `bundled_interpreter` also prevents any Homebrew/Winget/Apt decoder advice inside a desktop app. A platform with no prebuilt recognizer wheel is not pip-actionable; the availability `detail` on `/api/stt/status` names it. `ffmpeg_missing` remains independent of `available` for diagnostics, because a corrupt payload can leave a provider ready while an uploaded WebM cannot be decoded. `transcribe` additionally renders `AwsConsentGate service="transcribe"`, which is the only way the paid-service grant is recorded (deliberately no CLI verb).
+-  - Endpoints: `GET/PUT /api/config/stt`, `GET /api/stt/status`, `POST /api/stt/prepare`, `POST /api/stt/prewarm`, `POST /api/stt/transcribe`, `GET /api/ws/stt`. The live dictation surface these settings drive is specified in [stt-streaming](../features/stt-streaming.md).
++  - **Those four are dashboard-only.** `_deny_app_token` refuses an app token on `status` / `prepare` / `prewarm` / `ffmpeg/download`: `request["user"]` is truthy for an app token too, so a cookie check alone does not separate a browser from an app that named the path in its manifest, and these start a download and warm a resident model inside the gateway, which is operator setup rather than something an app earns by naming a path. It requires `request["app"] == ""`, so an ABSENT key is refused along with a non-empty one and an unauthenticated route can only fail closed. The transcription surfaces (`GET /api/ws/stt`, `POST /api/stt/transcribe`) are deliberately NOT gated this way, so a shipped app can still transcribe.
++  - **There is no dependency-install button.** Desktop releases already carry the recognizer and pinned `imageio-ffmpeg` decoder; the only user action is selecting an on-demand model and clicking **Download now**. A source install can need a `voice`-extra command in the gateway's OWN interpreter plus a system FFmpeg command for compressed input; project-venv binaries are not trusted executable storage. These commands are suppressed where no channel into this interpreter exists (frozen build, code-signed app bundle, pip-less or PEP 668 externally-managed python): `transcribe_unsupported` makes the page show an unsupported notice instead of a command that cannot succeed. `bundled_interpreter` also prevents any Homebrew/Winget/Apt decoder advice inside a desktop app. A platform with no prebuilt recognizer wheel is not pip-actionable; the availability `detail` on `/api/stt/status` names it. `ffmpeg_missing` remains independent of `available` for diagnostics, because a corrupt payload can leave a provider ready while an uploaded WebM cannot be decoded. The decoder itself is no longer a shell command on a host whose distribution packages no ffmpeg: `GET /api/stt/status` carries an `ffmpeg` object (`present`, `source` = bundled|system|store, `auto_fetch` = available|unsupported|bundled, the gateway's `os`/`arch`, and the live `download`), `POST /api/stt/ffmpeg/download` fetches the pinned upstream executable into the digest-verified store at `<data home>/models/ffmpeg/`, and `_ffmpeg_install_commands` returns `[]` rather than an `echo` of the ffmpeg.org URL when nothing is actionable. On a fetch failure the page hands the failure to a chat session through the existing prefill hand-off; see [stt-streaming](../features/stt-streaming.md) for the trust model, which the store does not widen. `transcribe` additionally renders `AwsConsentGate service="transcribe"`, which is the only way the paid-service grant is recorded (deliberately no CLI verb).
++  - Endpoints: `GET/PUT /api/config/stt`, `GET /api/stt/status`, `POST /api/stt/prepare`, `POST /api/stt/prewarm`, `POST /api/stt/ffmpeg/download`, `POST /api/stt/transcribe`, `GET /api/ws/stt`. The live dictation surface these settings drive is specified in [stt-streaming](../features/stt-streaming.md).
+ - **System** (`/system`) — live metrics (1s refresh): CPU %, memory used/total, network RX/TX stat cards; host info with correct Apple Silicon arch detection, load averages; memory, process, network, storage detail cards; uptime ticking every 1s via `useUptime` hook (client-side from `start_time`)
+ - **Agent Capabilities** (`/capabilities`; `/agents` redirects here) — merged Agents + Capabilities destination, bottom-pinned in the nav. `SidePanelLayout` tabs in order: **Agents** (agent → workspace → memory store bindings, `KiroCrewAgentsPage` embedded), **Agent Templates** (installed agent configurations/packages, `AgentsPage` embedded), **Integrations (MCP)**, **Skills**, **Hooks**, **Prompts**. The templates tab keeps the side-by-side layout: installed agents list (left) with detail panel (right, height from `LAYOUT.AGENT_LIST_HEIGHT`). Installed agents card shows each agent with name, `SourceBadge` source pill (neutral `package`/`kirocrew`/`project`/`local` sources — the former `aim` source was generalized to `package`), model, description, skill count, MCP server count. Click to view full agent config in detail panel: system prompt, tools, auto-approved tools, MCP servers with `--aim` token colors (hover tooltip showing tool list), expandable denied commands list (`<details>` with all patterns). **Agent-package install / uninstall now routes through the capability seam** (`installPlugin`/`uninstallPlugin` in `providers/adapters/acp.ts` dispatch `type === 'agent'` to `/api/capability/agents/{install,uninstall}`). This replaced the earlier "intentionally NOT offered" stance: the pure-AIM `/api/aim/agents/*` + `/api/aim/update` routes were removed, but leaving `GET /api/capability/agents` as list-only meant the seam could SHOW installed agent packages and never manage them — an asymmetry with skills/MCP that forced an edition to shadow the core or mount its own routes. Bulk "Update All" remains unoffered (no `update_*` op on the seam). Skills/MCP install/uninstall still route through the capability seam (see Capability Integration); the manager returns human-friendly errors for invalid packages. The MCP registry browser is hidden entirely when no external capability manager is configured (registry → 503); when present it offers click-to-expand descriptions with all detail lines, clickable URLs (DOMPurify-sanitized), a direct Install button, and tier badges at `text-[11px]` minimum. Striped subagent table with `EmptyState` when empty, kiro credit usage card, context window usage bars per session (agent name in `--aim` color).
+ - **Tasks** (`/tasks`) — redirects to `/projects`
+@@ -1969,9 +1969,25 @@ audit-before-mutation ordering. Browser legacy creation is create-only under the
+ same service lock as structured creation, so a stale empty snapshot cannot
+ replace an automation armed by another tab. Other legacy callers retain explicit
+ replacement semantics, but the agent-facing `monitor_start` and `monitor_watch`
+-directives are create-only across both record kinds. They cannot silently replace
+-a legacy loop with a structured monitor or discard a structured monitor's durable
+-evidence. The generic service update also fails closed for structured records.
++directives are create-only across both record kinds, with one deliberate split.
++Dashboard REST creates keep any-record occupancy: a 409 that never discards a
++retained record, active or stopped, preserving inspection evidence. The two
++session-directive arms additionally opt into `replace_stopped`, which narrows
++their refusal to records that still occupy the session — an ACTIVE automation,
++or a retained stop that is evidence. Only system-imposed stops are re-armable:
++`approval_stalled`, `cycle_cap`, `runtime_budget`, and terminal-subject records
++(a merged or blocked watched subject, including structured `BUDGET`, `SUCCESS`
++and `BLOCKED` outcomes). Consumer-recorded stops are preserved on every path —
++a manual pause, a structured `USER_STOP` or `SESSION_CLOSE` record, and the
++auto_research `autonudge_stop` tombstone its watchdog consumes — and an unknown
++stop reason fails closed to preserved. A future-version record is never
++replaceable (it belongs to the newer gateway that wrote it), and a terminal
++record whose accepted wake still awaits completion evidence keeps its own
++wake-in-flight refusal, so an unfinished correlation is never orphaned.
++Create-only directives cannot silently replace an active
++legacy loop with a structured monitor or discard an active structured monitor's
++durable evidence. The generic service update also fails closed for structured
++records.
+ 
+ ### Security Enforcement
+ 
+diff --git a/src/kiro_crew/autonudge.py b/src/kiro_crew/autonudge.py
+index b7417e46f..f7e6b3029 100644
+--- a/src/kiro_crew/autonudge.py
++++ b/src/kiro_crew/autonudge.py
+@@ -53,6 +53,7 @@ from kiro_crew.monitoring.models import (
+     MONITOR_STATE_VERSION,
+     MONITOR_STOP_APPROVAL_STALL,
+     MONITOR_STOP_COMPLETION_UNAVAILABLE,
++    MONITOR_STOP_INVALID_RECORD,
+     MONITOR_STOP_SESSION_CLOSE,
+     MONITOR_STOP_SESSION_UNAVAILABLE,
+     MONITOR_STOP_UNSUPPORTED_VERSION,
+@@ -141,6 +142,47 @@ class NudgeAdmissionRefused(RuntimeError):
+ 
+ _TERMINAL_BOUND_REASONS = frozenset({"cycle_cap", "runtime_budget", APPROVAL_STALL_REASON})
+ 
++#: Stops the SYSTEM imposed on a legacy loop, which a directive re-arm may
++#: therefore displace: a lapsed approval, a spent bound, a finished subject.
++#: Everything else — a manual pause (empty reason), a research tombstone
++#: (``AUTONUDGE_STOP_REASON``, consumed by the auto_research watchdog to tell
++#: deliberate completion from crash cleanup), and any reason this version does
++#: not know — is evidence some consumer may read, so it fails CLOSED to
++#: preserved.
++_REPLACEABLE_LOOP_STOP_REASONS = _TERMINAL_BOUND_REASONS | {MONITOR_TERMINAL_REASON}
++
++
++def _stopped_row_is_replaceable(loop: "NudgeLoop") -> bool:
++    """Whether a directive re-arm (``replace_stopped``) may displace this row.
++
++    Callers have already established the row is INACTIVE. The split is by who
++    recorded the stop: a stop the system imposed (bound expiry, approval
++    stall, terminal subject, crash retirement) is automatically re-armable,
++    while a stop a person or an app recorded — ``USER_STOP``, session-close
++    retention, a manual pause, a research tombstone — is retained evidence.
++    Unknown outcomes and reasons are treated as evidence (fail closed).
++    """
++    state = loop.monitor
++    if state is not None and state.outcome is not None:
++        if str(state.stopped_reason or "") == MONITOR_STOP_INVALID_RECORD:
++            # A quarantined malformed record is an inspection artifact of a
++            # store defect, not a system-imposed stop: _load() synthesized its
++            # BLOCKED outcome precisely to retain the raw payload for a human.
++            # The ruling's fail-closed principle covers it — evidence, never
++            # replaceable.
++            return False
++        return state.outcome in (
++            MonitorOutcome.BUDGET,
++            MonitorOutcome.SUCCESS,
++            MonitorOutcome.BLOCKED,
++            # System-imposed too: a vanished or undeliverable subject
++            # (dispatch failure, shadow NOT_FOUND). No consumer authored it,
++            # so refusing re-creates the deadlock this predicate exists to end.
++            MonitorOutcome.TARGET_UNAVAILABLE,
++        )
++    return (loop.stopped_reason or "") in _REPLACEABLE_LOOP_STOP_REASONS
++
++
+ # Namespaced session-key prefixes that identify messaging-channel sessions
+ # (as opposed to bare dashboard chat-slot keys). Channel-bound loops have no
+ # dashboard turn-lifecycle hooks (notify_turn_complete / notify_user_input),
+@@ -1184,6 +1226,7 @@ class AutoNudgeService:
+         # if that PR is already merged, deactivates it before its first turn.
+         gate: bool = False,
+         replace_existing: bool = True,
++        replace_stopped: bool = False,
+     ) -> NudgeLoop:
+         # CANCELLATION SAFETY: the mutate+persist runs as a SHIELDED task. If
+         # the awaiting caller is cancelled mid-write, a bare await would release
+@@ -1209,6 +1252,7 @@ class AutoNudgeService:
+                 admission_check=admission_check,
+                 gate=gate,
+                 replace_existing=replace_existing,
++                replace_stopped=replace_stopped,
+             )
+         )
+         self._inflight_adds.add(inner)
+@@ -1233,6 +1277,7 @@ class AutoNudgeService:
+         wake_instructions: str = "",
+         now: float | None = None,
+         replace_existing: bool = True,
++        replace_stopped: bool = False,
+         expected_existing_monitor_id: str | None = None,
+         expected_existing_config_generation: int | None = None,
+         admission_check: Callable[[], bool] | None = None,
+@@ -1249,6 +1294,7 @@ class AutoNudgeService:
+                 wake_instructions=wake_instructions,
+                 now=now,
+                 replace_existing=replace_existing,
++                replace_stopped=replace_stopped,
+                 expected_existing_monitor_id=expected_existing_monitor_id,
+                 expected_existing_config_generation=expected_existing_config_generation,
+                 admission_check=admission_check,
+@@ -1276,6 +1322,7 @@ class AutoNudgeService:
+         wake_instructions: str,
+         now: float | None,
+         replace_existing: bool,
++        replace_stopped: bool = False,
+         expected_existing_monitor_id: str | None,
+         expected_existing_config_generation: int | None,
+         admission_check: Callable[[], bool] | None,
+@@ -1297,9 +1344,45 @@ class AutoNudgeService:
+                     ):
+                         raise MonitorUpdateConflict("monitor changed before restart")
+                 if existing:
+-                    if not replace_existing:
++                    # Same split as the legacy add: create-only refuses ANY
++                    # record unless the caller opted into ``replace_stopped``,
++                    # which under the owner's ruling displaces only
++                    # SYSTEM-imposed stops (a spent bound, a finished subject).
++                    # A consumer-recorded stop — including a USER_STOP record
++                    # retained by monitor_stop — is preserved; the dashboard
++                    # restart route (conditional replace) is the sanctioned way
++                    # to succeed one. Dashboard creates never opt in, so their
++                    # any-record 409 keeps retained evidence intact. The
++                    # wake-in-flight guard below still covers a terminal record
++                    # that owns an accepted, uncompleted wake.
++                    if not replace_existing and (existing.active or not replace_stopped):
+                         raise MonitorUpdateConflict("session already has an automation")
+                     existing_monitor = existing.monitor
++                    if (
++                        not replace_existing
++                        and existing_monitor is not None
++                        and existing_monitor.version != MONITOR_STATE_VERSION
++                    ):
++                        # Same rule as the legacy add: a future-version record
++                        # is a newer gateway's state, retained inactive across a
++                        # downgrade on purpose — never deletable by this one.
++                        raise MonitorUpdateConflict(
++                            "the session's stopped automation was written by a newer "
++                            "gateway and cannot be replaced by this one"
++                        )
++                    if (
++                        not replace_existing
++                        and replace_stopped
++                        and not _stopped_row_is_replaceable(existing)
++                    ):
++                        # Same owner ruling as the legacy add: consumer-recorded
++                        # stops (USER_STOP, SESSION_CLOSE, tombstones) are
++                        # evidence, never displaced by a re-arm.
++                        raise MonitorUpdateConflict(
++                            "the session's stopped automation is retained as evidence "
++                            "and is not replaceable by a re-arm; its owner must clear "
++                            "it first"
++                        )
+                     if existing_monitor is not None and existing_monitor.wake_in_flight:
+                         raise MonitorUpdateConflict(
+                             "existing monitor cannot be replaced while a wake is in flight"
+@@ -1355,6 +1438,7 @@ class AutoNudgeService:
+         admission_check: Callable[[], bool] | None = None,
+         gate: bool = False,
+         replace_existing: bool = True,
++        replace_stopped: bool = False,
+     ) -> NudgeLoop:
+         async with _maintenance_lock(self._base_dir):
+             return await self._add_unserialized(
+@@ -1368,6 +1452,7 @@ class AutoNudgeService:
+                 admission_check=admission_check,
+                 gate=gate,
+                 replace_existing=replace_existing,
++                replace_stopped=replace_stopped,
+             )
+ 
+     async def _add_unserialized(
+@@ -1383,6 +1468,7 @@ class AutoNudgeService:
+         admission_check: Callable[[], bool] | None = None,
+         gate: bool = False,
+         replace_existing: bool = True,
++        replace_stopped: bool = False,
+     ) -> NudgeLoop:
+         idle_secs = max(_MIN_IDLE_SECS, min(_MAX_IDLE_SECS, int(idle_secs)))
+         async with self._lock:
+@@ -1393,9 +1479,54 @@ class AutoNudgeService:
+             # removal+add atomically, avoiding a duplicate blocking save here.
+             existing = self._find_by_slot(slot_key)
+             if existing:
+-                if not replace_existing:
++                # Create-only (``replace_existing=False``) refuses ANY existing
++                # record by default — the dashboard REST creates depend on that:
++                # their documented contract is a 409 that never discards a
++                # retained inspection record. ``replace_stopped`` is the
++                # directive re-arm path's explicit opt-in to narrow the refusal
++                # to ACTIVE records, because a retained INACTIVE row
++                # (approval-stalled, capped, budget-spent, or a terminal record
++                # kept for inspection) otherwise deadlocks the session's only
++                # re-arm: monitor_update's approval-stall refusal names
++                # monitor_start as the remedy. The wake-in-flight guard below
++                # still runs for the replaced-inactive case, so a terminal
++                # record whose accepted wake is awaiting completion evidence
++                # keeps its own refusal rather than having its correlation
++                # orphaned by a replacement.
++                if not replace_existing and (existing.active or not replace_stopped):
+                     raise MonitorUpdateConflict("session already has an automation")
+                 existing_monitor = existing.monitor
++                if (
++                    not replace_existing
++                    and existing_monitor is not None
++                    and existing_monitor.version != MONITOR_STATE_VERSION
++                ):
++                    # A future-version record belongs to the newer gateway that
++                    # wrote it: _load() retains it inactive so an upgrade can
++                    # resume the watch, and the retarget path refuses to touch
++                    # it for the same reason. A stopped-replacement here would
++                    # destroy state this gateway cannot even read. Checked
++                    # BEFORE the evidence allowlist so the version message —
++                    # the actionable one — wins for such records.
++                    raise MonitorUpdateConflict(
++                        "the session's stopped automation was written by a newer "
++                        "gateway and cannot be replaced by this one"
++                    )
++                if (
++                    not replace_existing
++                    and replace_stopped
++                    and not _stopped_row_is_replaceable(existing)
++                ):
++                    # Owner ruling (option A): only system-imposed stops are
++                    # re-armable. A stop recorded FOR a consumer — a research
++                    # tombstone, a manual pause, a user stop, session-close
++                    # retention — is evidence, and an unknown reason is
++                    # treated as evidence too.
++                    raise MonitorUpdateConflict(
++                        "the session's stopped automation is retained as evidence "
++                        f"(stop reason: {existing.stopped_reason or 'manual'!s}) and is "
++                        "not replaceable by a re-arm; its owner must clear it first"
++                    )
+                 if existing_monitor is not None and existing_monitor.wake_in_flight:
+                     raise MonitorUpdateConflict(
+                         "existing monitor cannot be replaced while a wake is in flight"
+diff --git a/src/kiro_crew/autonudge_authz.py b/src/kiro_crew/autonudge_authz.py
+index 5829d0556..5b8084f31 100644
+--- a/src/kiro_crew/autonudge_authz.py
++++ b/src/kiro_crew/autonudge_authz.py
+@@ -459,6 +459,17 @@ async def authorize_and_add_nudge(
+     gate: bool = False,
+     monitor: MonitorState | None = None,
+     replace_existing: bool = True,
++    # Opt-in for the session-directive re-arm path ONLY: with
++    # ``replace_existing=False`` it permits displacing a retained row whose
++    # stop the SYSTEM imposed (an approval stall, a spent cap or budget, a
++    # finished or vanished subject — the ``_stopped_row_is_replaceable``
++    # allowlist), so such a row cannot deadlock the re-arm that
++    # monitor_update's own refusal message prescribes. Consumer-recorded
++    # stops (manual pauses, user stops, session-close retention, research
++    # tombstones, quarantined records) stay refused as retained evidence.
++    # Dashboard REST creates never set it: their documented contract is
++    # any-record 409, preserving retained inspection records.
++    replace_stopped: bool = False,
+     expected_existing_monitor_id: str | None = None,
+     expected_existing_config_generation: int | None = None,
+ ) -> tuple[Any | None, str | None, int]:
+@@ -774,6 +785,8 @@ async def authorize_and_add_nudge(
+             }
+             if not replace_existing:
+                 add_kwargs["replace_existing"] = False
++            if replace_stopped:
++                add_kwargs["replace_stopped"] = True
+             loop = await svc.add(
+                 **add_kwargs,
+             )
+@@ -790,6 +803,8 @@ async def authorize_and_add_nudge(
+             }
+             if not replace_existing:
+                 add_monitor_kwargs["replace_existing"] = False
++            if replace_stopped:
++                add_monitor_kwargs["replace_stopped"] = True
+             if expected_existing_monitor_id is not None:
+                 add_monitor_kwargs["expected_existing_monitor_id"] = expected_existing_monitor_id
+                 add_monitor_kwargs["expected_existing_config_generation"] = (
+diff --git a/src/kiro_crew/dashboard/session_directive_apply.py b/src/kiro_crew/dashboard/session_directive_apply.py
+index fdb67965d..a9962ecd9 100644
+--- a/src/kiro_crew/dashboard/session_directive_apply.py
++++ b/src/kiro_crew/dashboard/session_directive_apply.py
+@@ -256,6 +256,10 @@ async def _monitor_start(state: Any, session_key: str, args: dict[str, Any]) ->
+         caller="session-directive",
+         gate=gate,
+         replace_existing=False,
++        # The directive re-arm is the one path allowed to displace a retained
++        # STOPPED row: monitor_update's approval-stall refusal names
++        # monitor_start as the remedy, so refusing here deadlocks it.
++        replace_stopped=True,
+     )
+     if error is not None:
+         # The authorizer already audited its own refusal; the wrapper's record
+@@ -323,6 +327,9 @@ async def _monitor_watch(state: Any, session_key: str, args: dict[str, Any]) ->
+         source="mcp-directive",
+         caller="session-directive",
+         replace_existing=False,
++        # Same opt-in as _monitor_start: a monitor stopped and retained for
++        # inspection must not block this session's next directive arm.
++        replace_stopped=True,
+         monitor=monitor,
+     )
+     if error is not None:
+diff --git a/src/kiro_crew/mcp_tools/control.py b/src/kiro_crew/mcp_tools/control.py
+index 705fe25df..1dd30b4f5 100644
+--- a/src/kiro_crew/mcp_tools/control.py
++++ b/src/kiro_crew/mcp_tools/control.py
+@@ -350,7 +350,11 @@ def schemas() -> list[dict[str, Any]]:
+                 "backstop, NOT a successful finish. Use monitor_update to "
+                 "revise or re-arm the instruction if what you are watching "
+                 "changes. One automation may occupy a session; monitor_start "
+-                "is create-only and refuses while one already exists. "
++                "is create-only and refuses while an ACTIVE one exists (a "
++                "system-stopped or expired automation — an approval stall, a "
++                "spent cap or budget, a finished subject — is replaced by the "
++                "new arm; manual pauses, user stops and retained tombstones "
++                "are preserved). "
+                 "Survives gateway restarts. Every cycle appends a full turn to "
+                 "this same session, so keep per-cycle output small and report "
+                 "only real signals. "

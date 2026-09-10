@@ -1,0 +1,373 @@
+/app/xdist_budget.py:417: UserWarning: xdist worker budget: 14 of 16 workers (29.0 GiB free, 30 GiB installed). Each worker needs about 2 GiB, mostly to collect the suite. A run this narrow is slow, not stuck -- free some memory, run a subset (pytest test/test_thing.py), or pass an explicit -n <N> to bypass this budget.
+  warnings.warn(
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /app
+configfile: setup.cfg
+plugins: cov-6.3.0, asyncio-1.4.0, hypothesis-6.168.0, testmon-2.2.0, timeout-2.4.0, xdist-3.8.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+timeout: 120.0s
+timeout method: signal
+timeout func_only: False
+created: 14/14 workers
+14 workers [194 items]
+
+[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m [ 37%]
+[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[31mF[0m[31mF[0m[31mF[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[31m [ 74%]
+[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                       [100%][0m
+=================================== FAILURES ===================================
+[31m[1m________ test_create_only_add_monitor_replaces_a_merged_subject_monitor ________[0m
+[gw1] linux -- Python 3.12.14 /app/.venv/bin/python
+
+svc = <kiro_crew.autonudge.AutoNudgeService object at 0x7ddc464b2f60>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_create_only_add_monitor_replaces_a_merged_subject_monitor[39;49;00m(svc):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""A subject-terminal stop is system-imposed (the watched pull request[39;49;00m
+    [33m    merged; there is nothing left to observe), so the directive re-arm may[39;49;00m
+    [33m    displace the record and start a watch on a NEW subject."""[39;49;00m[90m[39;49;00m
+        existing = [94mawait[39;49;00m svc.add_monitor([90m[39;49;00m
+            slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            kind=[33m"[39;49;00m[33mgithub_pull_request[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            target=[33m"[39;49;00m[33mowner/repo#123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            objective=[33m"[39;49;00m[33mreview_ready[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            cadence_secs=[94m60[39;49;00m,[90m[39;49;00m
+            budgets=MonitorBudgets(),[90m[39;49;00m
+        )[90m[39;49;00m
+        [94massert[39;49;00m existing.monitor [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+        existing.active = [94mFalse[39;49;00m[90m[39;49;00m
+        existing.monitor.outcome = MonitorOutcome.SUCCESS[90m[39;49;00m
+        existing.monitor.stopped_reason = [33m"[39;49;00m[33mmerged[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+>       fresh = [94mawait[39;49;00m svc.add_monitor([90m[39;49;00m
+            slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            kind=[33m"[39;49;00m[33mgithub_pull_request[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            target=[33m"[39;49;00m[33mowner/repo#456[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            objective=[33m"[39;49;00m[33mreview_ready[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            cadence_secs=[94m60[39;49;00m,[90m[39;49;00m
+            budgets=MonitorBudgets(),[90m[39;49;00m
+            replace_existing=[94mFalse[39;49;00m,[90m[39;49;00m
+            replace_stopped=[94mTrue[39;49;00m,[90m[39;49;00m
+        )[90m[39;49;00m
+[1m[31mE       TypeError: AutoNudgeService.add_monitor() got an unexpected keyword argument 'replace_stopped'[0m
+
+[1m[31mtest/test_autonudge.py[0m:3314: TypeError
+[31m[1m_________ test_replace_stopped_never_deletes_a_future_version_monitor __________[0m
+[gw2] linux -- Python 3.12.14 /app/.venv/bin/python
+
+svc = <kiro_crew.autonudge.AutoNudgeService object at 0x7f90b7029460>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_replace_stopped_never_deletes_a_future_version_monitor[39;49;00m(svc):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""A future-version record belongs to the newer gateway that wrote it:[39;49;00m
+    [33m    ``_load()`` retains it inactive across a downgrade so an upgrade can resume[39;49;00m
+    [33m    the watch. The directive re-arm must refuse it — deleting opaque state this[39;49;00m
+    [33m    gateway cannot read is data loss, not a re-arm (GPT round-2 finding)."""[39;49;00m[90m[39;49;00m
+        existing = [94mawait[39;49;00m svc.add_monitor([90m[39;49;00m
+            slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            kind=[33m"[39;49;00m[33mgithub_pull_request[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            target=[33m"[39;49;00m[33mowner/repo#123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            objective=[33m"[39;49;00m[33mreview_ready[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            cadence_secs=[94m60[39;49;00m,[90m[39;49;00m
+            budgets=MonitorBudgets(),[90m[39;49;00m
+        )[90m[39;49;00m
+        [94massert[39;49;00m existing.monitor [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+        existing.active = [94mFalse[39;49;00m[90m[39;49;00m
+        existing.monitor.version = MONITOR_STATE_VERSION + [94m1[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(MonitorUpdateConflict, match=[33m"[39;49;00m[33mwritten by a newer gateway[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+>           [94mawait[39;49;00m svc.add([90m[39;49;00m
+                slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                message=[33m"[39;49;00m[33mdirective re-arm[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                idle_secs=[94m60[39;49;00m,[90m[39;49;00m
+                replace_existing=[94mFalse[39;49;00m,[90m[39;49;00m
+                replace_stopped=[94mTrue[39;49;00m,[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           TypeError: AutoNudgeService.add() got an unexpected keyword argument 'replace_stopped'[0m
+
+[1m[31mtest/test_autonudge.py[0m:3242: TypeError
+[31m[1m___ test_create_only_add_still_refuses_a_terminal_row_with_an_inflight_wake ____[0m
+[gw0] linux -- Python 3.12.14 /app/.venv/bin/python
+
+svc = <kiro_crew.autonudge.AutoNudgeService object at 0x74fd9dd9f680>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_create_only_add_still_refuses_a_terminal_row_with_an_inflight_wake[39;49;00m(svc):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""A terminal record whose accepted wake still awaits completion evidence[39;49;00m
+    [33m    owns a live correlation; replacing it would orphan the claim. The inactive[39;49;00m
+    [33m    path must fall through to the wake-in-flight refusal, never proceed."""[39;49;00m[90m[39;49;00m
+        existing = [94mawait[39;49;00m svc.add_monitor([90m[39;49;00m
+            slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            kind=[33m"[39;49;00m[33mgithub_pull_request[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            target=[33m"[39;49;00m[33mowner/repo#123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            objective=[33m"[39;49;00m[33mreview_ready[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            cadence_secs=[94m60[39;49;00m,[90m[39;49;00m
+            budgets=MonitorBudgets(),[90m[39;49;00m
+        )[90m[39;49;00m
+        [94massert[39;49;00m existing.monitor [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+        existing.active = [94mFalse[39;49;00m[90m[39;49;00m
+        existing.monitor.outcome = MonitorOutcome.BUDGET[90m[39;49;00m
+        existing.monitor.wake_in_flight = [94mTrue[39;49;00m[90m[39;49;00m
+        existing.monitor.last_wake_fingerprint = [33m"[39;49;00m[33mactionable-1[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        existing.monitor.completion_evidence_deadline = [94m2_000_000.0[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(MonitorUpdateConflict, match=[33m"[39;49;00m[33mwake is in flight[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+>           [94mawait[39;49;00m svc.add([90m[39;49;00m
+                slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                message=[33m"[39;49;00m[33mlegacy replacement[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                idle_secs=[94m60[39;49;00m,[90m[39;49;00m
+                replace_existing=[94mFalse[39;49;00m,[90m[39;49;00m
+                replace_stopped=[94mTrue[39;49;00m,[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           TypeError: AutoNudgeService.add() got an unexpected keyword argument 'replace_stopped'[0m
+
+[1m[31mtest/test_autonudge.py[0m:3497: TypeError
+[31m[1m___________ test_create_only_add_still_refuses_an_active_legacy_loop ___________[0m
+[gw3] linux -- Python 3.12.14 /app/.venv/bin/python
+
+svc = <kiro_crew.autonudge.AutoNudgeService object at 0x794921883dd0>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_create_only_add_still_refuses_an_active_legacy_loop[39;49;00m(svc):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""``replace_stopped`` must not widen create-only into replace: a LIVE[39;49;00m
+    [33m    legacy loop still refuses a second arm even on the directive path."""[39;49;00m[90m[39;49;00m
+        [94mawait[39;49;00m svc.start()[90m[39;49;00m
+        live = [94mawait[39;49;00m svc.add(slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m, message=[33m"[39;49;00m[33mlive babysit[39;49;00m[33m"[39;49;00m, idle_secs=[94m60[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(MonitorUpdateConflict, match=[33m"[39;49;00m[33msession already has an automation[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+>           [94mawait[39;49;00m svc.add([90m[39;49;00m
+                slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                message=[33m"[39;49;00m[33musurper[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                idle_secs=[94m60[39;49;00m,[90m[39;49;00m
+                replace_existing=[94mFalse[39;49;00m,[90m[39;49;00m
+                replace_stopped=[94mTrue[39;49;00m,[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           TypeError: AutoNudgeService.add() got an unexpected keyword argument 'replace_stopped'[0m
+
+[1m[31mtest/test_autonudge.py[0m:3187: TypeError
+[31m[1m_______ test_create_only_add_replaces_an_inactive_approval_stalled_loop ________[0m
+[gw10] linux -- Python 3.12.14 /app/.venv/bin/python
+
+svc = <kiro_crew.autonudge.AutoNudgeService object at 0x7b91c70879e0>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_create_only_add_replaces_an_inactive_approval_stalled_loop[39;49;00m(svc):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""The approval-stall deadlock: ``monitor_update`` refuses to revive an[39;49;00m
+    [33m    approval-stalled loop and names ``monitor_start`` as the remedy, so the[39;49;00m
+    [33m    directive re-arm (``replace_stopped=True``) must not read that retained[39;49;00m
+    [33m    INACTIVE row as an occupying automation. Observed live: a babysit re-arm[39;49;00m
+    [33m    bounced off its own predecessor's approval-stall tombstone with "session[39;49;00m
+    [33m    already has an automation", leaving the session with no working re-arm[39;49;00m
+    [33m    path at all."""[39;49;00m[90m[39;49;00m
+        [94mawait[39;49;00m svc.start()[90m[39;49;00m
+        stalled = [94mawait[39;49;00m svc.add(slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m, message=[33m"[39;49;00m[33mold babysit[39;49;00m[33m"[39;49;00m, idle_secs=[94m60[39;49;00m)[90m[39;49;00m
+        [94mawait[39;49;00m svc.update(stalled.id, active=[94mFalse[39;49;00m, stopped_reason=APPROVAL_STALL_REASON)[90m[39;49;00m
+    [90m[39;49;00m
+>       fresh = [94mawait[39;49;00m svc.add([90m[39;49;00m
+            slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            message=[33m"[39;49;00m[33mnew babysit[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            idle_secs=[94m60[39;49;00m,[90m[39;49;00m
+            replace_existing=[94mFalse[39;49;00m,[90m[39;49;00m
+            replace_stopped=[94mTrue[39;49;00m,[90m[39;49;00m
+        )[90m[39;49;00m
+[1m[31mE       TypeError: AutoNudgeService.add() got an unexpected keyword argument 'replace_stopped'[0m
+
+[1m[31mtest/test_autonudge.py[0m:3164: TypeError
+[31m[1m_________ test_replace_stopped_preserves_a_quarantined_monitor_record __________[0m
+[gw4] linux -- Python 3.12.14 /app/.venv/bin/python
+
+svc = <kiro_crew.autonudge.AutoNudgeService object at 0x7a2a48f7fb30>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_replace_stopped_preserves_a_quarantined_monitor_record[39;49;00m(svc):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""``_load()`` quarantines a malformed monitor payload as BLOCKED precisely[39;49;00m
+    [33m    to retain the raw record for inspection — a directive re-arm deleting it[39;49;00m
+    [33m    would destroy the only copy of the corrupt state (GPT round-4 instance of[39;49;00m
+    [33m    the ruling's fail-closed principle)."""[39;49;00m[90m[39;49;00m
+        [94mfrom[39;49;00m[90m [39;49;00m[04m[96mkiro_crew[39;49;00m[04m[96m.[39;49;00m[04m[96mmonitoring[39;49;00m[04m[96m.[39;49;00m[04m[96mmodels[39;49;00m[90m [39;49;00m[94mimport[39;49;00m MONITOR_STOP_INVALID_RECORD[90m[39;49;00m
+    [90m[39;49;00m
+        existing = [94mawait[39;49;00m svc.add_monitor([90m[39;49;00m
+            slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            kind=[33m"[39;49;00m[33mgithub_pull_request[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            target=[33m"[39;49;00m[33mowner/repo#123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            objective=[33m"[39;49;00m[33mreview_ready[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            cadence_secs=[94m60[39;49;00m,[90m[39;49;00m
+            budgets=MonitorBudgets(),[90m[39;49;00m
+        )[90m[39;49;00m
+        [94massert[39;49;00m existing.monitor [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+        existing.active = [94mFalse[39;49;00m[90m[39;49;00m
+        existing.monitor.outcome = MonitorOutcome.BLOCKED[90m[39;49;00m
+        existing.monitor.stopped_reason = MONITOR_STOP_INVALID_RECORD[90m[39;49;00m
+    [90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(MonitorUpdateConflict, match=[33m"[39;49;00m[33mretained as evidence[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+>           [94mawait[39;49;00m svc.add([90m[39;49;00m
+                slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                message=[33m"[39;49;00m[33mdirective re-arm[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                idle_secs=[94m60[39;49;00m,[90m[39;49;00m
+                replace_existing=[94mFalse[39;49;00m,[90m[39;49;00m
+                replace_stopped=[94mTrue[39;49;00m,[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           TypeError: AutoNudgeService.add() got an unexpected keyword argument 'replace_stopped'[0m
+
+[1m[31mtest/test_autonudge.py[0m:3352: TypeError
+[31m[1m________________ test_replace_stopped_preserves_a_manual_pause _________________[0m
+[gw8] linux -- Python 3.12.14 /app/.venv/bin/python
+
+svc = <kiro_crew.autonudge.AutoNudgeService object at 0x75c1f6a78350>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_replace_stopped_preserves_a_manual_pause[39;49;00m(svc):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""A manually paused loop (empty stop reason) is the user's decision, not a[39;49;00m
+    [33m    system-imposed stop — the re-arm must not silently discard its instruction."""[39;49;00m[90m[39;49;00m
+        [94mawait[39;49;00m svc.start()[90m[39;49;00m
+        paused = [94mawait[39;49;00m svc.add(slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m, message=[33m"[39;49;00m[33mpaused by hand[39;49;00m[33m"[39;49;00m, idle_secs=[94m60[39;49;00m)[90m[39;49;00m
+        [94mawait[39;49;00m svc.update(paused.id, active=[94mFalse[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(MonitorUpdateConflict, match=[33m"[39;49;00m[33mretained as evidence[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+>           [94mawait[39;49;00m svc.add([90m[39;49;00m
+                slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                message=[33m"[39;49;00m[33mdirective re-arm[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                idle_secs=[94m60[39;49;00m,[90m[39;49;00m
+                replace_existing=[94mFalse[39;49;00m,[90m[39;49;00m
+                replace_stopped=[94mTrue[39;49;00m,[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           TypeError: AutoNudgeService.add() got an unexpected keyword argument 'replace_stopped'[0m
+
+[1m[31mtest/test_autonudge.py[0m:3463: TypeError
+[31m[1m__________ test_create_only_add_replaces_a_target_unavailable_monitor __________[0m
+[gw13] linux -- Python 3.12.14 /app/.venv/bin/python
+
+svc = <kiro_crew.autonudge.AutoNudgeService object at 0x7261ccf75af0>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_create_only_add_replaces_a_target_unavailable_monitor[39;49;00m(svc):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""``TARGET_UNAVAILABLE`` is system-imposed (a vanished or undeliverable[39;49;00m
+    [33m    subject) — no consumer authored it, so the directive re-arm must displace[39;49;00m
+    [33m    it rather than re-create the deadlock (Opus advisory on the ruling)."""[39;49;00m[90m[39;49;00m
+        existing = [94mawait[39;49;00m svc.add_monitor([90m[39;49;00m
+            slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            kind=[33m"[39;49;00m[33mgithub_pull_request[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            target=[33m"[39;49;00m[33mowner/repo#123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            objective=[33m"[39;49;00m[33mreview_ready[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            cadence_secs=[94m60[39;49;00m,[90m[39;49;00m
+            budgets=MonitorBudgets(),[90m[39;49;00m
+        )[90m[39;49;00m
+        [94massert[39;49;00m existing.monitor [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+        existing.active = [94mFalse[39;49;00m[90m[39;49;00m
+        existing.monitor.outcome = MonitorOutcome.TARGET_UNAVAILABLE[90m[39;49;00m
+        existing.monitor.stopped_reason = [33m"[39;49;00m[33msession_unavailable[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+>       fresh = [94mawait[39;49;00m svc.add_monitor([90m[39;49;00m
+            slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            kind=[33m"[39;49;00m[33mgithub_pull_request[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            target=[33m"[39;49;00m[33mowner/repo#456[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            objective=[33m"[39;49;00m[33mreview_ready[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            cadence_secs=[94m60[39;49;00m,[90m[39;49;00m
+            budgets=MonitorBudgets(),[90m[39;49;00m
+            replace_existing=[94mFalse[39;49;00m,[90m[39;49;00m
+            replace_stopped=[94mTrue[39;49;00m,[90m[39;49;00m
+        )[90m[39;49;00m
+[1m[31mE       TypeError: AutoNudgeService.add_monitor() got an unexpected keyword argument 'replace_stopped'[0m
+
+[1m[31mtest/test_autonudge.py[0m:3381: TypeError
+[31m[1m____________ test_replace_stopped_preserves_a_user_stopped_monitor _____________[0m
+[gw5] linux -- Python 3.12.14 /app/.venv/bin/python
+
+svc = <kiro_crew.autonudge.AutoNudgeService object at 0x797851298500>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_replace_stopped_preserves_a_user_stopped_monitor[39;49;00m(svc):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Owner ruling (option A): a USER_STOP record is a consumer-recorded stop[39;49;00m
+    [33m    — retained for inspection — so even the directive re-arm refuses it. The[39;49;00m
+    [33m    dashboard restart route (conditional replace) is the sanctioned path."""[39;49;00m[90m[39;49;00m
+        existing = [94mawait[39;49;00m svc.add_monitor([90m[39;49;00m
+            slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            kind=[33m"[39;49;00m[33mgithub_pull_request[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            target=[33m"[39;49;00m[33mowner/repo#123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            objective=[33m"[39;49;00m[33mreview_ready[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            cadence_secs=[94m60[39;49;00m,[90m[39;49;00m
+            budgets=MonitorBudgets(),[90m[39;49;00m
+        )[90m[39;49;00m
+        stopped = [94mawait[39;49;00m svc.stop_monitor(existing.id)[90m[39;49;00m
+        [94massert[39;49;00m stopped [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+        [94massert[39;49;00m stopped.monitor [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+        [94massert[39;49;00m stopped.monitor.outcome [95mis[39;49;00m MonitorOutcome.USER_STOP[90m[39;49;00m
+    [90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(MonitorUpdateConflict, match=[33m"[39;49;00m[33mretained as evidence[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+>           [94mawait[39;49;00m svc.add_monitor([90m[39;49;00m
+                slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                kind=[33m"[39;49;00m[33mgithub_pull_request[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                target=[33m"[39;49;00m[33mowner/repo#456[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                objective=[33m"[39;49;00m[33mreview_ready[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                cadence_secs=[94m60[39;49;00m,[90m[39;49;00m
+                budgets=MonitorBudgets(),[90m[39;49;00m
+                replace_existing=[94mFalse[39;49;00m,[90m[39;49;00m
+                replace_stopped=[94mTrue[39;49;00m,[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           TypeError: AutoNudgeService.add_monitor() got an unexpected keyword argument 'replace_stopped'[0m
+
+[1m[31mtest/test_autonudge.py[0m:3415: TypeError
+[31m[1m_____________ test_replace_stopped_preserves_a_research_tombstone ______________[0m
+[gw7] linux -- Python 3.12.14 /app/.venv/bin/python
+
+svc = <kiro_crew.autonudge.AutoNudgeService object at 0x7d4b7eb3c5f0>
+
+    [0m[37m@pytest[39;49;00m.mark.asyncio[90m[39;49;00m
+    [94masync[39;49;00m [94mdef[39;49;00m[90m [39;49;00m[92mtest_replace_stopped_preserves_a_research_tombstone[39;49;00m(svc):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""The auto_research watchdog reads a retained ``AUTONUDGE_STOP_REASON``[39;49;00m
+    [33m    row to tell deliberate completion from crash cleanup; a directive re-arm[39;49;00m
+    [33m    deleting it would leave the campaign running (GPT round-3 finding, owner[39;49;00m
+    [33m    ruling option A)."""[39;49;00m[90m[39;49;00m
+        [94mawait[39;49;00m svc.start()[90m[39;49;00m
+        worker = [94mawait[39;49;00m svc.add(slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m, message=[33m"[39;49;00m[33mresearch worker[39;49;00m[33m"[39;49;00m, idle_secs=[94m60[39;49;00m)[90m[39;49;00m
+        [94mawait[39;49;00m svc.update(worker.id, active=[94mFalse[39;49;00m, stopped_reason=AUTONUDGE_STOP_REASON)[90m[39;49;00m
+    [90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(MonitorUpdateConflict, match=[33m"[39;49;00m[33mretained as evidence[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+>           [94mawait[39;49;00m svc.add([90m[39;49;00m
+                slot_key=[33m"[39;49;00m[33mchat-1-123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                message=[33m"[39;49;00m[33mdirective re-arm[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+                idle_secs=[94m60[39;49;00m,[90m[39;49;00m
+                replace_existing=[94mFalse[39;49;00m,[90m[39;49;00m
+                replace_stopped=[94mTrue[39;49;00m,[90m[39;49;00m
+            )[90m[39;49;00m
+[1m[31mE           TypeError: AutoNudgeService.add() got an unexpected keyword argument 'replace_stopped'[0m
+
+[1m[31mtest/test_autonudge.py[0m:3440: TypeError
+[33m=============================== warnings summary ===============================[0m
+.venv/lib/python3.12/site-packages/xdist/plugin.py:289: 15 warnings
+  /app/.venv/lib/python3.12/site-packages/xdist/plugin.py:289: DeprecationWarning: The --looponfail command line argument and looponfailroots config variable are deprecated.
+  The loop-on-fail feature will be removed in pytest-xdist 4.0.
+    config.issue_config_time_warning(warning, 2)
+
+test/test_autonudge.py: 14 warnings
+  /app/test/conftest.py:687: DeprecationWarning: There is no current event loop
+    loop = asyncio.get_event_loop()
+
+test/test_autonudge.py::TestAutonudgeStartIntCoercion::test_non_integer_idle_secs_is_400_not_500
+test/test_autonudge.py::TestAutonudgeStartIntCoercion::test_overflowing_budget_is_400_not_500
+test/test_autonudge.py::TestAutonudgeStartIntCoercion::test_budget_bounds_enforced_not_truncated
+test/test_autonudge.py::TestAutonudgeStartIntCoercion::test_valid_integers_still_start
+  /app/test/test_autonudge.py:4221: NotAppKeyWarning: It is recommended to use web.AppKey instances for keys.
+  https://docs.aiohttp.org/en/stable/web_advanced.html#application-s-config
+    app["state"] = state
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+----------------- generated xml file: /logs/verifier/junit.xml -----------------
+============================= slowest 5 durations ==============================
+0.56s call     test/test_autonudge.py::test_every_nudge_able_channel_has_a_fire_adapter
+0.22s call     test/test_autonudge.py::TestAutonudgeUpdateConcurrency::test_cancelled_update_cannot_clobber_a_later_one
+0.22s call     test/test_autonudge.py::TestAutonudgeUpdateConcurrency::test_delivered_cycle_persistence_is_not_cancellable_by_update
+0.21s call     test/test_autonudge.py::TestAutonudgeUpdateConcurrency::test_update_mid_fire_does_not_cancel_the_turn
+0.21s call     test/test_autonudge.py::test_a_long_quiet_streak_is_delivered_anyway
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m test/test_autonudge.py::[1mtest_create_only_add_monitor_replaces_a_merged_subject_monitor[0m - TypeError: AutoNudgeService.add_monitor() got an unexpected keyword argument 'replace_stopped'
+[31mFAILED[0m test/test_autonudge.py::[1mtest_replace_stopped_never_deletes_a_future_version_monitor[0m - TypeError: AutoNudgeService.add() got an unexpected keyword argument 'replace_stopped'
+[31mFAILED[0m test/test_autonudge.py::[1mtest_create_only_add_still_refuses_a_terminal_row_with_an_inflight_wake[0m - TypeError: AutoNudgeService.add() got an unexpected keyword argument 'replace_stopped'
+[31mFAILED[0m test/test_autonudge.py::[1mtest_create_only_add_still_refuses_an_active_legacy_loop[0m - TypeError: AutoNudgeService.add() got an unexpected keyword argument 'replace_stopped'
+[31mFAILED[0m test/test_autonudge.py::[1mtest_create_only_add_replaces_an_inactive_approval_stalled_loop[0m - TypeError: AutoNudgeService.add() got an unexpected keyword argument 'replace_stopped'
+[31mFAILED[0m test/test_autonudge.py::[1mtest_replace_stopped_preserves_a_quarantined_monitor_record[0m - TypeError: AutoNudgeService.add() got an unexpected keyword argument 'replace_stopped'
+[31mFAILED[0m test/test_autonudge.py::[1mtest_replace_stopped_preserves_a_manual_pause[0m - TypeError: AutoNudgeService.add() got an unexpected keyword argument 'replace_stopped'
+[31mFAILED[0m test/test_autonudge.py::[1mtest_create_only_add_replaces_a_target_unavailable_monitor[0m - TypeError: AutoNudgeService.add_monitor() got an unexpected keyword argument 'replace_stopped'
+[31mFAILED[0m test/test_autonudge.py::[1mtest_replace_stopped_preserves_a_user_stopped_monitor[0m - TypeError: AutoNudgeService.add_monitor() got an unexpected keyword argument 'replace_stopped'
+[31mFAILED[0m test/test_autonudge.py::[1mtest_replace_stopped_preserves_a_research_tombstone[0m - TypeError: AutoNudgeService.add() got an unexpected keyword argument 'replace_stopped'
+[31m================= [31m[1m10 failed[0m, [32m184 passed[0m, [33m33 warnings[0m[31m in 4.23s[0m[31m ==================[0m

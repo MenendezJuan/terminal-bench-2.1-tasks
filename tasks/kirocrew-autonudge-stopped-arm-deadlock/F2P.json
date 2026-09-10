@@ -1,0 +1,24 @@
+{
+  "measured_at": "2026-09-10",
+  "collected_base": 194,
+  "collected_gold": 194,
+  "failed_base": 10,
+  "failed_gold": 0,
+  "fail_to_pass": [
+    "test.test_autonudge::test_create_only_add_replaces_an_inactive_approval_stalled_loop",
+    "test.test_autonudge::test_create_only_add_still_refuses_an_active_legacy_loop",
+    "test.test_autonudge::test_replace_stopped_never_deletes_a_future_version_monitor",
+    "test.test_autonudge::test_create_only_add_monitor_replaces_a_merged_subject_monitor",
+    "test.test_autonudge::test_replace_stopped_preserves_a_quarantined_monitor_record",
+    "test.test_autonudge::test_create_only_add_replaces_a_target_unavailable_monitor",
+    "test.test_autonudge::test_replace_stopped_preserves_a_user_stopped_monitor",
+    "test.test_autonudge::test_replace_stopped_preserves_a_research_tombstone",
+    "test.test_autonudge::test_replace_stopped_preserves_a_manual_pause",
+    "test.test_autonudge::test_create_only_add_still_refuses_a_terminal_row_with_an_inflight_wake"
+  ],
+  "pass_to_pass_sample": [
+    "test.test_autonudge::test_dashboard_create_only_add_preserves_a_stopped_row",
+    "test.test_autonudge::test_dashboard_create_only_add_monitor_preserves_a_terminal_record"
+  ],
+  "derivation": "Empirical set-diff, not guessed. Built the sealed image at base_commit, installed the PR's post-fix test/test_autonudge.py, ran pytest: 194 collected, 10 failed (all TypeError: unexpected keyword argument 'replace_stopped', since the base code has no such parameter at all -- these tests cannot even be collected into a meaningful pass/fail without the fix), 184 passed. Applied solution/patch.diff (verbatim gold patch, source+docs only) on the same image and re-ran: 194 collected, 0 failed. The two new dashboard-create tests that verify the OLD any-record-409 behavior is preserved (test_dashboard_create_only_add_preserves_a_stopped_row, test_dashboard_create_only_add_monitor_preserves_a_terminal_record) already pass at base since they exercise replace_existing=False WITHOUT the new replace_stopped kwarg -- confirmed PASS_TO_PASS, not FAIL_TO_PASS, by measurement."
+}

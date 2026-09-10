@@ -1,0 +1,24 @@
+{
+  "repo": "kirodotdev/KiroCrew",
+  "pull_number": 8515,
+  "url": "https://github.com/kirodotdev/KiroCrew/pull/8515",
+  "title": "fix(autonudge): create-only monitor arms no longer deadlock on a stopped automation",
+  "base_commit": "ba83f33a89cd7653208833abeb5841e5d6987ce0",
+  "merge_commit": "c2d9162f6299828db19a92207d3887e784c05c4d",
+  "merged_at": "2026-09-05T06:09:43Z",
+  "source_files": [
+    "src/kiro_crew/autonudge.py",
+    "src/kiro_crew/autonudge_authz.py",
+    "src/kiro_crew/dashboard/session_directive_apply.py",
+    "src/kiro_crew/mcp_tools/control.py"
+  ],
+  "docs_files": [
+    "docs/system-specs/modules/learn-cron-dashboard.md"
+  ],
+  "test_files": [
+    "test/test_autonudge.py"
+  ],
+  "touches_dependencies": false,
+  "origin": "mined",
+  "notes": "Human-authored (pepmach, no bot markers). PR body 3847+ chars (no separate linked GitHub issue, but the body itself documents a live production incident with a timestamped log line, which is at least as concrete as a linked issue). Candidate 5, picked after four single-PR-shaped candidates in a row (docker/docker-agent #4155, KiroCrew #9734, #9825, #9752) all fell to GPT 5.6 pass@1, per the guideline's own push toward bugs with real cross-cutting state (concurrency, multi-service coordination) rather than another self-contained single-PR fix. A first pick for this slot, KiroCrew #9662 (a genuine event-loop/SQLite race with a deterministic assertion-based guard), was claimed then dropped for scope: its diff spans ~24 dashboard API endpoints (2635 lines), far past the 2-6 file budget, and would make the task mostly mechanical enumeration. #8515 is 'cross-cutting state' in the shared-multi-entry-point-consistency sense rather than a literal thread race: the create-only occupancy check that gates automation slots is called from two different policy contexts (dashboard REST creates, which must preserve ANY retained row including inactive ones; and session-directive re-arms, which must narrow that refusal to only ACTIVE rows so a retained inactive row -- approval-stalled, capped, budget-spent, a terminal monitor kept for inspection -- does not deadlock the product's own documented recovery path). Both contexts share one classification function, _stopped_row_is_replaceable, that must correctly sort many stop reasons/outcomes into SYSTEM-imposed (re-armable: approval_stalled, cycle_cap, runtime_budget, a merged/blocked/unavailable watched subject) versus CONSUMER-recorded (must stay retained as evidence: a manual pause, USER_STOP, SESSION_CLOSE, an auto_research tombstone the watchdog reads to distinguish deliberate completion from crash cleanup, a malformed-record quarantine, and a future-gateway-version record). The fix threads a replace_stopped opt-in through 4 call layers (add/add_monitor -> _add_locked/_add_monitor_locked -> _add_unserialized/_add_monitor_locked body) and both entry points must land on the SAME classification without either widening into silent data loss (the PR's own review history records a first-cut GPT fix that would have let dashboard REST creates delete retained inspection records) or re-creating the original deadlock. Fully deterministic: all tests are asyncio-mocked service-layer calls, no sleep/wall-clock timing dependence, unlike KiroCrew #9711 (rejected earlier for exactly that flakiness risk). Verified real via gh pr view/gh pr diff before claiming."
+}
