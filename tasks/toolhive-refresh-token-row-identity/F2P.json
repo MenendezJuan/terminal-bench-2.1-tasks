@@ -5,8 +5,14 @@
   "failed_base": 4,
   "failed_gold": 0,
   "fail_to_pass": [
-    "TestUpstreamTokenRefresher_RowIdentity",
-    "TestUpstreamTokenRowIDResolution"
+    "TestUpstreamTokenRefresher_RowIdentity/same_row_identity_across_sessions_refreshes_and_writes_once",
+    "TestUpstreamTokenRefresher_RowIdentity/late_stale_caller_returns_authoritative_fresh_row",
+    "TestUpstreamTokenRefresher_RowIdentity/re-read_returns_expired_row_without_ErrExpired_-_still_refreshes",
+    "TestUpstreamTokenRefresher_RowIdentity/re-read_returns_nil_row_without_error_-_fails_loudly",
+    "TestUpstreamTokenRefresher_RowIdentity/resolver_errors_and_empty_identities_stop_before_refresh/empty_identity",
+    "TestUpstreamTokenRefresher_RowIdentity/resolver_errors_and_empty_identities_stop_before_refresh/resolver_error",
+    "TestUpstreamTokenRowIDResolution/memory",
+    "TestUpstreamTokenRowIDResolution/redis"
   ],
   "pass_to_pass_sample": [
     "TestUpstreamTokenRefresher_SingleflightDedup",
