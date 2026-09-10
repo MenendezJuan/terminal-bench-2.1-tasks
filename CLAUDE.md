@@ -44,6 +44,19 @@ Presupuestar ~1 día por task; la mayoría del tiempo se va en los pasos 1 y 6.
 
 `pass@1` (1 intento, un pass mata la task) → `pass@3` (2 más si sobrevivió) → `pass@5` (2 más si sobrevivió). Antes de anotar 0/5 como "hard", re-verificar el gate de solvability del paso 5 — una task no resoluble también da 0/5.
 
+## Routing de subagentes (Claude Code)
+
+Traducción de `docs/MULTI_AGENT_ROUTING.md` (pensado para Codex/Luna-Terra-Sol-Astra) a los mecanismos reales de Claude Code:
+
+| Rol | Codex | Claude Code | Cuándo |
+|---|---|---|---|
+| Scout barato, solo lectura | Luna | `.claude/agents/luna-scout.md` (haiku, effort low) | Inventario, minado de candidatos Step 1, lookups puntuales |
+| Implementación local | Terra | Sesión principal (Sonnet 5) | Cambio acotado, contrato claro, un subsistema |
+| Implementación cruzada / debugging no local | Sol | `Agent` tool, `model: "sonnet"`, subagent_type general-purpose | Varios archivos/subsistemas, verifier, bug no local |
+| Revisor independiente, alto riesgo | Astra | `.claude/agents/astra-reviewer.md` (opus, effort xhigh) | Antes de declarar hard/borderline/easy, antes de empaquetar, conflictos de contrato |
+
+Invocar con `Agent({ subagent_type: "luna-scout", ... })` o `astra-reviewer` según el rol. No usar `astra-reviewer` para tareas de implementación — es de solo lectura por diseño (`disallowedTools: Edit, Write`).
+
 ## Testing / hooks
 
 No hay suite de pytest global (cada task tiene su propio `tests/test.sh`). El hook de `.claude/settings.json` corre antes de cada `git commit` y bloquea si algún `instruction.md` staged: (a) no tiene la canary string, o (b) contiene un em dash. Es un chequeo parcial de los 24 gates reales — no reemplaza correr `package-delivery.sh` cuando lo consigamos (ver README).

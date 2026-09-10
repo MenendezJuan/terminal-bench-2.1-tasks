@@ -41,3 +41,21 @@ benchmarked locally. It is not installed on this machine today, so this repo
 uses the already working CodeGraph index rather than depending on an unverified
 tool.
 
+## Claude Code implementation of this policy
+
+The role names above (Luna/Terra/Sol/Astra) come from the Codex-side router in
+`scripts/route_agent.py`. Claude Code has no equivalent CLI, but the same
+routing policy maps onto real Claude Code primitives:
+
+| Role | Claude Code mechanism | Model | Effort |
+|---|---|---|---|
+| Luna (scout) | `.claude/agents/luna-scout.md` | haiku | low |
+| Terra (local build) | primary session | sonnet | default |
+| Sol (cross-file build) | `Agent` tool, general-purpose, `model: "sonnet"` | sonnet | high (via prompt) |
+| Astra (independent review) | `.claude/agents/astra-reviewer.md` | opus | xhigh |
+
+Custom subagent frontmatter supports an `effort` field directly (`low` /
+`medium` / `high` / `xhigh` / `max`), so the effort column is not just a
+convention here, it is set on the agent definition itself. See `CLAUDE.md` for
+the invocation table.
+
