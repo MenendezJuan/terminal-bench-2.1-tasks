@@ -27,6 +27,14 @@ Complete this checklist before any paid model run.
 - The plausible local repair and a one-layer repair fail for the predicted causal reason.
 - A real P2P regression fails.
 
+## Hard-core density
+
+- At least half of the natural F2P leaf tests must exercise the pre-registered causal core.
+- Two plausible incomplete fixes must each leave at least half of F2P failing for behavioral reasons.
+- Do not use a P2P regression as evidence that the candidate is difficult.
+- Score leaf test identities, not top-level containers that bundle independent behaviors.
+- Base and gold must expose the same graded identities; keep compile/interface checks separate from behavioral F2P when necessary.
+
 Semantic groups may be used only when fixed before observation and when each group is one natural user-facing behavior. Keep diagnostic leaf cases visible. Never regroup after seeing a model result.
 
 ## Verifier integrity
