@@ -1,0 +1,12 @@
+{
+    "task": {
+        "path": "tasks\\docker-agent-strict-schema"
+    },
+    "trial_name": "docker-agent-strict-schema__rxZJQ9u",
+    "trials_dir": "jobs_debug2\\2026-09-10__00-46-24",
+    "environment": {
+        "type": "docker",
+        "force_build": true
+    },
+    "job_id": "54bd2fa8-cb75-4509-b181-86a77cb19352"
+}
