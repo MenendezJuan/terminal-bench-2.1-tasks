@@ -1,0 +1,19 @@
+{
+  "status": "validated",
+  "classification_scope": "The two task-owned top-level failing requirements are FAIL_TO_PASS. Every other collected native or task-owned test is dynamically treated as PASS_TO_PASS by tests/test.sh.",
+  "collected_base": 398,
+  "collected_gold": 398,
+  "FAIL_TO_PASS": [
+    "TestTaskOpenAIRequiredStrictSchemaBehavior",
+    "TestTaskSchemaToMapLeavesReferencesUntouched"
+  ],
+  "PASS_TO_PASS": [
+    "TestTaskStrictCompatibilityKeepsSupportedAnyOf",
+    "TestTaskConversionTerminatesForSelfReference",
+    "TestTaskConversionPreservesOrdinarySchemas"
+  ],
+  "gold_failing": [],
+  "task_owned_f2p_leaf_cases": 19,
+  "pass_to_pass_policy": "Any failing test whose name is outside the two FAIL_TO_PASS families is a PASS_TO_PASS regression. This includes every pre-existing test in both graded packages.",
+  "derivation": "Top-level behavioral requirement groups that fail at base and pass after solution/solve.sh; nested subtests preserve diagnostic detail without weighting one requirement by its number of cases."
+}

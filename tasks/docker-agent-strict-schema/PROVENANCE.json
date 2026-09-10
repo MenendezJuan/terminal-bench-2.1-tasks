@@ -1,0 +1,23 @@
+{
+  "repo": "docker/docker-agent",
+  "pull_number": 4155,
+  "pull_url": "https://github.com/docker/docker-agent/pull/4155",
+  "pull_title": "fix(openai): reject oneOf/allOf and validate $defs/$ref before enabling strict mode (#4106)",
+  "base_commit": "1650e9977af21a07974a5bc406dc7ec20c4c0809",
+  "merge_commit": "99ba4ba621c62e2c3c3422ccd2aa0d73e6cbda71",
+  "merged_at": "2026-09-03T20:43:19Z",
+  "issue_numbers": [4106],
+  "issue_urls": ["https://github.com/docker/docker-agent/issues/4106"],
+  "issue_summary": "MCP JSON Schemas containing unsupported composition keywords or incompatible nested definitions could be marked strict-compatible and rejected by the OpenAI API before tool execution.",
+  "source_files": [
+    "pkg/model/provider/openai/schema.go",
+    "pkg/tools/schema.go"
+  ],
+  "upstream_test_files": [
+    "pkg/model/provider/openai/schema_test.go",
+    "pkg/tools/schema_test.go"
+  ],
+  "touches_dependencies": false,
+  "origin": "mined",
+  "license": "Apache-2.0"
+}
