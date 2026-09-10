@@ -43,7 +43,20 @@ the retained inactive row still occupies the slot. Mined from
 
 ## Difficulty
 
-Estimated hard until calibration runs are complete. This is candidate 5,
+DROPPED, too easy. Final result after fully correcting two rounds of unfair
+grading gates (see PROVENANCE.json for the full derivation): 6 real Harbor
+attempts against GPT 5.6, F2P-remaining 0, 1, 2, 1, 0, 1 out of 10, all under
+the project's 50% failure threshold. Two confirmed real defects survived
+below that threshold in some attempts (a quarantined-record replacement bug
+in 3 of 6, an unrelated AttributeError referencing a nonexistent enum value
+in 1 of 6) -- legitimate partial-credit gaps, but not sufficient under the
+current binary F2P-count contract to fail an attempt. A v2 with explicit
+semantic F2P gates (e.g. a dedicated "preservation and safety" bucket where
+any data-loss case fails the whole bucket) could meaningfully grade this
+distinction, but that needs a new test design evaluated on fresh cohorts,
+not a reweighting of already-observed responses.
+
+This is candidate 5,
 picked deliberately after four single-PR-shaped candidates
 (`docker/docker-agent` #4155, `kirodotdev/KiroCrew` #9734, #9825, #9752) were
 all solved by GPT 5.6 on pass@1, per the guideline's own push toward bugs

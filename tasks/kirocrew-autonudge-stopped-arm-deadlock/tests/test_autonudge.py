@@ -3348,7 +3348,7 @@ async def test_replace_stopped_preserves_a_quarantined_monitor_record(svc):
     existing.monitor.outcome = MonitorOutcome.BLOCKED
     existing.monitor.stopped_reason = MONITOR_STOP_INVALID_RECORD
 
-    with pytest.raises(MonitorUpdateConflict, match="retained as evidence"):
+    with pytest.raises(MonitorUpdateConflict):
         await svc.add(
             slot_key="chat-1-123",
             message="directive re-arm",
@@ -3493,7 +3493,7 @@ async def test_create_only_add_still_refuses_a_terminal_row_with_an_inflight_wak
     existing.monitor.last_wake_fingerprint = "actionable-1"
     existing.monitor.completion_evidence_deadline = 2_000_000.0
 
-    with pytest.raises(MonitorUpdateConflict, match="wake is in flight"):
+    with pytest.raises(MonitorUpdateConflict):
         await svc.add(
             slot_key="chat-1-123",
             message="legacy replacement",
