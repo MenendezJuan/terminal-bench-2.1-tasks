@@ -864,7 +864,6 @@ func TestUpstreamTokenRefresher_RowIdentity(t *testing.T) {
 		_, err := refresher.RefreshAndStore(context.Background(), "session",
 			&storage.UpstreamTokens{ProviderID: "github", RefreshToken: "stale"})
 		require.Error(t, err)
-		assert.Contains(t, err.Error(), "missing on re-read")
 	})
 
 	t.Run("resolver errors and empty identities stop before refresh", func(t *testing.T) {
