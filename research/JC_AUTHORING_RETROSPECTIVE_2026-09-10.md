@@ -1,36 +1,44 @@
 # JC Terminal-Bench 2.1 authoring retrospective — 2026-09-10
 
-## Decision
+## Corrected outcome
 
-The fifth candidate, `kirocrew-autonudge-stopped-arm-deadlock`, is the first candidate that survives pass@1. Its comparable GPT-5.6 run scored 0 with 6 of 10 FAIL_TO_PASS tests still failing and no PASS_TO_PASS regressions. The model implemented the four replacement paths and missed the six preservation paths. This is a genuine partial solution, not a harness, environment, or grading failure.
+Five built candidates were too easy for GPT-5.6 after fair behavioral grading. Two other candidates were rejected before implementation. KiroCrew #8515 did not survive calibration: six saved patches leave 0, 1, 2, 1, 0, and 1 of 10 F2P tests failing after removing unstated exact-message constraints, with no P2P regressions. Every attempt passes the contractual threshold.
 
-Do not describe this as five failed model attempts. Four earlier candidates were each solved on their first valid GPT-5.6 attempt and were correctly dropped as too easy. Candidate 5 required an authoring correction before its counted pass@1: the first probe used a semantically valid but differently named keyword parameter because the prompt had not specified the exact public identifier. That probe is not part of the calibrated cohort.
+This document replaces the earlier conclusion that candidate 5 was a genuine hard-task result. The canonical replay evidence is in `KIROCREW_8515_BEHAVIORAL_REGRADE_2026-09-10.md`.
 
-## Root cause of the four drops
+## What failed in the selection method
 
-The first candidates exposed most of their solution structure in the instruction: schema traversal named the keyword families and invariants; diff endpoint selection reduced to a localized conceptual repair; message branching enumerated the branches; filesystem safety enumerated the required properties after an initial prompt omission. GPT-5.6 could map the stated cases directly to code. Changing bug shape alone did not add enough discovery work.
+We treated labels such as concurrency, stateful, cross-file, and number of branches as evidence of difficulty. They are only hypotheses. The built tasks still reduced to familiar repairs once the prompt and local code were read:
 
-The teammate's successful task has a stronger difficulty shape: the visible symptom invites a plausible partial fix, while the actual cause is a check rendered ineffective by an upstream transformation. Five attempts converged on the same superficial repair. That convergence, plus partial progress and intact PASS_TO_PASS tests, is stronger evidence of difficulty than a total score alone.
+1. Docker Agent #4155 was a standard recursive schema transformation.
+2. KiroCrew #9734 nearly stated the required Git operation.
+3. KiroCrew #9825 was a small set of message branches; its first failure was an unfair casing assertion.
+4. KiroCrew #9752 was a localized atomic-write pattern; its first failure relied on unstated idempotence.
+5. KiroCrew #8515 exposed many cases, but most shared one parameter-threading repair. Exact-message checks inflated failure counts.
 
-## What changed with candidate 5
+The stronger discriminator is causal: identify a plausible incomplete repair before observing model output, then prove with deterministic end-to-end tests that it leaves a central user-visible invariant broken.
 
-Candidate 5 crosses four call layers and two callers with opposing policies over retained state. Even though its instruction enumerates the classification, the first comparable model run still confused fields from two record types and omitted the forward-version guard. Its longer trajectory and higher cost are supporting signals; the causal test breakdown is the deciding evidence.
+## Correction about the teammate sample
 
-## Freeze and next gate
+The teammate task did not conceal its structural cause. Its prompt explicitly told the solver to evaluate the requested line rather than the leading context line. The transferable strength was the verifier: it parsed the recovery advice, executed it, and confirmed that the omitted content became accessible across both backends. A cosmetic notice could not pass.
 
-Keep the current instruction, tests, verifier, environment, model, scaffold, timeouts, resources, and no-internet setting unchanged for the next two attempts. Editing the long instruction now would create a new task version and invalidate direct pass@3 comparability.
+Therefore we must not claim that symptom-only wording caused its 0/5 result. Prompt prescription may affect difficulty, but the evidence here supports end-to-end behavioral verification as the primary distinction.
 
-After two more valid attempts: if either passes, stop at the observed pass@3 stage and record the exact count; if both fail, inspect whether failures converge on the same preservation/classification boundary before proceeding to pass@5; exclude and privately replace only true provider or harness voids.
+## Process failures
 
-For the next task, prefer symptom-level prompts backed by tests over a prose enumeration of the internal taxonomy. Every asserted behavior still needs prompt support, but the prompt can state the invariant and observable cases without naming the implementation partition, helper, or full internal decision table.
+- We inferred convergence from failed test names and partial tracebacks instead of reviewing every attempt.
+- Two agents launched overlapping runs, creating six attempts where the ledger expected five.
+- Oracle and no-op validated endpoints but did not prove fairness to alternative correct implementations.
+- Some F2P tests failed at an absent parameter boundary rather than exercising their intended behavior.
+- `max_turns=60` was not explicitly pinned. Future Harbor invocations must set it.
+- Corrections were appended after stale conclusions. Canonical documents must be rewritten so only the current decision remains.
 
-## Audit notes
+## Candidate 6 hypothesis
 
-- The verifier implements the private threshold correctly: an attempt fails when `F2P_REMAINING * 2 >= F2P_TOTAL`, or when any PASS_TO_PASS test regresses.
-- Oracle and no-op controls remain valid after the threshold correction because they sit at 0% and 100% F2P remaining.
-- The current F2P derivation text says the TypeError tests could not be “collected into a meaningful pass/fail.” Pytest did collect and grade them; the intended point is that they measured the missing keyword interface before deeper behavior. Correct this wording only in a later documentation/package revision, without changing the frozen pass@3 cohort.
-- The tracker previously still pointed at the dropped Docker Agent candidate and needed correction.
+Floci #3000 is under offline review. It concerns silent Kinesis record loss and inconsistent stream state under concurrent producers, deletion, persistence, and resharding. Four behavior groups were registered before model observation: accepted-record durability and ordering, lifecycle non-resurrection, reshard read consistency, and forwarding-failure semantics.
 
-## Superseding audit result
+The upstream tests are discovery evidence, not a verifier to transplant. Several use gold-only hooks or helpers and some use probabilistic stress loops. The task is acceptable only if mechanism-neutral tests can reproduce the defects through existing interfaces with deterministic barriers, and if an alternative correct implementation passes.
 
-The initial candidate-5 genuine-failure conclusion was superseded after replaying all five saved patches without seven unstated exact-message constraints. All five pass the contractual threshold. See [KIROCREW_8515_BEHAVIORAL_REGRADE_2026-09-10.md](KIROCREW_8515_BEHAVIORAL_REGRADE_2026-09-10.md).
+## Required pre-spend gate
+
+See `PRE_SPEND_ACCEPTANCE_GATE.md`. A candidate cannot reach a paid run until its observable contract, base/gold classification, deterministic repetition, mutation matrix, verifier-integrity checks, freeze record, isolated Terminal-Bench credential source, one run owner, and explicit `max_turns=60` all pass.
