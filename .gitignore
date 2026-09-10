@@ -5,3 +5,4 @@ __pycache__/
 jobs/
 jobs_debug/
 jobs_debug*/
+*.env
