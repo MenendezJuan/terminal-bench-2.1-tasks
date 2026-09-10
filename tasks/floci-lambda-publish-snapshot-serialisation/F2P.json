@@ -90,6 +90,6 @@
     "DONE: apply the gold diff of PR #3010 and run the verifier -- reward 1, all seven leaves passing.",
     "DONE: repeat the oracle 5 times to bound flake (the ordered step 4 minimum, not the flake_risk note's 10 -- revisit if this candidate survives to a real model cohort).",
     "DONE: execute the full pre-registered mutation matrix and record observed results.",
-    "PENDING: run pass@1 against both target models (GPT 5.6 and claude-opus-5, per the delivery's now-established practice of running them in parallel)."
+    "DONE: pass@1 run against both target models in parallel. GPT 5.6: reward=1.0, 6m1s, well under the 60-turn cap. claude-opus-5: reward=1.0, $2.80, 44 of 100 allotted turns, 23m45s -- comfortably under budget, a genuine voluntary finish. Both solved cleanly. See research/CLAIMS.md for the full verdict."
   ]
 }
