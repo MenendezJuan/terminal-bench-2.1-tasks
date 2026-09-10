@@ -10,6 +10,8 @@ However, an inactive record must still block the session-directive re-arm path, 
 
 None of the two callers can be fixed by changing the shared refusal check alone without distinguishing which caller is asking; a fix that makes the session-directive path permissive enough to replace stopped records must not also make the dashboard path permissive, and a fix that keeps the dashboard path strict must not also keep the session-directive path deadlocked against its own documented recovery instructions.
 
+Implement this as a new keyword-only opt-in parameter named exactly `replace_stopped` (default `False`), accepted by the automation service's public `add` and `add_monitor` methods and threaded through to wherever the create-only refusal is actually raised. Only the session-directive re-arm path passes `replace_stopped=True`; the dashboard creation path must not.
+
 Run pytest test/test_autonudge.py from /app once done; expect the full file (194 tests) to take under a minute.
 
 You have 5400 seconds to complete this task. Do not cheat by using online solutions or hints specific to this task.
