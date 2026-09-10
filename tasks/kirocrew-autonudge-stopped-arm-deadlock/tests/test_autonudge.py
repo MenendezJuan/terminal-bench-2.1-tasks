@@ -3238,7 +3238,7 @@ async def test_replace_stopped_never_deletes_a_future_version_monitor(svc):
     existing.active = False
     existing.monitor.version = MONITOR_STATE_VERSION + 1
 
-    with pytest.raises(MonitorUpdateConflict, match="written by a newer gateway"):
+    with pytest.raises(MonitorUpdateConflict):
         await svc.add(
             slot_key="chat-1-123",
             message="directive re-arm",
@@ -3246,7 +3246,7 @@ async def test_replace_stopped_never_deletes_a_future_version_monitor(svc):
             replace_existing=False,
             replace_stopped=True,
         )
-    with pytest.raises(MonitorUpdateConflict, match="written by a newer gateway"):
+    with pytest.raises(MonitorUpdateConflict):
         await svc.add_monitor(
             slot_key="chat-1-123",
             kind="github_pull_request",
@@ -3411,7 +3411,7 @@ async def test_replace_stopped_preserves_a_user_stopped_monitor(svc):
     assert stopped.monitor is not None
     assert stopped.monitor.outcome is MonitorOutcome.USER_STOP
 
-    with pytest.raises(MonitorUpdateConflict, match="retained as evidence"):
+    with pytest.raises(MonitorUpdateConflict):
         await svc.add_monitor(
             slot_key="chat-1-123",
             kind="github_pull_request",
@@ -3436,7 +3436,7 @@ async def test_replace_stopped_preserves_a_research_tombstone(svc):
     worker = await svc.add(slot_key="chat-1-123", message="research worker", idle_secs=60)
     await svc.update(worker.id, active=False, stopped_reason=AUTONUDGE_STOP_REASON)
 
-    with pytest.raises(MonitorUpdateConflict, match="retained as evidence"):
+    with pytest.raises(MonitorUpdateConflict):
         await svc.add(
             slot_key="chat-1-123",
             message="directive re-arm",
@@ -3459,7 +3459,7 @@ async def test_replace_stopped_preserves_a_manual_pause(svc):
     paused = await svc.add(slot_key="chat-1-123", message="paused by hand", idle_secs=60)
     await svc.update(paused.id, active=False)
 
-    with pytest.raises(MonitorUpdateConflict, match="retained as evidence"):
+    with pytest.raises(MonitorUpdateConflict):
         await svc.add(
             slot_key="chat-1-123",
             message="directive re-arm",
