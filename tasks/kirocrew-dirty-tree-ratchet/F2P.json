@@ -1,0 +1,13 @@
+{
+  "collected_base": 81,
+  "collected_gold": 81,
+  "FAIL_TO_PASS": [
+    "test.test_ratchet_scope.TestDirtyTree::test_uncommitted_edits_are_in_the_added_set",
+    "test.test_ratchet_scope.TestDirtyTree::test_the_base_is_the_merge_base_not_the_base_tip",
+    "test.test_ratchet_scope.TestDirtyTree::test_a_shifted_preexisting_line_is_not_counted_as_added",
+    "test.test_check_comment_history.TestDirtyTreeScope::test_a_shifted_baselined_marker_is_not_flagged"
+  ],
+  "PASS_TO_PASS_NOTE": "77 tests pass at base and stay passing at gold, including the 2 new tests that do not require the fix: test.test_ratchet_scope.TestDirtyTree::test_a_clean_tree_matches_the_head_diff and test.test_check_comment_history.TestDirtyTreeScope::test_a_marker_written_by_the_uncommitted_edit_still_fails. Not enumerated by name in the verifier (unlike docker-agent-strict-schema's task): PASS_TO_PASS is graded as 'zero failures outside the FAIL_TO_PASS set', which is equivalent here because collection is stable (81 at both base and gold) and the floor (78) would catch under-collection.",
+  "gold_failing": [],
+  "derivation": "Measured directly: built the environment image, copied the graded test files in, ran `pytest test/test_ratchet_scope.py test/test_check_comment_history.py` at base_commit (4 failed, 77 passed, 81 collected) and again after applying solution/solve.sh (0 failed, 81 passed, 81 collected). FAIL_TO_PASS is the set-diff of failing test names between those two runs, not inferred from the PR diff or guessed from test names -- an initial guess based on which tests 'sounded like' the reproduction was wrong on 2 of 6 candidates until measured."
+}

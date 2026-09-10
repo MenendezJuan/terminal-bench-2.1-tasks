@@ -1,0 +1,3 @@
+Checking patch scripts/ratchet_scope.py...
+Applied patch scripts/ratchet_scope.py cleanly.
+oracle applied

@@ -1,0 +1,12 @@
+{
+    "task": {
+        "path": "tasks\\kirocrew-dirty-tree-ratchet"
+    },
+    "trial_name": "kirocrew-dirty-tree-ratchet__pojAzGq",
+    "trials_dir": "jobs\\2026-09-10__01-12-12",
+    "environment": {
+        "type": "docker",
+        "force_build": true
+    },
+    "job_id": "519eb206-c64f-4626-848e-32c1d41d5e96"
+}

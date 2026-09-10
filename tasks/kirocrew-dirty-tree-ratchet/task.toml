@@ -1,0 +1,46 @@
+schema_version = "1.1"
+artifacts = []
+
+[task]
+name = "bugfix/kirocrew-dirty-tree-ratchet-scope"
+description = "Evaluates repair of a CI ratchet gate that computes its added-line set from the wrong git diff endpoint, causing intermittent false positives on a dirty working tree."
+keywords = ["python", "git", "ci-tooling", "debugging", "regression-test"]
+
+[[task.authors]]
+name = "Juan Cruz"
+email = "jumenendez01@gmail.com"
+
+[metadata]
+author_name = "Juan Cruz"
+author_email = "jumenendez01@gmail.com"
+# Estimated until five valid comparable model attempts are complete.
+difficulty = "hard"
+category = "software-engineering"
+tags = ["python", "git", "ci-tooling", "diff-endpoints", "regression-test"]
+expert_time_estimate_min = 90.0
+junior_time_estimate_min = 300.0
+
+[verifier]
+timeout_sec = 900.0
+
+[agent]
+# Real docker-agent-strict-schema pass@1 took ~6 min against a much smaller
+# repo; this repo's test collection alone is slower (81 tests, real venv).
+# 5400s gives headroom without handing over the full expert estimate.
+timeout_sec = 5400.0
+
+[environment]
+build_timeout_sec = 3600.0
+docker_image = "python:3.12-bookworm"
+cpus = 2
+memory_mb = 4096
+storage_mb = 10240
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[environment.env]
+
+[solution.env]

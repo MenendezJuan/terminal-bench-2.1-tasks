@@ -1,0 +1,142 @@
+/app/xdist_budget.py:417: UserWarning: xdist worker budget: 2 of 16 workers (29.1 GiB free, 30 GiB installed). Each worker needs about 2 GiB, mostly to collect the suite. A run this narrow is slow, not stuck -- free some memory, run a subset (pytest test/test_thing.py), or pass an explicit -n <N> to bypass this budget.
+  warnings.warn(
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /app
+configfile: setup.cfg
+plugins: cov-6.3.0, asyncio-1.4.0, hypothesis-6.168.0, testmon-2.2.0, timeout-2.4.0, xdist-3.8.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+timeout: 120.0s
+timeout method: signal
+timeout func_only: False
+created: 2/2 workers
+2 workers [81 items]
+
+[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m [ 88%]
+[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[31m                                                                [100%][0m
+=================================== FAILURES ===================================
+[31m[1m__________ TestDirtyTree.test_uncommitted_edits_are_in_the_added_set ___________[0m
+[gw0] linux -- Python 3.12.14 /app/.venv/bin/python
+
+self = <test_ratchet_scope.TestDirtyTree object at 0x77c240d969c0>
+repo = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw0/test_uncommitted_edits_are_in_0/repo')
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_uncommitted_edits_are_in_the_added_set[39;49;00m([96mself[39;49;00m, repo: Path) -> [94mNone[39;49;00m:[90m[39;49;00m
+        _git(repo, [33m"[39;49;00m[33mcheckout[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mfeature[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        _set_origin_main(repo)[90m[39;49;00m
+        (repo / [33m"[39;49;00m[33mfeature.py[39;49;00m[33m"[39;49;00m).write_text([33m"[39;49;00m[33mfeature.py[39;49;00m[33m\n[39;49;00m[33muncommitted[39;49;00m[33m\n[39;49;00m[33m"[39;49;00m, encoding=[33m"[39;49;00m[33mutf-8[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        added = scope.added_lines([33m"[39;49;00m[33morigin/main...HEAD[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [94massert[39;49;00m added [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+>       [94massert[39;49;00m [94m2[39;49;00m [95min[39;49;00m added[[33m"[39;49;00m[33mfeature.py[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+[1m[31mE       assert 2 in {1}[0m
+
+[1m[31mtest/test_ratchet_scope.py[0m:327: AssertionError
+[31m[1m____ TestDirtyTree.test_a_shifted_preexisting_line_is_not_counted_as_added _____[0m
+[gw1] linux -- Python 3.12.14 /app/.venv/bin/python
+
+self = <test_ratchet_scope.TestDirtyTree object at 0x77b13cea33e0>
+repo = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_shifted_preexisting_lin0/repo')
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_a_shifted_preexisting_line_is_not_counted_as_added[39;49;00m([96mself[39;49;00m, repo: Path) -> [94mNone[39;49;00m:[90m[39;49;00m
+        [90m# The reproduction from the comment-history gate: `victim.py` exists on[39;49;00m[90m[39;49;00m
+        [90m# the base with a line the baseline already records, the branch appends[39;49;00m[90m[39;49;00m
+        [90m# committed lines below it, and an uncommitted insert ABOVE it shifts[39;49;00m[90m[39;49;00m
+        [90m# the recorded line onto a number the base..HEAD diff counts as added.[39;49;00m[90m[39;49;00m
+        [90m# The added set must describe the working tree, where that line is old.[39;49;00m[90m[39;49;00m
+        (repo / [33m"[39;49;00m[33mvictim.py[39;49;00m[33m"[39;49;00m).write_text([33m"[39;49;00m[33mrecorded = 1[39;49;00m[33m\n[39;49;00m[33m"[39;49;00m, encoding=[33m"[39;49;00m[33mutf-8[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        _git(repo, [33m"[39;49;00m[33madd[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mvictim.py[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        _git(repo, [33m"[39;49;00m[33mcommit[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m-m[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mbase file with a recorded line[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        _git(repo, [33m"[39;49;00m[33mupdate-ref[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mrefs/remotes/origin/main[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mHEAD[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        _git(repo, [33m"[39;49;00m[33mcheckout[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m-b[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mtopic[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        (repo / [33m"[39;49;00m[33mvictim.py[39;49;00m[33m"[39;49;00m).write_text([90m[39;49;00m
+            [33m"[39;49;00m[33mrecorded = 1[39;49;00m[33m\n[39;49;00m[33madded_a = 2[39;49;00m[33m\n[39;49;00m[33madded_b = 3[39;49;00m[33m\n[39;49;00m[33m"[39;49;00m, encoding=[33m"[39;49;00m[33mutf-8[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        )[90m[39;49;00m
+        _git(repo, [33m"[39;49;00m[33madd[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mvictim.py[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        _git(repo, [33m"[39;49;00m[33mcommit[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m-m[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mappend two lines below the recorded one[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        [90m# Uncommitted: insert two lines above. The recorded line now sits at[39;49;00m[90m[39;49;00m
+        [90m# working-tree line 3, a number inside HEAD's added range {2, 3}.[39;49;00m[90m[39;49;00m
+        (repo / [33m"[39;49;00m[33mvictim.py[39;49;00m[33m"[39;49;00m).write_text([90m[39;49;00m
+            [33m"[39;49;00m[33mwip_a = 0[39;49;00m[33m\n[39;49;00m[33mwip_b = 0[39;49;00m[33m\n[39;49;00m[33mrecorded = 1[39;49;00m[33m\n[39;49;00m[33madded_a = 2[39;49;00m[33m\n[39;49;00m[33madded_b = 3[39;49;00m[33m\n[39;49;00m[33m"[39;49;00m, encoding=[33m"[39;49;00m[33mutf-8[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        )[90m[39;49;00m
+    [90m[39;49;00m
+        added = scope.added_lines([33m"[39;49;00m[33morigin/main...HEAD[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [94massert[39;49;00m added [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+>       [94massert[39;49;00m [94m3[39;49;00m [95mnot[39;49;00m [95min[39;49;00m added[[33m"[39;49;00m[33mvictim.py[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+[1m[31mE       assert 3 not in {2, 3}[0m
+
+[1m[31mtest/test_ratchet_scope.py[0m:354: AssertionError
+[31m[1m________ TestDirtyTree.test_the_base_is_the_merge_base_not_the_base_tip ________[0m
+[gw1] linux -- Python 3.12.14 /app/.venv/bin/python
+
+self = <test_ratchet_scope.TestDirtyTree object at 0x77b13cea4260>
+repo = PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw1/test_the_base_is_the_merge_bas0/repo')
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_the_base_is_the_merge_base_not_the_base_tip[39;49;00m([96mself[39;49;00m, repo: Path) -> [94mNone[39;49;00m:[90m[39;49;00m
+        [90m# main rewrites base.txt AFTER the branch point. A diff against the[39;49;00m[90m[39;49;00m
+        [90m# base TIP would count the working tree's older copy of base.txt as[39;49;00m[90m[39;49;00m
+        [90m# this change's added lines; the merge-base diff sees no edit there.[39;49;00m[90m[39;49;00m
+        _git(repo, [33m"[39;49;00m[33mcheckout[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mmain[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        (repo / [33m"[39;49;00m[33mbase.txt[39;49;00m[33m"[39;49;00m).write_text([33m"[39;49;00m[33mrewritten on main[39;49;00m[33m\n[39;49;00m[33m"[39;49;00m, encoding=[33m"[39;49;00m[33mutf-8[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        _git(repo, [33m"[39;49;00m[33madd[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mbase.txt[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        _git(repo, [33m"[39;49;00m[33mcommit[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33m-m[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mrewrite base.txt on main after the branch point[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        _set_origin_main(repo)[90m[39;49;00m
+        _git(repo, [33m"[39;49;00m[33mcheckout[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mfeature[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        (repo / [33m"[39;49;00m[33mfeature.py[39;49;00m[33m"[39;49;00m).write_text([33m"[39;49;00m[33mfeature.py[39;49;00m[33m\n[39;49;00m[33muncommitted[39;49;00m[33m\n[39;49;00m[33m"[39;49;00m, encoding=[33m"[39;49;00m[33mutf-8[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        added = scope.added_lines([33m"[39;49;00m[33morigin/main...HEAD[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [90m[39;49;00m
+        [94massert[39;49;00m added [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+        [94massert[39;49;00m [33m"[39;49;00m[33mbase.txt[39;49;00m[33m"[39;49;00m [95mnot[39;49;00m [95min[39;49;00m added[90m[39;49;00m
+>       [94massert[39;49;00m [94m2[39;49;00m [95min[39;49;00m added[[33m"[39;49;00m[33mfeature.py[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+[1m[31mE       assert 2 in {1}[0m
+
+[1m[31mtest/test_ratchet_scope.py[0m:373: AssertionError
+[31m[1m______ TestDirtyTreeScope.test_a_shifted_baselined_marker_is_not_flagged _______[0m
+[gw1] linux -- Python 3.12.14 /app/.venv/bin/python
+
+self = <test_check_comment_history.TestDirtyTreeScope object at 0x77b13cc3f1a0>
+dirty_repo = (PosixPath('/tmp/pytest-of-root/pytest-0/popen-gw1/test_a_shifted_baselined_marke0/repo'), <module 'ratchet_scope_dirty_tree' from '/app/scripts/ratchet_scope.py'>)
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_a_shifted_baselined_marker_is_not_flagged[39;49;00m([96mself[39;49;00m, dirty_repo) -> [94mNone[39;49;00m:[90m[39;49;00m
+        [90m# Uncommitted insert above the marker: it moves to working-tree line 3,[39;49;00m[90m[39;49;00m
+        [90m# a number inside the committed diff's added range {3, 4, 5}. The gate[39;49;00m[90m[39;49;00m
+        [90m# must read it as the pre-existing line it is; committing these exact[39;49;00m[90m[39;49;00m
+        [90m# bytes produces the same verdict.[39;49;00m[90m[39;49;00m
+        repo, rs = dirty_repo[90m[39;49;00m
+        new, grown, on_added, shrunk = [96mself[39;49;00m._verdict([90m[39;49;00m
+            repo, rs, [33m"[39;49;00m[33mwip_a = 0[39;49;00m[33m\n[39;49;00m[33mwip_b = 0[39;49;00m[33m\n[39;49;00m[33m"[39;49;00m + [96mself[39;49;00m.COMMITTED_SOURCE[90m[39;49;00m
+        )[90m[39;49;00m
+>       [94massert[39;49;00m [95mnot[39;49;00m new [95mand[39;49;00m [95mnot[39;49;00m grown [95mand[39;49;00m [95mnot[39;49;00m on_added [95mand[39;49;00m [95mnot[39;49;00m shrunk[90m[39;49;00m
+[1m[31mE       AssertionError: assert (not [] and not [] and not {'pkg.py': [(3, 'hotfix')]})[0m
+
+[1m[31mtest/test_check_comment_history.py[0m:474: AssertionError
+[33m=============================== warnings summary ===============================[0m
+.venv/lib/python3.12/site-packages/xdist/plugin.py:289
+.venv/lib/python3.12/site-packages/xdist/plugin.py:289
+.venv/lib/python3.12/site-packages/xdist/plugin.py:289
+  /app/.venv/lib/python3.12/site-packages/xdist/plugin.py:289: DeprecationWarning: The --looponfail command line argument and looponfailroots config variable are deprecated.
+  The loop-on-fail feature will be removed in pytest-xdist 4.0.
+    config.issue_config_time_warning(warning, 2)
+
+test/test_ratchet_scope.py::TestMergeShapes::test_ci_merge_ref_scopes_to_the_change_only
+test/test_ratchet_scope.py::TestMergeShapes::test_local_merge_of_main_scopes_to_the_branch_own_commits
+  /app/test/conftest.py:845: DeprecationWarning: There is no current event loop
+    loop = asyncio.get_event_loop()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+----------------- generated xml file: /logs/verifier/junit.xml -----------------
+============================= slowest 5 durations ==============================
+1.01s setup    test/test_ratchet_scope.py::TestMergeShapes::test_ci_merge_ref_scopes_to_the_change_only
+1.01s setup    test/test_ratchet_scope.py::TestMergeShapes::test_local_merge_of_main_scopes_to_the_branch_own_commits
+0.07s call     test/test_check_comment_history.py::TestCiWiring::test_ci_runs_the_self_test_first
+0.07s call     test/test_check_comment_history.py::TestCiWiring::test_ci_actually_runs_the_gate
+0.03s setup    test/test_check_comment_history.py::TestDirtyTreeScope::test_a_shifted_baselined_marker_is_not_flagged
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m test/test_ratchet_scope.py::[1mTestDirtyTree::test_uncommitted_edits_are_in_the_added_set[0m - assert 2 in {1}
+[31mFAILED[0m test/test_ratchet_scope.py::[1mTestDirtyTree::test_a_shifted_preexisting_line_is_not_counted_as_added[0m - assert 3 not in {2, 3}
+[31mFAILED[0m test/test_ratchet_scope.py::[1mTestDirtyTree::test_the_base_is_the_merge_base_not_the_base_tip[0m - assert 2 in {1}
+[31mFAILED[0m test/test_check_comment_history.py::[1mTestDirtyTreeScope::test_a_shifted_baselined_marker_is_not_flagged[0m - AssertionError: assert (not [] and not [] and not {'pkg.py': [(3, 'hotfix')]})
+[31m=================== [31m[1m4 failed[0m, [32m77 passed[0m, [33m5 warnings[0m[31m in 2.95s[0m[31m ===================[0m

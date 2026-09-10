@@ -1,0 +1,22 @@
+{
+  "repo": "kirodotdev/KiroCrew",
+  "pull_number": 9734,
+  "url": "https://github.com/kirodotdev/KiroCrew/pull/9734",
+  "title": "fix(ci): diff base to working tree for added lines in merge-ref ratchets",
+  "base_commit": "faf30c18e749613ce704a0fd28c692c0b1c96e10",
+  "merge_commit": "29cfd4b425a0a89d7fe67882f5e61e45884cc597",
+  "merged_at": "2026-09-09T16:06:53Z",
+  "issue_numbers": [9719],
+  "issue_url": "https://github.com/kirodotdev/KiroCrew/issues/9719",
+  "issue_char_count": 3779,
+  "source_files": [
+    "scripts/ratchet_scope.py"
+  ],
+  "test_files": [
+    "test/test_ratchet_scope.py",
+    "test/test_check_comment_history.py"
+  ],
+  "touches_dependencies": false,
+  "origin": "mined",
+  "notes": "The PR MODIFIES two existing test files (both already present at base_commit) rather than adding new ones, so the task ships their complete post-fix form and the verifier copies them over whatever the agent left, per the copy-over-patch pattern documented from a teammate's prior task. base_commit is the merge commit's actual first parent (verified via `gh api .../commits/<merge_sha>` -> .parents[0].sha), not the PR's baseRefOid (which is main's tip at PR-open time and can drift from the true pre-merge parent). Merged 2026-09-09, well after typical model training cutoffs. The bug: a gate scans violations from the working tree but computed its added-line set from a diff that stops at HEAD, so an uncommitted edit can shift a pre-existing (baselined) line onto a line number the committed diff counts as added, producing an intermittent false positive that disappears once the identical bytes are committed. The fix re-diffs from merge-base(base, HEAD) to the working tree for the three-dot label, matching the sibling per-path helper `added_lines_at` that already does this correctly."
+}

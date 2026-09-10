@@ -1,0 +1,38 @@
+/app/xdist_budget.py:417: UserWarning: xdist worker budget: 2 of 16 workers (29.3 GiB free, 30 GiB installed). Each worker needs about 2 GiB, mostly to collect the suite. A run this narrow is slow, not stuck -- free some memory, run a subset (pytest test/test_thing.py), or pass an explicit -n <N> to bypass this budget.
+  warnings.warn(
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /app
+configfile: setup.cfg
+plugins: cov-6.3.0, asyncio-1.4.0, hypothesis-6.168.0, testmon-2.2.0, timeout-2.4.0, xdist-3.8.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+timeout: 120.0s
+timeout method: signal
+timeout func_only: False
+created: 2/2 workers
+2 workers [81 items]
+
+[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m [ 88%]
+[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m                                                                [100%][0m
+[33m=============================== warnings summary ===============================[0m
+.venv/lib/python3.12/site-packages/xdist/plugin.py:289
+.venv/lib/python3.12/site-packages/xdist/plugin.py:289
+.venv/lib/python3.12/site-packages/xdist/plugin.py:289
+  /app/.venv/lib/python3.12/site-packages/xdist/plugin.py:289: DeprecationWarning: The --looponfail command line argument and looponfailroots config variable are deprecated.
+  The loop-on-fail feature will be removed in pytest-xdist 4.0.
+    config.issue_config_time_warning(warning, 2)
+
+test/test_ratchet_scope.py::TestMergeShapes::test_ci_merge_ref_scopes_to_the_change_only
+test/test_ratchet_scope.py::TestMergeShapes::test_local_merge_of_main_scopes_to_the_branch_own_commits
+  /app/test/conftest.py:845: DeprecationWarning: There is no current event loop
+    loop = asyncio.get_event_loop()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+----------------- generated xml file: /logs/verifier/junit.xml -----------------
+============================= slowest 5 durations ==============================
+0.98s setup    test/test_ratchet_scope.py::TestMergeShapes::test_ci_merge_ref_scopes_to_the_change_only
+0.96s setup    test/test_ratchet_scope.py::TestMergeShapes::test_local_merge_of_main_scopes_to_the_branch_own_commits
+0.06s call     test/test_check_comment_history.py::TestCiWiring::test_ci_runs_the_self_test_first
+0.06s call     test/test_check_comment_history.py::TestCiWiring::test_ci_actually_runs_the_gate
+0.03s setup    test/test_check_comment_history.py::TestDirtyTreeScope::test_a_shifted_baselined_marker_is_not_flagged
+[33m======================== [32m81 passed[0m, [33m[1m5 warnings[0m[33m in 2.82s[0m[33m ========================[0m
