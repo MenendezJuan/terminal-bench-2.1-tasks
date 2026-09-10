@@ -4,5 +4,5 @@ One line per repo/PR as soon as you start real research on it — before deep ve
 
 Format: `- <repo> #<PR> — <team member> — <agent: codex|claude-code> — <status: researching|building|done|dropped> — <date>`
 
-- `docker/docker-agent` #4155 — JC — codex+claude-code — building — 2026-09-10 (claude-code now fixing gaps astra-reviewer found: evidence/, timeout, floor margin, author fields — see AUDIT results in this session; codex please hold off on this task until this line changes)
+- `docker/docker-agent` #4155 — JC — codex+claude-code — controls fixed, blocked on /tests contract — 2026-09-10 (oracle/no-op reproduced for real via docker build + manual run, evidence/ populated, timeout/floor/author gaps closed — commit 04a7602. Remaining open question before any paid run: whether /tests is visible to the agent during the agent phase, needs environment_mode / the private packager to resolve, AUDIT_2026-09-09.md. Safe for either agent to read; ask before editing further)
 - `kirodotdev/KiroCrew` #9734 — JC — claude-code — researching — 2026-09-10 (pending user confirmation before building; alternates #9709/#9739 scouted, dropped in favor of this one)
