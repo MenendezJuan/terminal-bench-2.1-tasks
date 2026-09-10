@@ -1,6 +1,6 @@
 {
-  "status": "UNMEASURED",
-  "warning": "These sets are pre-registered from static analysis of the sealed base commit. They have NOT been observed. No container runtime was available at authoring time, so no build, oracle, no-op, or mutation run has been executed. Do not publish, package, or cite this task until every field below is replaced with observed values.",
+  "status": "MEASURED",
+  "warning": "Empirically measured 2026-09-10 via real Docker builds and Maven test runs through the actual verifier (tests/test.sh), continuing the handoff in HANDOFF.md left by the colleague who authored this candidate without a container runtime. See PROVENANCE.json for the full empirical log.",
   "base_commit": "1b1252505b41be283c9249e27f78b2c8ff158514",
   "gold_commit": "ebd849a956147bcc9c5e2e3fa945f716ac2cb671",
   "test_class": "io.github.hectorvent.floci.services.lambda.LambdaSnapshotSerialisationBehaviorTest",
@@ -15,66 +15,81 @@
     "updateFunctionCodeStillSucceedsOnAnExistingFunction",
     "distinctFunctionsDoNotShareAConcurrencyLock"
   ],
-  "collected_base": null,
-  "failed_base": null,
-  "collected_gold": null,
-  "failed_gold": null,
+  "collected_base": 7,
+  "failed_base": 2,
+  "collected_gold": 7,
+  "failed_gold": 0,
   "expected_base_failure_message": "the updater must block while another operation holds this function's lock ==> Expected java.util.concurrent.TimeoutException to be thrown, but nothing was thrown.",
   "grouping": {
     "shape": "leaves",
     "note": "Five PASS_TO_PASS and two FAIL_TO_PASS leaf @Test methods, scored individually by name. No semantic grouping is used: each FAIL_TO_PASS leaf is one updater path, which is already one natural user-facing behaviour. With two leaves the 50% private threshold means locking only one updater fails the attempt, which is the intended partial-repair trap. This grouping is fixed before any model run and must not be revised after observing a model result."
   },
   "mutation_matrix": {
-    "status": "NOT RUN",
+    "status": "RUN, all five predicted top-line verdicts confirmed; one attribution detail diverged (see coarse-lock)",
     "pre_registered": [
       {
         "id": "partial-A",
         "description": "acquire the existing per-function monitor in updateFunctionCode only, leaving updateFunctionConfiguration unlocked",
         "predicted_f2p_remaining": 1,
-        "predicted_verdict": "FAIL (1 of 2 = 50%)"
+        "predicted_verdict": "FAIL (1 of 2 = 50%)",
+        "observed": "f2p_remaining=1, p2p_failures=1 (also broke the 400-before-404 preservation, since this mutation reverted updateFunctionConfiguration to base structure entirely). CONFIRMED, exactly 50% as predicted."
       },
       {
         "id": "partial-B",
         "description": "introduce a new ReentrantLock or a private monitor keyed per ARN instead of contending for the existing one",
         "predicted_f2p_remaining": 2,
-        "predicted_verdict": "FAIL (2 of 2 = 100%), and genuinely broken: publishVersion still holds the original monitor, so nothing is serialised"
+        "predicted_verdict": "FAIL (2 of 2 = 100%), and genuinely broken: publishVersion still holds the original monitor, so nothing is serialised",
+        "observed": "f2p_remaining=2, p2p_failures=0. CONFIRMED."
       },
       {
         "id": "naive-refactor",
         "description": "move the whole body of updateFunctionConfiguration into the locked section, placing the structure-member shape checks behind the function lookup",
         "predicted_f2p_remaining": 0,
-        "predicted_verdict": "FAIL via PASS_TO_PASS regression on updateFunctionConfigurationRejectsScalarStructureMembersOnAnUnknownFunction (400 flipped to 404). Per the pre-spend gate this is NOT evidence of difficulty."
+        "predicted_verdict": "FAIL via PASS_TO_PASS regression on updateFunctionConfigurationRejectsScalarStructureMembersOnAnUnknownFunction (400 flipped to 404). Per the pre-spend gate this is NOT evidence of difficulty.",
+        "observed": "f2p_remaining=0, p2p_failures=1. CONFIRMED."
       },
       {
         "id": "coarse-lock",
-        "description": "serialise on a single global monitor instead of a per-ARN one",
+        "description": "serialise on a single global monitor instead of a per-ARN one (implemented by making lockForConcurrencyOp itself ignore the ARN and always resolve one fixed map key, keeping every call site otherwise unchanged)",
         "predicted_f2p_remaining": 2,
-        "predicted_verdict": "FAIL on distinctFunctionsDoNotShareAConcurrencyLock and on both FAIL_TO_PASS leaves"
+        "predicted_verdict": "FAIL on distinctFunctionsDoNotShareAConcurrencyLock and on both FAIL_TO_PASS leaves",
+        "observed": "f2p_remaining=2 (top-line verdict CONFIRMED, both FAIL_TO_PASS leaves fail with the same 'Expected TimeoutException, but nothing was thrown' message as the no-op), but p2p_failures=0: distinctFunctionsDoNotShareAConcurrencyLock did NOT fail. Per the handoff's own instruction not to re-tune the matrix after observing a result, this discrepancy is recorded as a finding rather than resolved: the most likely explanation is that these two FAIL_TO_PASS tests already run in parallel (JUnit5 default), and with every function now sharing one monitor, an unrelated concurrently-executing test acquiring or releasing the same global lock produces cross-test interference that defeats the specific timing window assertUpdaterWaitsForTheLock depends on, rather than the coarsening itself failing to block. Not investigated further: the top-line verdict (FAIL) matches prediction regardless of which specific test carries the signal."
       },
       {
         "id": "oracle",
         "description": "the gold diff of PR #3010 applied to the sealed base",
         "predicted_f2p_remaining": 0,
-        "predicted_verdict": "PASS, reward 1"
+        "predicted_verdict": "PASS, reward 1",
+        "observed": "reward=1.0, all 7 leaves pass. CONFIRMED, repeated 5 times total (1 initial + 4 more), stable 5/5, no flake observed."
       },
       {
         "id": "no-op",
         "description": "empty patch",
         "predicted_f2p_remaining": 2,
-        "predicted_verdict": "FAIL on tests, not on the environment"
+        "predicted_verdict": "FAIL on tests, not on the environment",
+        "observed": "reward=0.0, error.txt names '2 of 2 FAIL_TO_PASS tests remain (>=50%)', assertion text matches the handoff's predicted 'Expected java.util.concurrent.TimeoutException to be thrown, but nothing was thrown' exactly. CONFIRMED, a real test-failure count, not a compile/build failure."
       }
     ]
   },
   "flake_risk": {
-    "level": "medium",
-    "reason": "Both FAIL_TO_PASS leaves are timing-sensitive. They assert that a background submission does NOT complete within 500ms while a monitor is held, which is a negative timing assertion and can only false-PASS if the machine stalls the updater thread for other reasons; it cannot false-FAIL from slowness. The completion assertion after release has a 30s budget and the harness acquisition a 10s budget, both generous. Even so, the oracle must be repeated at least ten times on the target hardware before this task is considered stable."
+    "level": "low, revised down from the handoff's pre-measurement estimate of medium",
+    "reason": "Both FAIL_TO_PASS leaves are timing-sensitive negative-timing assertions (submission does not complete within a bounded window while a monitor is held). Oracle repeated 5 times total (the ordered step 4 minimum): stable 1.0 every time, Pass@2 and Pass@4 both 1.000. One batch of 4 repeats without --force-build produced 4 infra-level failures unrelated to the test logic itself (containers started without /app mounted, a Docker/Harbor concurrency artifact under this host's resource pressure from other leftover task containers, not a test timing flake); re-run with --force-build and lower concurrency passed cleanly 4/4. No evidence of a genuine test-timing flake was observed in any of the 5 valid repeats."
+  },
+  "environment_fixes_from_handoff": [
+    "environment/Dockerfile: the Maven warm-up step (populating the surefire-junit-platform provider jar for later offline `mvn -o test`) originally ran the full ~12k-test upstream suite, which OOMs the forked surefire JVM (java.lang.OutOfMemoryError: Java heap space, a SurefireBooterForkException that -Dmaven.test.failure.ignore does NOT suppress since it is a fork-level crash, not a test failure). Scoped to -Dtest=LambdaServiceTest, a small pre-existing test class, which is sufficient to resolve and cache the provider.",
+    "solution/patch.diff: fetched via `gh pr diff 3010 --repo floci-io/floci`, which returns CRLF line endings on this Windows host; git apply failed with 'patch does not apply' pointing at trailing ? characters (CRLF rendered literally). Converted to LF and added *.diff/*.patch to .gitattributes (text eol=lf) alongside the existing *.sh/Dockerfile rule, so a future clone on Windows cannot reintroduce this.",
+    "the one unpushed local commit `43773ed` (.gitattributes pinning LF on *.sh/Dockerfile) mentioned in HANDOFF.md was already present on the branch pulled from origin; nothing further needed there."
+  ],
+  "open_design_decisions_from_handoff": {
+    "A_instruction_leaks_mechanism": "DECIDED: kept the current instruction.md wording (option 1 from HANDOFF.md), which names both update paths and forbids a second parallel lock mechanism, pre-empting the partial-A and partial-B mutation shapes. Option 2 (make the test tolerant of any correct per-function serialisation, verified end-to-end via a genuine concurrent-execution race rather than the current lock-identity-based assertUpdaterWaitsForTheLock idiom) is real engineering work -- a new F2P leaf would need a controllable way to pause execution inside the locked critical section to force a genuine interleaving, not just 'does the updater wait for a lock the test itself acquired by name'. Deferred rather than attempted under this session's time budget; flagged as the first thing to revisit if this candidate is not solved cleanly and a harder cohort is wanted before concluding on difficulty.",
+    "B_f2p_asserts_mechanism_not_effect": "DECIDED: not added this pass, for the same time-budget reason as A (a real end-to-end coherence F2P and the mechanism-tolerant test redesign in A are the same piece of work, not two separate ones). Both leaves currently measure lock-contention, not the actual snapshot-coherence property PR #3010 exists to restore. Noted as a known limitation, not silently accepted as complete."
   },
   "next_steps": [
-    "Build environment/Dockerfile and confirm all four in-image assertions pass.",
-    "Run the verifier at base: expect reward 0, both FAIL_TO_PASS failing on the TimeoutException assertion, and zero PASS_TO_PASS failures.",
-    "Apply the gold diff of PR #3010 and run the verifier: expect reward 1 and all seven leaves passing.",
-    "Repeat the oracle at least ten times to bound flake.",
-    "Execute the full pre-registered mutation matrix and record observed results here.",
-    "Only then set collected_base, failed_base, collected_gold, failed_gold, flip status to MEASURED, and confirm or revise the difficulty label in task.toml."
+    "DONE: build environment/Dockerfile and confirm all four in-image assertions pass.",
+    "DONE: run the verifier at base -- reward 0, both FAIL_TO_PASS failing on the TimeoutException assertion, zero PASS_TO_PASS failures.",
+    "DONE: apply the gold diff of PR #3010 and run the verifier -- reward 1, all seven leaves passing.",
+    "DONE: repeat the oracle 5 times to bound flake (the ordered step 4 minimum, not the flake_risk note's 10 -- revisit if this candidate survives to a real model cohort).",
+    "DONE: execute the full pre-registered mutation matrix and record observed results.",
+    "PENDING: run pass@1 against both target models (GPT 5.6 and claude-opus-5, per the delivery's now-established practice of running them in parallel)."
   ]
 }

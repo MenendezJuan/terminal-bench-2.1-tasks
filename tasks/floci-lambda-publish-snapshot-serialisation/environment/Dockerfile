@@ -31,9 +31,13 @@ RUN mvn -q -B dependency:go-offline
 RUN mvn -q -B -DskipTests package
 # dependency:go-offline resolves declared project dependencies but not the
 # surefire-junit-platform provider Maven pulls in as a plugin dependency at
-# test time; run the existing suite once (failures ignored, this only
-# exists to populate the local repo) so `mvn -o test` works offline later.
-RUN mvn -q -B -Dmaven.test.failure.ignore=true test
+# test time. Running the full ~12k-test suite here to warm that provider
+# OOMs the forked surefire JVM (java.lang.OutOfMemoryError: Java heap space,
+# a SurefireBooterForkException that -Dmaven.test.failure.ignore does NOT
+# suppress, since it is a fork-level crash, not a test failure). Scope to
+# one small, pre-existing test class instead: it is enough to resolve and
+# cache the provider jar, and LambdaServiceTest already exists at base.
+RUN mvn -q -B -Dmaven.test.failure.ignore=true -Dtest=LambdaServiceTest test
 
 RUN H="$(git rev-parse HEAD)"; \
     if [ "$H" != "${BASE_COMMIT}" ]; then \

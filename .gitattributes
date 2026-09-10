@@ -4,3 +4,5 @@
 # would be indistinguishable from a no-op result.
 *.sh text eol=lf
 Dockerfile text eol=lf
+*.diff text eol=lf
+*.patch text eol=lf
