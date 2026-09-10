@@ -30,3 +30,7 @@ For the next task, prefer symptom-level prompts backed by tests over a prose enu
 - Oracle and no-op controls remain valid after the threshold correction because they sit at 0% and 100% F2P remaining.
 - The current F2P derivation text says the TypeError tests could not be “collected into a meaningful pass/fail.” Pytest did collect and grade them; the intended point is that they measured the missing keyword interface before deeper behavior. Correct this wording only in a later documentation/package revision, without changing the frozen pass@3 cohort.
 - The tracker previously still pointed at the dropped Docker Agent candidate and needed correction.
+
+## Superseding audit result
+
+The initial candidate-5 genuine-failure conclusion was superseded after replaying all five saved patches without seven unstated exact-message constraints. All five pass the contractual threshold. See [KIROCREW_8515_BEHAVIORAL_REGRADE_2026-09-10.md](KIROCREW_8515_BEHAVIORAL_REGRADE_2026-09-10.md).
