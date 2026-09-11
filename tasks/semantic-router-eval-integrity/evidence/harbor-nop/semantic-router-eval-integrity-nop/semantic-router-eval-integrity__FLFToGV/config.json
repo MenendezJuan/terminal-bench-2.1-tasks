@@ -1,0 +1,15 @@
+{
+    "task": {
+        "path": "tasks\\semantic-router-eval-integrity"
+    },
+    "trial_name": "semantic-router-eval-integrity__FLFToGV",
+    "trials_dir": "tasks\\semantic-router-eval-integrity\\evidence\\harbor-nop\\semantic-router-eval-integrity-nop",
+    "agent": {
+        "name": "nop"
+    },
+    "environment": {
+        "type": "docker",
+        "force_build": true
+    },
+    "job_id": "89bb474a-402b-4302-bb89-fa2809f1be07"
+}

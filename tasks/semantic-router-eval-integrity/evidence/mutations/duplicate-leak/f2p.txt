@@ -1,0 +1,15 @@
+test_evaluation_registry_matches_served_32k_artifacts (__main__.EvalIntegrityContract.test_evaluation_registry_matches_served_32k_artifacts) ... ok
+test_training_pipeline_uses_disjoint_heldout_and_emits_manifest (__main__.EvalIntegrityContract.test_training_pipeline_uses_disjoint_heldout_and_emits_manifest) ... FAIL
+
+======================================================================
+FAIL: test_training_pipeline_uses_disjoint_heldout_and_emits_manifest (__main__.EvalIntegrityContract.test_training_pipeline_uses_disjoint_heldout_and_emits_manifest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tests/test_eval_integrity.py", line 124, in test_training_pipeline_uses_disjoint_heldout_and_emits_manifest
+    self.assertFalse(any(dup_texts[i] == repeated for i in pool))
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.007s
+
+FAILED (failures=1)

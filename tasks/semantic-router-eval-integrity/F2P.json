@@ -1,0 +1,4 @@
+[
+  "test_training_pipeline_uses_disjoint_heldout_and_emits_manifest",
+  "test_evaluation_registry_matches_served_32k_artifacts"
+]

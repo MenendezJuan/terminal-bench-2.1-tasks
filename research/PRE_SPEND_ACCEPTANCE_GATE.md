@@ -34,6 +34,7 @@ Complete this checklist before any paid model run.
 - Do not use a P2P regression as evidence that the candidate is difficult.
 - Score leaf test identities, not top-level containers that bundle independent behaviors.
 - Base and gold must expose the same graded identities; keep compile/interface checks separate from behavioral F2P when necessary.
+- A correct implementation must have a coherent agent-visible feedback loop. Reject candidates whose sealed-base tests explicitly require the old behavior and would fail after the correct production change unless those conflicting tests can be removed or replaced without revealing hidden adjudication.
 
 Semantic groups may be used only when fixed before observation and when each group is one natural user-facing behavior. Keep diagnostic leaf cases visible. Never regroup after seeing a model result.
 

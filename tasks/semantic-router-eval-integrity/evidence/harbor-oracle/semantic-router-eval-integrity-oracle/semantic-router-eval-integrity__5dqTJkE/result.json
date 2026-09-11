@@ -1,0 +1,112 @@
+{
+    "id": "2b88e200-64a9-4c4e-ad09-e7b6e8ec0d13",
+    "task_name": "bugfix/semantic-router-eval-integrity",
+    "trial_name": "semantic-router-eval-integrity__5dqTJkE",
+    "trial_uri": "file:///C:/Users/usuario/Documents/GitHub/terminal-bench-2.1-tasks/tasks/semantic-router-eval-integrity/evidence/harbor-oracle/semantic-router-eval-integrity-oracle/semantic-router-eval-integrity__5dqTJkE",
+    "task_id": {
+        "path": "tasks\\semantic-router-eval-integrity"
+    },
+    "source": null,
+    "task_checksum": "9b8c232449b675b537e237cff31b2f9f79682d00880e6cd0b75953a152fddddd",
+    "config": {
+        "task": {
+            "path": "tasks\\semantic-router-eval-integrity",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": null
+        },
+        "trial_name": "semantic-router-eval-integrity__5dqTJkE",
+        "trials_dir": "tasks\\semantic-router-eval-integrity\\evidence\\harbor-oracle\\semantic-router-eval-integrity-oracle",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "oracle",
+            "import_path": null,
+            "model_name": null,
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {},
+            "mcp_servers": []
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": true,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": null,
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [],
+        "job_id": "7649d306-397b-4160-8d49-7c51174550df",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "oracle",
+        "version": "1.0.0",
+        "model_info": null
+    },
+    "agent_result": {
+        "n_input_tokens": null,
+        "n_cache_tokens": null,
+        "n_output_tokens": null,
+        "cost_usd": null,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "shared",
+    "exception_info": null,
+    "started_at": "2026-09-11T01:03:43.025130Z",
+    "finished_at": "2026-09-11T01:03:58.039915Z",
+    "environment_setup": {
+        "started_at": "2026-09-11T01:03:43.164752Z",
+        "finished_at": "2026-09-11T01:03:49.762594Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-09-11T01:03:49.762644Z",
+        "finished_at": "2026-09-11T01:03:49.762709Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-09-11T01:03:49.762784Z",
+        "finished_at": "2026-09-11T01:03:50.436726Z"
+    },
+    "verifier": {
+        "started_at": "2026-09-11T01:03:50.438004Z",
+        "finished_at": "2026-09-11T01:03:53.559072Z"
+    },
+    "step_results": null
+}

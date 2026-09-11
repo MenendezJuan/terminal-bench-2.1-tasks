@@ -1,0 +1,44 @@
+schema_version = "1.1"
+artifacts = []
+
+[task]
+name = "bugfix/semantic-router-eval-integrity"
+description = "Repairs two independent model-evaluation integrity failures: MMLU-Pro training/evaluation leakage and evaluation against checkpoints different from those served in production."
+keywords = ["python", "machine-learning", "evaluation", "data-leakage", "reproducibility"]
+
+[[task.authors]]
+name = "Juan Cruz"
+email = "jumenendez01@gmail.com"
+
+[metadata]
+author_name = "Juan Cruz"
+author_email = "jumenendez01@gmail.com"
+difficulty = "hard"
+category = "machine-learning"
+tags = ["python", "machine-learning", "evaluation", "data-leakage", "reproducibility"]
+expert_time_estimate_min = 90.0
+junior_time_estimate_min = 300.0
+
+[verifier]
+timeout_sec = 900.0
+
+[agent]
+timeout_sec = 5400.0
+[agent.kwargs]
+max_turns = 60
+
+[environment]
+build_timeout_sec = 1800.0
+docker_image = "python:3.12-slim"
+cpus = 4
+memory_mb = 8192
+storage_mb = 20480
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[environment.env]
+
+[solution.env]

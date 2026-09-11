@@ -1,0 +1,19 @@
+{
+    "job_name": "semantic-router-eval-integrity-nop",
+    "jobs_dir": "tasks\\semantic-router-eval-integrity\\evidence\\harbor-nop",
+    "n_concurrent_trials": 1,
+    "environment": {
+        "type": "docker",
+        "force_build": true
+    },
+    "agents": [
+        {
+            "name": "nop"
+        }
+    ],
+    "tasks": [
+        {
+            "path": "tasks\\semantic-router-eval-integrity"
+        }
+    ]
+}

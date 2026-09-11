@@ -1,0 +1,18 @@
+test_evaluation_registry_matches_served_32k_artifacts (__main__.EvalIntegrityContract.test_evaluation_registry_matches_served_32k_artifacts) ... ok
+test_training_pipeline_uses_disjoint_heldout_and_emits_manifest (__main__.EvalIntegrityContract.test_training_pipeline_uses_disjoint_heldout_and_emits_manifest) ... ERROR
+
+======================================================================
+ERROR: test_training_pipeline_uses_disjoint_heldout_and_emits_manifest (__main__.EvalIntegrityContract.test_training_pipeline_uses_disjoint_heldout_and_emits_manifest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tests/test_eval_integrity.py", line 178, in test_training_pipeline_uses_disjoint_heldout_and_emits_manifest
+    module.main(max_samples=2, output_dir=output)
+  File "/app/src/training/model_classifier/classifier_model_fine_tuning_lora/ft_linear_lora.py", line 535, in main
+    all_data, category_to_idx, idx_to_category = create_mmlu_dataset(max_samples)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.012s
+
+FAILED (errors=1)

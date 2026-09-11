@@ -10,7 +10,7 @@ Toolhive #6361 is the clearest example. After correcting the verifier to grade e
 
 - OMP read-omitted-lines is valid evidence under our rule: both F2P tests are end-to-end variants of the same hard core, and all five attempts leave both failing.
 - Omnigent's published 0/5 uses all-or-nothing reward. Its own report says GPT-5.6 would be 3/5 and Opus 5/5 under the >=50% F2P rule. It is not a hard task under this engagement's contract.
-- Valkey also uses all-or-nothing over three bugs. Attempts fixing two of three would pass under the >=50% rule. Its stated 0/5 is not directly comparable.
+- Valkey describes its reward as all-or-nothing over three bugs, but its four natural F2P leaves are distributed 2/1/1: the hard rename family has two distinct triggers, while primary-write and swapdb have one each. Every attempt that fixed the two replica bugs still left both rename leaves failing, exactly 2/4 = 50%, so it also fails under the official rule. Its 0/5 verdict is comparable even though the report explains the binary implementation imprecisely. This correction matters: always recompute from leaf test identities, never from the number of prose-level bugs.
 
 ## New admission gate
 

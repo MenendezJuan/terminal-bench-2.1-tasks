@@ -1,0 +1,12 @@
+{
+    "task": {
+        "path": "tasks\\semantic-router-eval-integrity"
+    },
+    "trial_name": "semantic-router-eval-integrity__5dqTJkE",
+    "trials_dir": "tasks\\semantic-router-eval-integrity\\evidence\\harbor-oracle\\semantic-router-eval-integrity-oracle",
+    "environment": {
+        "type": "docker",
+        "force_build": true
+    },
+    "job_id": "7649d306-397b-4160-8d49-7c51174550df"
+}

@@ -1,0 +1,9 @@
+test_collection_counts_and_unique_artifacts (test_model_artifacts.ModelArtifactIndexTest.test_collection_counts_and_unique_artifacts) ... ok
+test_every_mapping_resolves_inside_training_tree (test_model_artifacts.ModelArtifactIndexTest.test_every_mapping_resolves_inside_training_tree) ... ok
+test_index_contains_only_current_ownership (test_model_artifacts.ModelArtifactIndexTest.test_index_contains_only_current_ownership) ... ok
+test_safety_binary_and_hazard_are_owned (test_model_artifacts.ModelArtifactIndexTest.test_safety_binary_and_hazard_are_owned) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.003s
+
+OK

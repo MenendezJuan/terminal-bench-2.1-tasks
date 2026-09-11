@@ -1,0 +1,61 @@
+{
+  "repo": "vllm-project/semantic-router",
+  "base_commit": "ce271702ce3ae686a516f3158851b54ab4b60451",
+  "origin": "combined_mined_repairs",
+  "pull_requests": [
+    {
+      "number": 3628,
+      "url": "https://github.com/vllm-project/semantic-router/pull/3628",
+      "title": "[Bug] Stop training the intent classifier on the MMLU-Pro rows it is scored on",
+      "head_commit": "3e7912b1926cc86c4e62429ef039a403abbe8fdc",
+      "merge_commit": "2de78e816d34699cf31245e2ad3b16d6b0a803df",
+      "merged_at": "2026-09-09T09:04:48Z"
+    },
+    {
+      "number": 3651,
+      "url": "https://github.com/vllm-project/semantic-router/pull/3651",
+      "title": "[Bug] Point the evaluation registry at the mmbert32k checkpoints the router serves",
+      "head_commit": "bcf448d6339f84c2727f776802fb2bede2cc57ec",
+      "merge_commit": "38c1c2c371c85aaff676ad7b2e3295541eb2ed13",
+      "merged_at": "2026-09-09T09:01:13Z"
+    }
+  ],
+  "source_files": [
+    "src/training/model_classifier/classifier_model_fine_tuning_lora/ft_linear_lora.py",
+    "src/training/model_classifier/classifier_model_fine_tuning_lora/heldout_split.py",
+    "src/training/model_eval/constants.py"
+  ],
+  "dependencies_changed": false,
+  "ai_attribution_found": false,
+  "verification": {
+    "status": "PRE_SPEND_GATE_PASSED",
+    "base_pass_to_pass_tests": 112,
+    "harbor_noop_reward": 0.0,
+    "harbor_oracle_reward": 1.0,
+    "oracle_repeat_count": 6,
+    "oracle_repeat_failures": 0,
+    "f2p_contracts": 2,
+    "hard_core_density": "2/2",
+    "mutation_results": {
+      "heldout_pipeline_only": "FAIL: 1/2 F2P remains, 0 P2P regressions",
+      "registry_only": "FAIL: 1/2 F2P remains, 0 P2P regressions",
+      "split_helper_plus_registry_without_pipeline_wiring": "FAIL: 1/2 F2P remains, 0 P2P regressions",
+      "duplicate_question_leak": "FAIL: 1/2 F2P remains, 0 P2P regressions"
+    },
+    "model_runs": "NONE"
+  },
+  "notes": "The two repairs share the exact same repository base and affect independent evaluation-integrity boundaries. One-sided and plausible incomplete repairs remain failures at the official >=50% F2P threshold. No model result is claimed until a paid calibration run completes.",
+  "freeze": {
+    "frozen_at": "2026-09-10",
+    "sha256": {
+      "instruction.md": "8157899b6192e2fc982b3837451e8a00c8b7017f2710bb436745fae2af476174",
+      "task.toml": "ab22b2dcef24b5ef4f612c91239bd8f852d6df507ed173fd8283a58abcef6a3f",
+      "F2P.json": "9692df0f46c3a160f9a55a2dbb9a6a832375fa6eb68e32bbba0f5f8dbe9d1e74",
+      "environment/Dockerfile": "5f3a55c4351afc600a6cc0da6ac281879a96df3cf9e2cdaa5f457053e5cc7d30",
+      "tests/test.sh": "e10aa8fb57edc7b64e9397a8f4e165086a74d64251f71deb4e6af565adf84eb5",
+      "tests/test_eval_integrity.py": "5ffb09fedc482d26325ec57852c5fb8db976d1f52ed1d7dc34c32add4006c875",
+      "solution/solve.sh": "ca0c00d2b4efbf55770eec4728db643de77545c0ae51c14ffc48cd1618b41bfb",
+      "solution/patch.diff": "8eb12ba772140a31f26841726a1d38e92ec4b7ecfe230fe8640742efa53d01ec"
+    }
+  }
+}
