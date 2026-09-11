@@ -1,5 +1,7 @@
 # Delivery review: semantic-router-eval-integrity
 
+> **Superseded on 2026-09-11.** A later implementation-neutral replay found that the flat-zero conclusion below is not valid: seven attempts first fail on an unstated order-preservation requirement and then encounter mocks tied to the gold's private `create_mmlu_dataset` decomposition. Only one GPT attempt has an independently established contractual failure. This candidate is `REWORK_REQUIRED`, and no pass@k result is reportable. See `CANDIDATE_15_INDEPENDENT_REGRADE_2026-09-11.md`.
+
 Reviewed with the `harbor-delivery-review` checklist (inventory.py, runs_audit.py) against the
 assembled delivery, plus manual checks for the items the scripts cannot verify. Harbor version in
 these runs: 0.21.0.

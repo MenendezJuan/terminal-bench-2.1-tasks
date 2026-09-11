@@ -28,7 +28,7 @@
   "dependencies_changed": false,
   "ai_attribution_found": false,
   "verification": {
-    "status": "PRE_SPEND_GATE_PASSED",
+    "status": "REWORK_REQUIRED_GRADER_BIAS",
     "base_pass_to_pass_tests": 112,
     "harbor_noop_reward": 0.0,
     "harbor_oracle_reward": 1.0,
@@ -42,20 +42,42 @@
       "split_helper_plus_registry_without_pipeline_wiring": "FAIL: 1/2 F2P remains, 0 P2P regressions",
       "duplicate_question_leak": "FAIL: 1/2 F2P remains, 0 P2P regressions"
     },
-    "model_runs": "NONE"
+    "model_runs": {
+      "gpt_5_6": {
+        "completed": 5,
+        "raw_reward_zero": 5,
+        "genuine_failures_established": 1,
+        "inconclusive": 4
+      },
+      "claude_opus_5": {
+        "completed": 3,
+        "raw_reward_zero": 3,
+        "genuine_failures_established": 0,
+        "inconclusive": 3
+      },
+      "pass_at_k_reportable": false
+    }
   },
-  "notes": "The two repairs share the exact same repository base and affect independent evaluation-integrity boundaries. One-sided and plausible incomplete repairs remain failures at the official >=50% F2P threshold. No model result is claimed until a paid calibration run completes.",
+  "notes": "The two repairs share the exact same repository base and affect independent evaluation-integrity boundaries. Pre-spend controls passed, but the cohort exposed implementation bias in the combined F2P test: it requires caller-order preservation that the prompt does not state, then assumes the gold's private create_mmlu_dataset tuple and call shape. Raw zero rewards are retained as evidence but cannot be reported as pass@k. See RESULTS.md.",
   "freeze": {
     "frozen_at": "2026-09-10",
+    "scope": "Exact task content used for the completed model attempts. task.toml records the cohort-time file; the later metadata-only edit is documented below.",
     "sha256": {
       "instruction.md": "8157899b6192e2fc982b3837451e8a00c8b7017f2710bb436745fae2af476174",
       "task.toml": "ab22b2dcef24b5ef4f612c91239bd8f852d6df507ed173fd8283a58abcef6a3f",
       "F2P.json": "9692df0f46c3a160f9a55a2dbb9a6a832375fa6eb68e32bbba0f5f8dbe9d1e74",
-      "environment/Dockerfile": "5f3a55c4351afc600a6cc0da6ac281879a96df3cf9e2cdaa5f457053e5cc7d30",
+      "environment/Dockerfile": "ec0d8d039380832948b49be93e214db0720f53ef05651696f8822e45b3d033cf",
       "tests/test.sh": "e10aa8fb57edc7b64e9397a8f4e165086a74d64251f71deb4e6af565adf84eb5",
       "tests/test_eval_integrity.py": "5ffb09fedc482d26325ec57852c5fb8db976d1f52ed1d7dc34c32add4006c875",
       "solution/solve.sh": "ca0c00d2b4efbf55770eec4728db643de77545c0ae51c14ffc48cd1618b41bfb",
       "solution/patch.diff": "8eb12ba772140a31f26841726a1d38e92ec4b7ecfe230fe8640742efa53d01ec"
+    }
+  },
+  "post_cohort_nonsemantic_changes": {
+    "task.toml": {
+      "cohort_sha256": "ab22b2dcef24b5ef4f612c91239bd8f852d6df507ed173fd8283a58abcef6a3f",
+      "current_sha256": "ae0a6f4aed8817614d2833ea3a7b9f71189646d90e33763d25806350613a05fe",
+      "change": "Removed an ignored [agent.kwargs] table and documented the CLI turn caps that were actually passed. Harbor 0.21.0 discarded that table, so this did not alter any completed attempt."
     }
   }
 }
