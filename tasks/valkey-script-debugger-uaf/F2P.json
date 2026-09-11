@@ -1,0 +1,53 @@
+{
+  "status": "MEASURED",
+  "warning": "Empirically measured 2026-09-10 via real Docker builds and both jemalloc/ASan test runs through the actual verifier (tests/test.sh). One real grading bug found and fixed: okcount/errcount grep patterns anchored the bug pattern immediately after '[ok]: ', but real TCL test names have a 'Test scripting debug ...' prefix before the distinguishing text, so both bugs always counted as failing regardless of build outcome. Fixed to search anywhere on the line.",
+  "base_commit": "e23ccb31db50b7e26c667901eca5966b462f9ff9",
+  "gold_commit": "7be7d564ff0b27b20df8debab78822e4a4d57a62",
+  "test_file": "tests/unit/scripting-debugger-uaf.tcl",
+  "FAIL_TO_PASS": [
+    "uaf-stale-lua-state: Test scripting debug session survives SCRIPT FLUSH ASYNC that recreates the Lua state",
+    "double-free-print: Test scripting debug print does not use-after-free the logged value"
+  ],
+  "PASS_TO_PASS": [
+    "the existing tests/unit/scripting.tcl suite, normal build only (ASan is not required for P2P, only for the two F2P leaves)"
+  ],
+  "collected_base": "0 of 2 F2P (both builds), 651 P2P ok, 0 P2P err",
+  "collected_gold": "2 of 2 F2P (both builds), 651 P2P ok, 0 P2P err",
+  "grouping": {
+    "shape": "leaves, cross-build",
+    "note": "Two FAIL_TO_PASS bugs, each graded as ok/err in BOTH the normal jemalloc build and the AddressSanitizer build; a bug only counts as fixed if it passes cleanly in both. With two leaves the 50% private threshold means fixing only one of the two bugs fails the attempt."
+  },
+  "mutation_matrix": {
+    "status": "NOT RUN",
+    "pre_registered": [
+      {
+        "id": "uaf-fix-only",
+        "description": "apply the gold diff but revert only the double-free fix (put ValkeyModule_FreeString(NULL, s) back after the debugger log call)",
+        "predicted_verdict": "FAIL. 1 of 2 = 50%. The double-free test should crash or report an ASan error in the asan build; the stale-Lua_state test should pass in both builds."
+      },
+      {
+        "id": "double-free-fix-only",
+        "description": "apply the gold diff but revert only the stale-pointer fix (restore the cached command table capturing Lua_state at first generation)",
+        "predicted_verdict": "FAIL. 1 of 2 = 50%. The SCRIPT FLUSH ASYNC test should fail or crash on the second debug session in both builds; the double-free test should pass in both builds."
+      },
+      {
+        "id": "oracle",
+        "description": "the gold diff of PR #4574 applied to the sealed base",
+        "predicted_verdict": "PASS, reward 1, both bugs fixed in both builds."
+      },
+      {
+        "id": "no-op",
+        "description": "empty patch",
+        "predicted_verdict": "FAIL. Both bugs present. No new production symbol is required by the graded test, so this compiles and runs (unlike the Go/Java candidates in this delivery), failing on real test assertions or a real ASan-detected crash, not a build error."
+      }
+    ]
+  },
+  "next_steps": [
+    "Build environment/Dockerfile (both make variants) and confirm all in-image assertions pass.",
+    "Run the verifier at base: expect reward 0, both bugs failing, ideally with a visible ASan report for at least one of them in the asan build.",
+    "Apply the gold diff and run the verifier: expect reward 1, both bugs passing in both builds.",
+    "Repeat the oracle at least 5 times to bound flake (TCL test framework + real process spawns; check for port/timing flakiness under this delivery's Docker/Harbor setup).",
+    "Execute the pre-registered mutation matrix (uaf-fix-only, double-free-fix-only) under both builds and record observed results here.",
+    "Only then set collected_base, collected_gold, flip status to MEASURED."
+  ]
+}

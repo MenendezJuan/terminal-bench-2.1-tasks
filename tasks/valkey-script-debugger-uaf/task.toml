@@ -1,0 +1,44 @@
+schema_version = "1.1"
+artifacts = []
+
+[task]
+name = "bugfix/valkey-script-debugger-uaf"
+description = "Evaluates repair of two genuinely distinct memory-safety bugs in the Valkey Lua script debugger: a use-after-free from caching a Lua_state pointer across scripting-engine recreation, and a double-free from freeing a value whose ownership had already been transferred to the debugger log list. Both are hidden by a normal build and only reliably surface under AddressSanitizer."
+keywords = ["c", "memory-safety", "use-after-free", "double-free", "valkey", "lua", "asan"]
+
+[[task.authors]]
+name = "Juan Cruz"
+email = "jumenendez01@gmail.com"
+
+[metadata]
+author_name = "Juan Cruz"
+author_email = "jumenendez01@gmail.com"
+difficulty = "hard"
+category = "software-engineering"
+tags = ["c", "memory-safety", "use-after-free", "double-free", "valkey", "lua", "asan"]
+expert_time_estimate_min = 75.0
+junior_time_estimate_min = 240.0
+
+[verifier]
+timeout_sec = 2400.0
+
+[agent]
+timeout_sec = 5400.0
+[agent.kwargs]
+max_turns = 60
+
+[environment]
+build_timeout_sec = 3600.0
+docker_image = "ubuntu:24.04"
+cpus = 4
+memory_mb = 8192
+storage_mb = 20480
+gpus = 0
+allow_internet = false
+mcp_servers = []
+
+[verifier.env]
+
+[environment.env]
+
+[solution.env]
