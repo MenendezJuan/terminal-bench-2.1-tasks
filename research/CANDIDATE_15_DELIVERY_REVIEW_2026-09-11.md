@@ -52,12 +52,35 @@ each other.
 - **Self-containment**: README.md/RESULTS.md/PROVENANCE.json reference only paths inside the
   delivery.
 
+## harbor_surface.py
+
+Run with Harbor's own isolated interpreter (`uv tool` installs Harbor into its own venv; the
+script imports `harbor.models.task.config`, which is not on this session's normal Python path).
+Found via `.../uv/tools/harbor/Scripts/python.exe`.
+
+`RED=1 AMBER=2`.
+
+**RED, real finding, project-wide: `agent.kwargs` is silently discarded.** `task.toml` declares
+`[agent.kwargs]` with `max_turns = 60`, following the same pattern used across every task in this
+delivery. Checked Harbor's own `AgentConfig` schema directly (`AgentConfig.model_json_schema()`):
+it has no `kwargs` field at all in this Harbor version. The declared value has zero effect on a
+run; the turn cap only takes effect via the `--ak max_turns=N` CLI flag passed at invocation time.
+Every real pass@k run in this delivery, including all attempts recorded here, explicitly passed
+`--ak max_turns=60` (GPT 5.6) or `--ak max_turns=100` (claude-opus-5) on the command line, so this
+does not invalidate any result already recorded -- the actual cap used matches what is reported.
+But `[agent.kwargs]` in `task.toml` is decorative and misleading as written: a future run that
+relies on the file alone, without the CLI flag, would get no cap at all. Worth fixing across every
+task in this delivery, not just this one; flagging here rather than silently patching every
+task.toml, since that is a cross-cutting change outside this task's own scope.
+
+AMBER findings (declared-but-empty `artifacts`, and `F2P.json` as an out-of-spec entry in the task
+directory) are both intentional and match every other task in this delivery: `F2P.json` is this
+project's own pre-spend-gate bookkeeping file, not something Harbor reads.
+
 ## Not checked
 
-- `harbor_surface.py` was not run: it imports the `harbor` package directly, which is not on this
-  session's Python path (Harbor is installed as a standalone `uv tool`, not a library dependency
-  here). Running it would need that separate environment's interpreter.
-- `build_delivery.py` was not run; this delivery was assembled by hand following the checklist's
-  layout guidance rather than through the script.
+- `build_delivery.py` was not run: it expects a fixed `tasks/_raw/<delivery>` input layout
+  designed for a different assembly workflow than this delivery's. This delivery was assembled by
+  hand following the checklist's own layout guidance (section 8) instead.
 - The two remaining claude-opus-5 attempts needed to complete a pass@5 cohort have not been run.
   Do not cite an Opus pass@5 for this task from the current evidence.
