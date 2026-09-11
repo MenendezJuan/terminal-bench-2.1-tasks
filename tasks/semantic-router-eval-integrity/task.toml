@@ -24,8 +24,10 @@ timeout_sec = 900.0
 
 [agent]
 timeout_sec = 5400.0
-[agent.kwargs]
-max_turns = 60
+# Harbor's AgentConfig has no kwargs field: a turn cap cannot be declared
+# here and must be passed at invocation time, e.g. `--ak max_turns=60`.
+# This task was run against GPT 5.6 with max_turns=60 and against
+# claude-opus-5 with max_turns=100, both passed on the command line.
 
 [environment]
 build_timeout_sec = 1800.0
